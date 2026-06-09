@@ -1,10 +1,9 @@
 {
   "mcpServers": {
     "sinan-state": {
-      "command": "sh",
+      "command": "node",
       "args": [
-        "-lc",
-        "exec node \"${PLUGIN_ROOT}/mcp-servers/sinan-state/index.js\""
+        "mcp-servers/sinan-state/index.js"
       ],
       "env": {
         "SINAN_MCP_SERVER": "sinan-state"
