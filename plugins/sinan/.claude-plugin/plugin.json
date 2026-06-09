@@ -1,10 +1,15 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sinan",
+  "displayName": "Sinan",
   "description": "Agent orchestration harness for Claude Code and Codex with durable planning, proportional routing, hooks, and explicit specialist skills",
   "version": "0.1.0",
   "author": {
-    "name": "Sinan"
+    "name": "Sinan",
+    "url": "https://github.com/SethGammon/sinan"
   },
+  "homepage": "https://github.com/SethGammon/sinan",
+  "repository": "https://github.com/SethGammon/sinan",
   "license": "MIT",
   "keywords": [
     "sinan",
@@ -18,5 +23,8 @@
     "codex",
     "tdd",
     "red-team"
-  ]
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json"
 }

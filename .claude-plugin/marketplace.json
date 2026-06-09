@@ -4,28 +4,93 @@
   "version": "0.1.0",
   "description": "Local plugin marketplace for Sinan and Zhi.",
   "owner": {
-    "name": "tahabakhit"
+    "name": "tahabakhit",
+    "email": "taha.bakhit@m10s.io"
   },
   "plugins": [
     {
       "name": "sinan",
+      "displayName": "Sinan",
       "description": "Cross-project Codex and Claude Code harness for durable planning, proportional routing, hooks, telemetry, and explicit specialist skills.",
       "version": "0.1.0",
       "author": {
-        "name": "Sinan"
+        "name": "Sinan",
+        "url": "https://github.com/SethGammon/sinan"
       },
-      "source": "./plugins/sinan",
-      "category": "developer-tools"
+      "homepage": "https://github.com/SethGammon/sinan",
+      "repository": "https://github.com/SethGammon/sinan",
+      "license": "MIT",
+      "keywords": [
+        "sinan",
+        "orchestration",
+        "campaigns",
+        "fleet",
+        "skills",
+        "hooks",
+        "mcp",
+        "claude-code",
+        "codex",
+        "tdd",
+        "red-team"
+      ],
+      "tags": [
+        "agent-orchestration",
+        "developer-tools",
+        "workflow-automation"
+      ],
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/tahabakhit/ming.git",
+        "path": "./plugins/sinan",
+        "ref": "main"
+      },
+      "category": "developer-tools",
+      "strict": true
     },
     {
       "name": "zhi",
-      "description": "Paper-inspired knowledge-base plugin. Commands remain /wiki and /wiki:* for compatibility while the install identity is Zhi.",
+      "displayName": "Zhi",
+      "description": "Paper-inspired knowledge-base plugin for topic-scoped wikis, source ingestion, multi-hub routing, research, audit, query, and lint workflows.",
       "version": "0.10.3",
       "author": {
-        "name": "nvk + tahabakhit"
+        "name": "nvk + tahabakhit",
+        "url": "https://github.com/tahabakhit"
       },
-      "source": "./plugins/zhi/claude-plugin",
-      "category": "productivity"
+      "homepage": "https://github.com/tahabakhit/llm-wiki",
+      "repository": "https://github.com/tahabakhit/llm-wiki",
+      "license": "MIT",
+      "keywords": [
+        "zhi",
+        "paper",
+        "wiki",
+        "knowledge-base",
+        "llm",
+        "markdown",
+        "research",
+        "thesis",
+        "obsidian",
+        "multi-hub",
+        "router",
+        "audit",
+        "librarian",
+        "collect",
+        "inventory",
+        "datasets",
+        "archive"
+      ],
+      "tags": [
+        "knowledge-base",
+        "research",
+        "wiki"
+      ],
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/tahabakhit/ming.git",
+        "path": "./plugins/zhi",
+        "ref": "main"
+      },
+      "category": "productivity",
+      "strict": true
     }
   ]
 }

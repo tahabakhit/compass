@@ -36,10 +36,13 @@
     "developerName": "tahabakhit",
     "category": "Productivity",
     "capabilities": [
+      "Interactive",
       "Read",
       "Write"
     ],
     "websiteURL": "https://github.com/tahabakhit/llm-wiki",
+    "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+    "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
     "defaultPrompt": [
       "Use Zhi to research a topic and compile it into a wiki.",
       "Use Zhi to ingest notes or source collections into my local knowledge hub.",

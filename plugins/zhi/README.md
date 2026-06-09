@@ -146,7 +146,7 @@ Claude Code is the principal user. Keep one shared behavior layer and thin packa
 
 - `claude-plugin/` is the primary distribution target and UX surface.
 - `claude-plugin/skills/wiki-manager/` is the behavioral source of truth.
-- `plugins/zhi-codex/skills/wiki/` is the generated Codex packaging target behind `@wiki`.
+- `skills/wiki/` is the native Codex skill target behind `@wiki`.
 - `plugins/zhi-opencode/` is the OpenCode and Pi packaging target.
 - `.agents/plugins/marketplace.json` makes the Codex plugin installable from this repo.
 - `AGENTS.md` is the portable single-file protocol for any other LLM agent.
@@ -161,16 +161,16 @@ Claude Code is the principal user. Keep one shared behavior layer and thin packa
 | Pi | `--instructions SKILL.md` | ~1K tokens | Local models, minimal overhead |
 | Any agent | Copy `AGENTS.md` to project | Varies | Universal fallback |
 
-Both runtime mirrors are generated, not hand-maintained. Rebuild from the Claude source of truth:
+Codex and OpenCode runtime skill targets are generated from the Claude source of truth:
 
 ```bash
-./scripts/sync-codex-plugin.sh      # regenerates plugins/zhi-codex/
+./scripts/sync-codex-plugin.sh      # regenerates skills/wiki/
 ./scripts/sync-opencode-plugin.sh   # regenerates plugins/zhi-opencode/
 ```
 
 Each sync script:
 
-- copies `claude-plugin/skills/wiki-manager/SKILL.md` into the target tree and reapplies a small list of runtime-specific wording patches
+- copies `claude-plugin/skills/wiki-manager/SKILL.md` into the runtime target tree and reapplies a small list of runtime-specific wording patches
 - copies `references/` from the Claude source — references are runtime-neutral and shared verbatim (previously a symlink, now a real copy so Codex marketplace caching works)
 - (Codex only) recreates `agents/openai.yaml` for Codex UI metadata and syncs the plugin version
 

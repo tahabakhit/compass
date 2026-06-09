@@ -6,6 +6,7 @@
     "name": "Sinan",
     "url": "https://github.com/SethGammon/sinan"
   },
+  "homepage": "https://github.com/SethGammon/sinan",
   "repository": "https://github.com/SethGammon/sinan",
   "license": "MIT",
   "keywords": [
@@ -30,24 +31,17 @@
     "developerName": "Sinan",
     "category": "Developer Tools",
     "websiteURL": "https://github.com/SethGammon/sinan",
-    "privacyPolicyURL": "https://github.com/SethGammon/sinan",
-    "termsOfServiceURL": "https://github.com/SethGammon/sinan",
+    "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+    "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
     "capabilities": [
-      "orchestration",
-      "campaigns",
-      "parallel-agents",
-      "quality-gates",
-      "telemetry",
-      "intent-routing",
-      "tdd",
-      "red-team-review",
-      "context-snapshots",
-      "mcp",
-      "codex-hooks"
+      "Interactive",
+      "Read",
+      "Write"
     ],
     "defaultPrompt": [
       "Use Sinan to route this task through the cheapest capable workflow.",
       "Use Sinan to continue active harness state and apply the appropriate verification loop."
-    ]
+    ],
+    "brandColor": "#2563EB"
   }
 }

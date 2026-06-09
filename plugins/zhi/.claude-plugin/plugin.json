@@ -31,6 +31,6 @@
     "datasets",
     "archive"
   ],
-  "commands": "./commands/",
-  "skills": "./skills/"
+  "commands": "./claude-plugin/commands/",
+  "skills": "./claude-plugin/skills/"
 }

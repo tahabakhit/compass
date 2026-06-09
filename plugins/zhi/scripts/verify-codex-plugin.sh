@@ -12,7 +12,7 @@ usage() {
   cat <<'EOF'
 Usage: ./scripts/verify-codex-plugin.sh [options]
 
-Verify that Codex resolves @wiki to this repo's generated Codex wiki skill.
+Verify that Codex resolves @wiki to this repo's native Codex wiki skill.
 
 Options:
   --scope project|user   Verify project or user install (default: project)
@@ -61,7 +61,7 @@ esac
 
 PROJECT_ROOT="$(cd "$PROJECT_ROOT" && pwd)"
 USER_HOME="$(cd "$USER_HOME" && pwd)"
-EXPECTED_SKILL_PATH="$ROOT/plugins/zhi-codex/skills/wiki/SKILL.md"
+EXPECTED_SKILL_PATH="$ROOT/skills/wiki/SKILL.md"
 TMP_OUTPUT="$(mktemp)"
 PROBE_DIR="$ROOT/.tmp/codex-runtime-probe"
 USER_CONFIG="$USER_HOME/.codex/config.toml"

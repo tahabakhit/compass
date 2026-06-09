@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Local-CI: verify the Codex plugin mirror (plugins/zhi-codex/) stays in sync
+# Local-CI: verify the native Codex plugin skill (skills/wiki/) stays in sync
 # with the Claude source of truth (claude-plugin/skills/wiki-manager/).
 #
 # Self-healing — on failure the sync script has ALREADY regenerated the
-# Codex tree. The agent just needs to stage and commit the result.
+# Codex skill tree. The agent just needs to stage and commit the result.
 #
 # Why this exists: only LLMs work on this codebase, so drift between the
 # two packaging targets must be caught inside the agent's edit→test loop
@@ -15,19 +15,19 @@ cd "$ROOT"
 
 ./scripts/sync-codex-plugin.sh >/dev/null
 
-if ! git diff --quiet HEAD -- plugins/; then
+if ! git diff --quiet HEAD -- .codex-plugin/ skills/wiki/; then
   cat >&2 <<'MSG'
-FAIL: Codex plugin mirror is out of sync with claude-plugin/skills/wiki-manager/.
+FAIL: Native Codex plugin skill is out of sync with claude-plugin/skills/wiki-manager/.
 
-The sync script has already regenerated plugins/zhi-codex/. To fix:
-  1. git diff -- plugins/        # review the regenerated changes
-  2. git add plugins/            # stage them alongside the Claude-side edit
-  3. git commit                  # fold into the same commit
-  4. ./tests/test-codex-sync.sh  # re-run to confirm clean
+The sync script has already regenerated skills/wiki/. To fix:
+  1. git diff -- skills/ .codex-plugin/
+  2. git add skills/ .codex-plugin/
+  3. git commit
+  4. ./tests/test-codex-sync.sh
 
-This guards against the Codex copy drifting from the Claude source.
+This guards against the native Codex skill drifting from the Claude source.
 MSG
   exit 1
 fi
 
-echo "OK: Codex plugin mirror is in sync."
+echo "OK: Native Codex plugin skill is in sync."

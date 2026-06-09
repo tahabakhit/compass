@@ -4,18 +4,54 @@
   "version": "0.10.3",
   "description": "Zhi paper-inspired knowledge-base plugin marketplace.",
   "owner": {
-    "name": "tahabakhit"
+    "name": "tahabakhit",
+    "email": "taha.bakhit@m10s.io"
   },
   "plugins": [
     {
       "name": "zhi",
-      "description": "Zhi knowledge-base plugin. Commands remain /wiki and /wiki:* for compatibility; install identity is zhi.",
+      "displayName": "Zhi",
+      "description": "Paper-inspired knowledge-base plugin for topic-scoped wikis, source ingestion, multi-hub routing, research, audit, query, and lint workflows.",
       "version": "0.10.3",
       "author": {
-        "name": "nvk + tahabakhit"
+        "name": "nvk + tahabakhit",
+        "url": "https://github.com/tahabakhit"
       },
-      "source": "./claude-plugin",
-      "category": "productivity"
+      "homepage": "https://github.com/tahabakhit/llm-wiki",
+      "repository": "https://github.com/tahabakhit/llm-wiki",
+      "license": "MIT",
+      "keywords": [
+        "zhi",
+        "paper",
+        "wiki",
+        "knowledge-base",
+        "llm",
+        "markdown",
+        "research",
+        "thesis",
+        "obsidian",
+        "multi-hub",
+        "router",
+        "audit",
+        "librarian",
+        "collect",
+        "inventory",
+        "datasets",
+        "archive"
+      ],
+      "tags": [
+        "knowledge-base",
+        "research",
+        "wiki"
+      ],
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/tahabakhit/ming.git",
+        "path": "./plugins/zhi",
+        "ref": "main"
+      },
+      "category": "productivity",
+      "strict": true
     }
   ]
 }

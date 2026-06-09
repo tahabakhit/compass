@@ -12,14 +12,14 @@ name.
 | Plugin | Runtime roots | Source |
 |---|---|---|
 | Sinan | Claude Code and Codex | `plugins/sinan` |
-| Zhi | Claude Code and Codex | `plugins/zhi/claude-plugin`, `plugins/zhi/plugins/zhi-codex` |
+| Zhi | Claude Code and Codex | `plugins/zhi` |
 
 ## Install
 
 Claude Code:
 
 ```bash
-claude plugin marketplace add /Users/taha.bakhit@m10s.io/ming --scope local
+claude plugin marketplace add https://github.com/tahabakhit/ming.git --scope local
 claude plugin install sinan@ming --scope local
 claude plugin install zhi@ming --scope local
 ```
@@ -27,7 +27,7 @@ claude plugin install zhi@ming --scope local
 Codex:
 
 ```bash
-codex plugin marketplace add /Users/taha.bakhit@m10s.io/ming
+codex plugin marketplace add https://github.com/tahabakhit/ming.git --ref main
 ```
 
 Then use `/plugins` or the Codex app plugin UI and install Sinan and Zhi from
@@ -37,4 +37,4 @@ the Ming marketplace.
 
 - Sinan is the harness/router. Zhi is the paper-inspired knowledge-base
   plugin; its commands remain `/wiki` and `/wiki:*` for compatibility.
-- The plugin entries point at real source directories under `ming/plugins/`; no external symlinks are required.
+- Install the marketplace from Git. The local checkout is for development; marketplace plugin entries fetch `plugins/sinan` and `plugins/zhi` from Git with `git-subdir`.

@@ -10,7 +10,12 @@
       "name": "sinan",
       "description": "Sinan orchestration with explicit TDD, red-team, and context discipline",
       "version": "0.1.0",
-      "source": "./",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/tahabakhit/ming.git",
+        "path": "./plugins/sinan",
+        "ref": "main"
+      },
       "author": {
         "name": "Sinan",
         "email": "noreply@github.com"

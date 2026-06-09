@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SOURCE_SKILL="$ROOT/claude-plugin/skills/wiki-manager"
-TARGET_PLUGIN="$ROOT/plugins/zhi-codex"
+TARGET_PLUGIN="$ROOT"
 TARGET_SKILL="$TARGET_PLUGIN/skills/wiki"
 CLAUDE_MANIFEST="$ROOT/claude-plugin/.claude-plugin/plugin.json"
 CODEX_MANIFEST="$TARGET_PLUGIN/.codex-plugin/plugin.json"
@@ -25,9 +25,9 @@ fi
 
 mkdir -p "$TARGET_PLUGIN/skills"
 # The Codex marketplace caches plugin contents eagerly, so references/ must be
-# copied into the generated tree rather than left as a symlink. agents/ is
-# Codex-only metadata and is recreated below.
-rm -rf "$TARGET_PLUGIN/skills/wiki-manager"
+# copied into the native Codex skill tree rather than left as a symlink.
+# agents/ is Codex-only metadata and is recreated below.
+rm -rf "$TARGET_SKILL"
 rsync -a --delete \
   --exclude='agents/' \
   --exclude='agents' \
@@ -207,16 +207,16 @@ text = replace_section(
 """,
 )
 
-skill_path.write_text(text)
+skill_path.write_text(text.rstrip() + "\n")
 
-# references/ is a copied mirror of claude-plugin/skills/wiki-manager/references
+# references/ is a copied native Codex copy of claude-plugin/skills/wiki-manager/references
 # and is shared verbatim — no per-file replacements needed. Source references
 # use runtime-neutral wording ("the agent") so they read correctly under both.
 
 claude = json.loads(claude_manifest.read_text())
 codex = json.loads(codex_manifest.read_text())
 codex["version"] = claude["version"]
-codex["name"] = "wiki"
+codex["name"] = "zhi"
 codex["license"] = claude.get("license", codex.get("license"))
 codex["homepage"] = claude.get("homepage", codex.get("homepage", "https://github.com/nvk/llm-wiki"))
 codex["repository"] = claude.get("repository", codex.get("repository", "https://github.com/nvk/llm-wiki"))

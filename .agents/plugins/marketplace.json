@@ -7,32 +7,30 @@
     {
       "name": "sinan",
       "source": {
-        "source": "local",
-        "path": "./plugins/sinan"
+        "source": "git-subdir",
+        "url": "https://github.com/tahabakhit/ming.git",
+        "path": "./plugins/sinan",
+        "ref": "main"
       },
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL"
       },
-      "category": "Developer Tools",
-      "interface": {
-        "displayName": "Sinan"
-      }
+      "category": "Developer Tools"
     },
     {
       "name": "zhi",
       "source": {
-        "source": "local",
-        "path": "./plugins/zhi/plugins/zhi-codex"
+        "source": "git-subdir",
+        "url": "https://github.com/tahabakhit/ming.git",
+        "path": "./plugins/zhi",
+        "ref": "main"
       },
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL"
       },
-      "category": "Productivity",
-      "interface": {
-        "displayName": "Zhi"
-      }
+      "category": "Productivity"
     }
   ]
 }

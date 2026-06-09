@@ -75,12 +75,12 @@ else
   log_fail "AGENTS.md missing" "missing file"
 fi
 
-# Codex mirror validation — the artifacts that Codex installs from this repo.
-# Drift between Claude source and this mirror is covered by test-codex-sync.sh;
-# what's checked here is whether the mirror itself is well-formed.
+# Native Codex plugin validation — the artifacts that Codex installs from this repo.
+# Drift between Claude source and this native skill is covered by test-codex-sync.sh;
+# what's checked here is whether the Codex plugin itself is well-formed.
 echo ""
-echo "=== Codex Mirror Validation ==="
-CODEX_PLUGIN="$PROJECT_ROOT/plugins/zhi-codex"
+echo "=== Codex Plugin Validation ==="
+CODEX_PLUGIN="$PROJECT_ROOT"
 CODEX_SKILL="$CODEX_PLUGIN/skills/wiki"
 
 # Codex copies references into the generated tree because the marketplace cache
@@ -98,7 +98,7 @@ if [ -d "$REFS_DIR" ] && [ ! -L "$REFS_DIR" ]; then
     fi
   done
 else
-  log_fail "Codex references directory invalid" "expected copied files under plugins/zhi-codex/skills/wiki/references"
+  log_fail "Codex references directory invalid" "expected copied files under skills/wiki/references"
 fi
 
 # Codex plugin manifest

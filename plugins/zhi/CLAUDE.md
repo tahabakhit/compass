@@ -37,7 +37,7 @@ git -C ~/.claude/plugins/marketplaces/llm-wiki remote set-url origin https://git
 ./tests/test-plugin-validate.sh   # plugin manifest + command frontmatter
 ./tests/test-structure.sh          # wiki fixture validation (84 assertions)
 ./tests/test-local-cli-lint.sh     # local scripts/llm-wiki lint helper
-./tests/test-codex-sync.sh         # Codex plugin mirror matches Claude source
+./tests/test-codex-sync.sh         # native Codex skill matches Claude source
 ./tests/test-opencode-sync.sh     # OpenCode plugin mirror matches Claude source
 ```
 
@@ -73,7 +73,7 @@ Requires `ANTHROPIC_API_KEY`. Costs ~$2-5 per run.
 - **Changed the fuzzy router**: add or update test cases in `promptfooconfig.yaml` covering the new routing behavior plus negative controls.
 - **Added a new reference file**: `test-plugin-validate.sh` has three `for ref in ...` loops (Claude-side existence, Codex-side copied-reference validation, OpenCode-side symlink reachability) — add the new filename to all three.
 - **Changed directory structure** (new `raw/` or `wiki/` subdirectory): update `test-structure.sh` C1 directory list and C11 placement checks. Update the golden wiki fixture if needed.
-- **Edited `claude-plugin/skills/wiki-manager/`**: both `test-codex-sync.sh` and `test-opencode-sync.sh` will fail until you re-run both sync scripts and commit `plugins/`. Never edit `plugins/zhi-codex/` or `plugins/zhi-opencode/` by hand — they are generated. Codex gets copied references for marketplace caching; OpenCode keeps a symlink into the Claude source.
+- **Edited `claude-plugin/skills/wiki-manager/`**: both `test-codex-sync.sh` and `test-opencode-sync.sh` will fail until you re-run both sync scripts and commit the generated runtime targets. Never edit `skills/wiki/` or `plugins/zhi-opencode/` by hand — they are generated. Codex gets copied references for marketplace caching; OpenCode keeps a symlink into the Claude source.
 - **Added a runtime-specific text rewrite to a sync script**: update the corresponding sync script's SKILL.md replacement list. References are runtime-neutral and shared verbatim — do not add per-file replacements there.
 - **Changed Codex install docs or bootstrap flow**: run `./tests/test-codex-runtime.sh` to verify the bootstrap flow either resolves `@wiki` from a clean scratch Codex home or cleanly reports that `/plugins` still needs to be opened once for first-time materialization.
 
@@ -95,7 +95,7 @@ claude-plugin/                  — source of truth, primary distribution target
     references/*.md             — reference docs (hub-resolution, archive, linting, audit, etc.)
   .claude-plugin/
     plugin.json                 — plugin manifest
-plugins/zhi-codex/               — generated Codex packaging mirror (do NOT hand-edit)
+skills/wiki/                     — generated native Codex skill target (do NOT hand-edit)
   skills/wiki/
     SKILL.md                    — patched copy of claude-plugin SKILL.md
     references/*.md             — copied from claude-plugin/skills/wiki-manager/references
@@ -107,7 +107,7 @@ plugins/zhi-opencode/      — generated OpenCode packaging mirror (do NOT hand-
     references → ../../../../claude-plugin/skills/wiki-manager/references  (symlink)
   README.md                     — OpenCode install instructions
 .agents/plugins/marketplace.json — repo-local Codex marketplace entry
-scripts/sync-codex-plugin.sh    — regenerates plugins/zhi-codex/ from claude-plugin/
+scripts/sync-codex-plugin.sh    — regenerates skills/wiki/ from claude-plugin/
 scripts/sync-opencode-plugin.sh — regenerates plugins/zhi-opencode/ from claude-plugin/
 AGENTS.md                       — portable single-file protocol for non-Claude agents
 tests/                          — test suite (see above)
