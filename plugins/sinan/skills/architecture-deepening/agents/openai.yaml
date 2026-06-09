@@ -1,0 +1,21 @@
+interface:
+  display_name: "Architecture Deepening"
+  short_description: "Find deep refactor opportunities"
+  default_prompt: "Use $architecture-deepening to find deepening opportunities in this codebase."
+policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - architecture deepening
+    - deepening opportunities
+    - shallow modules
+    - deep modules
+    - refactor opportunities
+    - testability friction
+  intents:
+    - architecture
+    - cleanup
+  task_sizes:
+    - full
+    - workflow
+  allow_implicit_invocation: false

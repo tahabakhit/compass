@@ -1,5 +1,5 @@
 {
-  "id": "workspace-setup",
+  "id": "project-scaffold",
   "description": "Inspect and propose project instruction scaffolding.",
   "triggers": [
     "setup workspace",

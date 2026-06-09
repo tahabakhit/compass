@@ -5,8 +5,8 @@
     "cleanup",
     "debug",
     "implement",
+    "project-scaffold",
     "research-audit",
-    "review",
-    "workspace-setup"
+    "review"
   ]
 }

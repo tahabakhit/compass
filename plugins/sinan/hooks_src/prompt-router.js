@@ -93,7 +93,9 @@ function routeHintForPrompt(prompt, platform = "codex") {
       intent: "architecture",
       workflow: "architecture-sweep",
       nativeMode: platform === "claude" ? "claude-plan" : "codex-plan",
-      skills: ["zoom-out", "architecture"],
+      skills: normalized.includes("deepening") || normalized.includes("shallow module")
+        ? ["zoom-out", "architecture-deepening"]
+        : ["zoom-out", "architecture"],
       agents: { count: 1, roles: ["review"] },
       hooks: ["bash-guard"],
       budget: "medium",
@@ -105,8 +107,9 @@ function routeHintForPrompt(prompt, platform = "codex") {
     return baseRoute({
       taskSize: "full",
       intent: "setup",
-      workflow: "workspace-setup",
+      workflow: "project-scaffold",
       nativeMode: platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["project-scaffold"],
       hooks: ["bash-guard"],
       reason: "Workspace setup should inspect and propose before writing.",
     });

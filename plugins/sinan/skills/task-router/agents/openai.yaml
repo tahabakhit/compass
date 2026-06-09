@@ -1,12 +1,13 @@
 interface:
-  display_name: "Sinan"
-  short_description: "Route tasks into the right work shape"
-  default_prompt: "Use $sinan to choose the right workflow and native mode for this task."
+  display_name: "Task Router"
+  short_description: "Classify requests into the right work mode"
+  default_prompt: "Use $task-router to choose the right workflow and native mode for this task."
 policy:
   allow_implicit_invocation: true
 routing:
   triggers:
-    - sinan
+    - task router
+    - use sinan
     - route this
     - choose workflow
     - orchestrate

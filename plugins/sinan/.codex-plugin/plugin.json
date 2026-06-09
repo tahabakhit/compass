@@ -21,6 +21,9 @@
     "longDescription": "Sinan is a Codex-first orchestration plugin that keeps small tasks light, routes broad work into declarative workflows, and bundles a compact hook core for context, prompt routing, Bash safety, and handoff.",
     "developerName": "Sinan",
     "category": "Productivity",
+    "websiteURL": "https://github.com/tahabakhit/ming",
+    "privacyPolicyURL": "https://github.com/tahabakhit/ming",
+    "termsOfServiceURL": "https://github.com/tahabakhit/ming",
     "capabilities": [
       "Read",
       "Write"

@@ -75,7 +75,19 @@ function defaultInput(prompt) {
       hooks: true,
       mcp: true,
     },
-    availableSkills: ["sinan", "grill", "diagnose", "tdd", "review", "zoom-out", "architecture", "handoff", "compress"],
+    availableSkills: [
+      "task-router",
+      "grill",
+      "diagnose",
+      "tdd",
+      "review",
+      "zoom-out",
+      "architecture",
+      "architecture-deepening",
+      "project-scaffold",
+      "handoff",
+      "compress",
+    ],
     availableWorkflows: [
       "clarify",
       "debug",
@@ -84,7 +96,7 @@ function defaultInput(prompt) {
       "research-audit",
       "cleanup",
       "architecture-sweep",
-      "workspace-setup",
+      "project-scaffold",
     ],
   };
 }
@@ -151,9 +163,9 @@ function fallbackRoute(input) {
     return {
       taskSize: "full",
       intent: "setup",
-      workflow: "workspace-setup",
+      workflow: "project-scaffold",
       nativeMode: input.platform === "claude" ? "claude-plan" : "codex-plan",
-      skills: [],
+      skills: ["project-scaffold"],
       agents: { count: 0, roles: [] },
       hooks: ["bash-guard"],
       budget: "small",
@@ -167,7 +179,9 @@ function fallbackRoute(input) {
       intent: "architecture",
       workflow: "architecture-sweep",
       nativeMode: input.platform === "claude" ? "claude-plan" : "codex-plan",
-      skills: ["zoom-out", "architecture"],
+      skills: prompt.includes("deepening") || prompt.includes("shallow module")
+        ? ["zoom-out", "architecture-deepening"]
+        : ["zoom-out", "architecture"],
       agents: { count: 1, roles: ["review"] },
       hooks: ["bash-guard"],
       budget: "medium",

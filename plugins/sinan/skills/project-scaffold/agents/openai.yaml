@@ -1,0 +1,21 @@
+interface:
+  display_name: "Project Scaffold"
+  short_description: "Create AGENTS and CLAUDE guidance"
+  default_prompt: "Use $project-scaffold to set up agent instructions for this repo."
+policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - project scaffold
+    - scaffold instructions
+    - setup workspace
+    - set up instructions
+    - greenfield repo
+    - agents.md
+    - claude.md
+  intents:
+    - setup
+  task_sizes:
+    - full
+    - workflow
+  allow_implicit_invocation: false
