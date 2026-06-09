@@ -46,6 +46,19 @@ function routeHintForPrompt(prompt, platform = "codex") {
     });
   }
 
+  if (/\b(bootstrap|bootstrap this repo|start this repo|new repo|empty repo|resume from handoff|previous handoff|continuation notes)\b/.test(normalized)) {
+    return baseRoute({
+      taskSize: "full",
+      intent: "setup",
+      workflow: "bootstrap",
+      nativeMode: platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["bootstrap"],
+      hooks: ["bash-guard"],
+      budget: "medium",
+      reason: "Bootstrap should inspect repo state and handoffs before choosing startup steps.",
+    });
+  }
+
   if (/\b(brainstorm|think through|shape this idea|product direction|ambiguous|acceptance criteria)\b/.test(normalized)) {
     return baseRoute({
       taskSize: "full",

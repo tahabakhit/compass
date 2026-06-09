@@ -1,0 +1,53 @@
+{
+  "id": "bootstrap",
+  "description": "Inspect repo and prior handoffs, then choose the startup path.",
+  "triggers": [
+    "bootstrap",
+    "start this repo",
+    "new repo",
+    "empty repo",
+    "resume from handoff"
+  ],
+  "mode": {
+    "default": "medium"
+  },
+  "native": {
+    "codex": "plan_mode_required",
+    "claude": "plan_mode_required"
+  },
+  "phases": [
+    {
+      "id": "inspect-repo-state"
+    },
+    {
+      "id": "inspect-handoff-context"
+    },
+    {
+      "id": "classify-startup-state"
+    },
+    {
+      "id": "choose-startup-path"
+    },
+    {
+      "id": "propose-next-steps"
+    },
+    {
+      "id": "wait-for-confirmation"
+    }
+  ],
+  "gates": [
+    "handoff-checked-first",
+    "existing-files-preserved",
+    "app-generation-explicit",
+    "proposal-shown-before-write"
+  ],
+  "budget": {
+    "default_agents": 0,
+    "max_agents": 1,
+    "max_minutes": 30
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

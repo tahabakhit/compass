@@ -7,7 +7,7 @@ description: Use when setting up or refreshing agent-facing repo guidance such a
 
 Use this skill when a repo needs agent-facing instruction and memory surfaces before or during early implementation.
 
-This is not an app generator. Use `bootstrap` for empty-repo technical setup and `$starter` for generating the initial framework/app files.
+This is not an app generator. Use `$bootstrap` for startup sequencing and `$starter` for generating the initial framework/app files.
 
 ## Workflow
 

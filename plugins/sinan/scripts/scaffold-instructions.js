@@ -21,7 +21,7 @@ function agentsBlock() {
 
 Use Sinan as the front door for ambiguous or multi-step work:
 
-1. Use bootstrap language only for empty-repo technical setup such as package manager, CI, lint, test, README, and .gitignore.
+1. Use \`$bootstrap\` as the front door for new or uncertain repos; inspect any pasted handoff, \`HANDOFF.md\`, \`.sinan/runs/\`, or continuation notes before proposing startup work.
 2. Shape the idea with \`$brainstorm\` until users, constraints, workflows, and the first vertical slice are clear.
 3. Capture durable terms in \`GLOSSARY.md\` and durable architecture decisions in \`docs/adr/\` only after confirmation.
 4. Use \`$architecture\` before implementation to choose boundaries, modules, data shape, integrations, and the first vertical slice.

@@ -1,6 +1,7 @@
 {
   "workflows": [
     "architecture-sweep",
+    "bootstrap",
     "clarify",
     "cleanup",
     "debug",

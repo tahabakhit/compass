@@ -1,0 +1,24 @@
+interface:
+  display_name: "Bootstrap"
+  short_description: "Choose startup path for repos"
+  default_prompt: "Use $bootstrap to inspect this repo and choose the startup path."
+policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - bootstrap
+    - bootstrap this repo
+    - start this repo
+    - new repo
+    - empty repo
+    - resume from handoff
+    - previous handoff
+    - continuation notes
+  intents:
+    - setup
+    - clarify
+    - architecture
+  task_sizes:
+    - full
+    - workflow
+  allow_implicit_invocation: false

@@ -88,6 +88,43 @@
       }
     },
     {
+      "id": "bootstrap",
+      "priority": 90,
+      "match": {
+        "anyPromptIncludes": [
+          "bootstrap",
+          "bootstrap this repo",
+          "start this repo",
+          "new repo",
+          "empty repo",
+          "resume from handoff",
+          "previous handoff",
+          "continuation notes"
+        ],
+        "intentHints": [
+          "setup"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "setup",
+        "workflow": "bootstrap",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "bootstrap"
+        ],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "medium",
+        "reason": "Bootstrap should inspect repo state and handoffs before choosing startup steps."
+      }
+    },
+    {
       "id": "pre-implementation-architecture",
       "priority": 86,
       "match": {

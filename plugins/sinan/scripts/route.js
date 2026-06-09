@@ -77,6 +77,7 @@ function defaultInput(prompt) {
     },
     availableSkills: [
       "task-router",
+      "bootstrap",
       "brainstorm",
       "decision-capture",
       "diagnose",
@@ -98,6 +99,7 @@ function defaultInput(prompt) {
       "research-audit",
       "cleanup",
       "architecture-sweep",
+      "bootstrap",
       "scaffold",
       "starter",
     ],
@@ -147,6 +149,20 @@ function applyNativeCapabilities(route, input) {
 
 function fallbackRoute(input) {
   const prompt = normalizePrompt(input.prompt);
+
+  if (/\b(bootstrap|bootstrap this repo|start this repo|new repo|empty repo|resume from handoff|previous handoff|continuation notes)\b/.test(prompt)) {
+    return {
+      taskSize: "full",
+      intent: "setup",
+      workflow: "bootstrap",
+      nativeMode: input.platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["bootstrap"],
+      agents: { count: 0, roles: [] },
+      hooks: ["bash-guard"],
+      budget: "medium",
+      reason: "Bootstrap should inspect repo state and handoffs before choosing startup steps.",
+    };
+  }
 
   if (/\b(review|audit diff|pr feedback)\b/.test(prompt)) {
     return {
