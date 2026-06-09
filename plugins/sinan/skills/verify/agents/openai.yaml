@@ -1,0 +1,5 @@
+interface:
+  display_name: "Verify"
+  short_description: "Use when self-test the Sinan hook pipeline from within a live session. Exercises real tool calls (Write, Edit, Bash, Read) and checks that hooks fired, telemetry accumulated,..."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Fleet"
+  short_description: "Use when parallel campaign orchestrator. Runs multiple campaigns in coordinated waves within a single session. Spawns 2-3 agents per wave in isolated worktrees, collects..."
+policy:
+  allow_implicit_invocation: false

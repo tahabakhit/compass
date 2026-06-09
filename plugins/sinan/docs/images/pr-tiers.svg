@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="350" viewBox="0 0 1200 350">
+  <defs>
+    <linearGradient id="tiers-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="tiers-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d2ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3a7bd5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="350" fill="url(#tiers-bg)"/>
+
+  <!-- Top accent line -->
+  <rect x="40" y="14" width="1120" height="3" rx="1.5" fill="url(#tiers-accent)" opacity="0.6"/>
+
+  <!-- Section title -->
+  <text x="600" y="56" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#00d2ff" opacity="0.9" letter-spacing="4">GRADUATED AUTONOMY</text>
+
+  <!-- Connection line between tiers -->
+  <line x1="140" y1="170" x2="1060" y2="170" stroke="#00d2ff" stroke-width="1" opacity="0.15"/>
+
+  <!-- Tier 1: Blank -->
+  <g transform="translate(140,170)">
+    <rect x="-80" y="-60" width="160" height="120" rx="8" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.2"/>
+    <circle r="24" cy="-10" fill="none" stroke="#00d2ff" stroke-width="1.5" opacity="0.3"/>
+    <text y="-8" text-anchor="middle" font-family="'SF Mono','Cascadia Code',monospace" font-size="16" fill="#00d2ff" opacity="0.4">1</text>
+    <text y="38" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="15" font-weight="600" fill="#ffffff">Blank</text>
+    <text y="56" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8892b0">Scaffold only</text>
+  </g>
+
+  <!-- Tier 2: Guided -->
+  <g transform="translate(370,170)">
+    <rect x="-80" y="-60" width="160" height="120" rx="8" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.35"/>
+    <circle r="24" cy="-10" fill="none" stroke="#00d2ff" stroke-width="1.5" opacity="0.45"/>
+    <text y="-8" text-anchor="middle" font-family="'SF Mono','Cascadia Code',monospace" font-size="16" fill="#00d2ff" opacity="0.55">2</text>
+    <text y="38" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="15" font-weight="600" fill="#ffffff">Guided</text>
+    <text y="56" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8892b0">3 checkpoints</text>
+  </g>
+
+  <!-- Tier 3: Templated -->
+  <g transform="translate(600,170)">
+    <rect x="-80" y="-60" width="160" height="120" rx="8" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.5"/>
+    <circle r="24" cy="-10" fill="none" stroke="#00d2ff" stroke-width="1.5" opacity="0.6"/>
+    <text y="-8" text-anchor="middle" font-family="'SF Mono','Cascadia Code',monospace" font-size="16" fill="#00d2ff" opacity="0.7">3</text>
+    <text y="38" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="15" font-weight="600" fill="#ffffff">Templated</text>
+    <text y="56" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8892b0">Known app types</text>
+  </g>
+
+  <!-- Tier 4: Generated -->
+  <g transform="translate(830,170)">
+    <rect x="-80" y="-60" width="160" height="120" rx="8" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.7"/>
+    <circle r="24" cy="-10" fill="none" stroke="#00d2ff" stroke-width="1.5" opacity="0.8"/>
+    <text y="-8" text-anchor="middle" font-family="'SF Mono','Cascadia Code',monospace" font-size="16" fill="#00d2ff" opacity="0.85">4</text>
+    <text y="38" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="15" font-weight="600" fill="#ffffff">Generated</text>
+    <text y="56" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8892b0">Full autonomy</text>
+  </g>
+
+  <!-- Tier 5: Feature -->
+  <g transform="translate(1060,170)">
+    <rect x="-80" y="-60" width="160" height="120" rx="8" fill="none" stroke="#00d2ff" stroke-width="1.5" opacity="0.9"/>
+    <circle r="24" cy="-10" fill="none" stroke="#00d2ff" stroke-width="1.5" opacity="1"/>
+    <text y="-8" text-anchor="middle" font-family="'SF Mono','Cascadia Code',monospace" font-size="16" fill="#00d2ff" opacity="1">5</text>
+    <text y="38" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="15" font-weight="600" fill="#ffffff">Feature</text>
+    <text y="56" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8892b0">Existing codebase</text>
+  </g>
+
+  <!-- Bottom label: autonomy arrow -->
+  <text x="140" y="310" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8892b0" opacity="0.6">manual</text>
+  <line x1="200" y1="306" x2="1000" y2="306" stroke="#00d2ff" stroke-width="1" opacity="0.2"/>
+  <polygon points="1000,302 1010,306 1000,310" fill="#00d2ff" opacity="0.3"/>
+  <text x="1060" y="310" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8892b0" opacity="0.6">autonomous</text>
+
+  <!-- Bottom accent line -->
+  <rect x="40" y="333" width="1120" height="3" rx="1.5" fill="url(#tiers-accent)" opacity="0.4"/>
+</svg>

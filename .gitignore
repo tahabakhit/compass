@@ -1,0 +1,16 @@
+# OS/editor noise
+.DS_Store
+Thumbs.db
+
+# Local-only secrets/config
+.env
+.env.local
+.env.*.local
+
+# Dependency and runtime caches
+node_modules/
+npm-debug.log*
+.plugin-eval/
+
+# Temporary migration backups. The real backup was moved outside this repo.
+.nested-git-backup/

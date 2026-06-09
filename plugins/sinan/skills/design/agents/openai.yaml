@@ -1,0 +1,5 @@
+interface:
+  display_name: "Design"
+  short_description: "Use when generates and maintains a design manifest for visual consistency. In existing projects, reads current styles and documents the design language. In new projects, asks a..."
+policy:
+  allow_implicit_invocation: false

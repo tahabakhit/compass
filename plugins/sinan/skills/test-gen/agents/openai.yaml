@@ -1,0 +1,5 @@
+interface:
+  display_name: "Test Gen"
+  short_description: "Use when generate and verify tests — happy path, edge cases, error paths — using the project's own framework and patterns"
+policy:
+  allow_implicit_invocation: false

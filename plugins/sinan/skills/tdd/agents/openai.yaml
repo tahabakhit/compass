@@ -1,0 +1,5 @@
+interface:
+  display_name: "Tdd"
+  short_description: "Use when strict red-green-refactor workflow for behavior changes. Use when the user asks for TDD, tests first, regression fixes, or any change where behavior should be locked..."
+policy:
+  allow_implicit_invocation: false

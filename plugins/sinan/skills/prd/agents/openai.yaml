@@ -1,0 +1,5 @@
+interface:
+  display_name: "Prd"
+  short_description: "Use when generates a Product Requirements Document from a natural language app description. Asks clarifying questions, researches similar apps, defines scope, stack,..."
+policy:
+  allow_implicit_invocation: false

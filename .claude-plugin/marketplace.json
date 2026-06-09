@@ -1,0 +1,31 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ming",
+  "version": "0.1.0",
+  "description": "Local plugin marketplace for Sinan and Zhi.",
+  "owner": {
+    "name": "tahabakhit"
+  },
+  "plugins": [
+    {
+      "name": "sinan",
+      "description": "Cross-project Codex and Claude Code harness for durable planning, proportional routing, hooks, telemetry, and explicit specialist skills.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Sinan"
+      },
+      "source": "./plugins/sinan",
+      "category": "developer-tools"
+    },
+    {
+      "name": "zhi",
+      "description": "Paper-inspired knowledge-base plugin. Commands remain /wiki and /wiki:* for compatibility while the install identity is Zhi.",
+      "version": "0.10.3",
+      "author": {
+        "name": "nvk + tahabakhit"
+      },
+      "source": "./plugins/zhi/claude-plugin",
+      "category": "productivity"
+    }
+  ]
+}

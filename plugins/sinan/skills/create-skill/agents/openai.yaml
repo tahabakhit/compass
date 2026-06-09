@@ -1,0 +1,5 @@
+interface:
+  display_name: "Create Skill"
+  short_description: "Use when creates new skills from the user's repeating patterns. Interview-driven: discovers the task, analyzes failure modes, generates a production SKILL.md, installs it,..."
+policy:
+  allow_implicit_invocation: false

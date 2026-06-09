@@ -1,0 +1,5 @@
+interface:
+  display_name: "Houseclean"
+  short_description: "Use when cross-drive storage audit and cleanup. Surveys all drives, finds orphaned git worktrees, large AI tool caches (.ollama, .gemini, .cursor, npm, pip), and buildable..."
+policy:
+  allow_implicit_invocation: false

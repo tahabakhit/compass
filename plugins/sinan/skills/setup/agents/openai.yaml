@@ -1,0 +1,5 @@
+interface:
+  display_name: "Setup"
+  short_description: "Use when first-run experience for the harness. Three modes: Recommended (guided, ~3 min), Full Tour (guided + skill walkthrough, ~8 min), and Express (zero questions, ~30 sec)...."
+policy:
+  allow_implicit_invocation: false

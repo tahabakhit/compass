@@ -1,0 +1,29 @@
+{
+  "name": "zhi",
+  "description": "Zhi knowledge-base plugin for Claude Code. Builds topic-scoped wikis with multi-hub routing, source ingestion, inventory, audit, query, and lint workflows.",
+  "version": "0.10.3",
+  "author": {
+    "name": "nvk + tahabakhit"
+  },
+  "license": "MIT",
+  "keywords": [
+    "zhi",
+    "paper",
+    "wiki",
+    "knowledge-base",
+    "llm",
+    "markdown",
+    "research",
+    "thesis",
+    "obsidian",
+    "multi-hub",
+    "router",
+    "scaffold",
+    "audit",
+    "librarian",
+    "collect",
+    "inventory",
+    "datasets",
+    "archive"
+  ]
+}

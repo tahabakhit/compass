@@ -1,0 +1,5 @@
+interface:
+  display_name: "Learn"
+  short_description: "Use when knowledge compiler. Extracts patterns, decisions, and anti-patterns from completed campaigns and evolve cycles, then compiles them into structured wiki pages that..."
+policy:
+  allow_implicit_invocation: false

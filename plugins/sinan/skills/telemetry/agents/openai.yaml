@@ -1,0 +1,5 @@
+interface:
+  display_name: "Telemetry"
+  short_description: "Use when unified telemetry hub. Shows current session cost, today's spend, all-time totals, hook activity, trust level, and a directory of every telemetry command available...."
+policy:
+  allow_implicit_invocation: false

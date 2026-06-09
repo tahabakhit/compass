@@ -1,0 +1,5 @@
+interface:
+  display_name: "Doc Gen"
+  short_description: "Use when documentation generator with three modes: function-level (JSDoc/docstrings), module-level (directory READMEs), and API reference (endpoints/exports). Reads existing..."
+policy:
+  allow_implicit_invocation: false

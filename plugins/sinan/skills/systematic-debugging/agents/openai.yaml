@@ -1,0 +1,5 @@
+interface:
+  display_name: "Systematic Debugging"
+  short_description: "Use when 4-phase root cause analysis: observe, hypothesize, verify, fix. Enforces investigation before any code changes. Emergency stop after 2 failed fixes. Prevents shotgun..."
+policy:
+  allow_implicit_invocation: false

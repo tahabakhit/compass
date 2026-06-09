@@ -1,0 +1,5 @@
+interface:
+  display_name: "Pr Watch"
+  short_description: "Use when local PR watcher. Monitors CI status, automatically fixes failing checks by reading failure logs and applying targeted fixes, then optionally merges when all checks..."
+policy:
+  allow_implicit_invocation: false

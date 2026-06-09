@@ -1,0 +1,38 @@
+{
+  "name": "ming",
+  "interface": {
+    "displayName": "Ming"
+  },
+  "plugins": [
+    {
+      "name": "sinan",
+      "source": {
+        "source": "local",
+        "path": "./plugins/sinan"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools",
+      "interface": {
+        "displayName": "Sinan"
+      }
+    },
+    {
+      "name": "zhi",
+      "source": {
+        "source": "local",
+        "path": "./plugins/zhi/plugins/zhi-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity",
+      "interface": {
+        "displayName": "Zhi"
+      }
+    }
+  ]
+}

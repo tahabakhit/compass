@@ -1,0 +1,5 @@
+interface:
+  display_name: "Context Snapshot"
+  short_description: "Use when generate or inspect Sinan's repo-local context snapshot: changed files, recent commits, cross-session changes, blast radius, and known-issues memory."
+policy:
+  allow_implicit_invocation: false

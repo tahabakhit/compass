@@ -1,0 +1,5 @@
+interface:
+  display_name: "Dashboard"
+  short_description: "Use when real-time harness observability dashboard. Reads campaigns, fleet sessions, telemetry, and pending queues to present a snapshot of harness state at a glance. Invoked..."
+policy:
+  allow_implicit_invocation: false

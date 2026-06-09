@@ -1,0 +1,2837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sinan · Claude Code Agent Harness</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #21262d;
+      --border: #3d444d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --dim: #4a5568;
+      --cyan: #00d2ff;
+      --blue: #58a6ff;
+      --green: #3fb950;
+      --orange: #f0883e;
+      --purple: #bc8cff;
+      --red: #ff7b72;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Hide scrollbar everywhere */
+    html { scrollbar-width: none; background: var(--bg); }
+    ::-webkit-scrollbar { display: none; }
+
+    #bg-dots { position: fixed; inset: 0; z-index: -1; pointer-events: none; width: 100%; height: 100%; }
+
+    body {
+      background: transparent;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /* No blinking cursor when clicking background */
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Restore selection where needed */
+    input, textarea, [contenteditable], .panel-body, .how-card-desc, .output-desc {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    *:focus { outline: none; }
+    *:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 4px; }
+
+    /* ─── Nav ─── */
+    nav {
+      width: 100%;
+      border-bottom: 1px solid color-mix(in srgb, var(--cyan) 18%, var(--border));
+      padding: 13px 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(13,17,23,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-size: 15px; font-weight: 800; color: var(--text);
+      letter-spacing: 4px; text-decoration: none;
+      background: linear-gradient(90deg, var(--cyan) 0%, #7eb8ff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-sep { color: var(--border); }
+    .nav-link {
+      font-size: 13px; color: var(--muted); text-decoration: none;
+      transition: color 0.15s; background: none; border: none;
+      cursor: pointer; padding: 0; font-family: inherit;
+    }
+    .nav-link:hover { color: var(--text); }
+    .nav-link.panel-active { color: var(--cyan); }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .nav-badge {
+      font-size: 11px; padding: 3px 10px; border-radius: 20px;
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    .nav-star {
+      font-size: 12px; padding: 4px 12px; border-radius: 6px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--text); text-decoration: none;
+      transition: border-color 0.15s;
+    }
+    .nav-star:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ─── Hero ─── */
+    .hero {
+      text-align: center;
+      padding: 64px 40px 20px;
+      max-width: 820px;
+      width: 100%;
+      transition: padding 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; letter-spacing: 3px; color: var(--cyan);
+      text-transform: uppercase; margin-bottom: 20px;
+      padding: 5px 14px; border: 1px solid color-mix(in srgb, var(--cyan) 30%, transparent);
+      border-radius: 20px; background: color-mix(in srgb, var(--cyan) 5%, transparent);
+      max-height: 60px; overflow: hidden;
+      transition: max-height 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.35s ease, margin-bottom 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes aurora-shift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .hero h1 {
+      font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 16px;
+      background: linear-gradient(135deg, #e6edf3 0%, #00d2ff 40%, #7eb8ff 65%, #e6edf3 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: aurora-shift 8s ease infinite;
+      max-height: 200px; overflow: hidden;
+      transition: font-size 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                  margin-bottom 0.5s ease,
+                  max-height 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.35s ease;
+    }
+    .hero p {
+      font-size: 17px; color: var(--muted); line-height: 1.7;
+      max-width: 580px; margin: 0 auto;
+      max-height: 120px; overflow: hidden;
+      transition: max-height 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+    }
+
+    /* ─── Search bar ─── */
+    .search-wrap {
+      width: 100%; max-width: 860px;
+      padding: 36px 32px 0;
+      margin: 0 auto;
+      transition: padding-top 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .search-bar {
+      position: relative;
+      filter: drop-shadow(0 8px 32px color-mix(in srgb, var(--cyan) 8%, transparent));
+    }
+
+    .search-prompt {
+      position: absolute; left: 26px; top: 50%; transform: translateY(-50%);
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 18px; color: var(--cyan);
+      pointer-events: none; font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    #cmd-input {
+      width: 100%;
+      padding: 22px 240px 22px 72px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 40px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 17px; color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      user-select: text; -webkit-user-select: text;
+    }
+    #cmd-input:focus {
+      border-color: var(--cyan);
+      background: color-mix(in srgb, var(--cyan) 2%, var(--surface));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--cyan) 12%, transparent),
+                  0 4px 24px color-mix(in srgb, var(--cyan) 8%, transparent);
+    }
+    #cmd-input::placeholder { color: var(--dim); }
+
+    .search-actions {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .live-badge {
+      font-size: 11px; padding: 5px 13px; border-radius: 20px;
+      background: transparent; border: 1px solid transparent;
+      color: var(--muted); transition: all 0.2s; white-space: nowrap;
+      font-family: 'SF Mono', monospace;
+    }
+    .live-badge.active { border-color: currentColor; }
+
+    .enter-key {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--muted); font-size: 13px; cursor: pointer;
+      transition: all 0.15s; flex-shrink: 0;
+    }
+    .enter-key:hover { border-color: var(--cyan); color: var(--cyan); }
+    .enter-key.lit {
+      background: color-mix(in srgb, var(--cyan) 15%, var(--surface-2));
+      border-color: var(--cyan); color: var(--cyan);
+    }
+
+    .search-hint {
+      font-size: 11px; color: var(--dim); margin-top: 12px;
+      font-family: 'SF Mono', monospace; text-align: center;
+    }
+    .search-hint kbd {
+      display: inline-block; padding: 1px 6px; border-radius: 4px;
+      border: 1px solid var(--border); background: var(--surface);
+      font-size: 10px; color: var(--muted);
+    }
+
+    /* ─── Cinematic scroll layout ─── */
+    #page-wrap {
+      flex: 1; min-height: 0; width: 100%; overflow: hidden; position: relative;
+    }
+    #screens-inner {
+      position: absolute; top: 0; left: 0; right: 0;
+      will-change: transform;
+    }
+    #screen-1 {
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      overflow: hidden; width: 100%;
+    }
+
+    /* ─── Playground ─── */
+    .playground { width: 100%; max-width: 1100px; padding: 0 32px 8px; }
+
+    /* ─── Generator buttons ─── */
+    .generators {
+      display: flex; gap: 12px;
+      margin-top: 28px; margin-bottom: 32px;
+      max-height: 200px; overflow: hidden;
+      transition: max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.45s ease, margin-top 0.55s ease, margin-bottom 0.55s ease;
+    }
+    .gen-btn {
+      flex: 1; padding: 18px 20px;
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      border-radius: 12px; cursor: pointer;
+      text-align: left; position: relative; overflow: hidden;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.1s;
+    }
+    .gen-btn::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--gc); opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .gen-btn:hover {
+      border-color: var(--gc);
+      background: color-mix(in srgb, var(--gc) 6%, var(--surface-2));
+      box-shadow: 0 0 22px color-mix(in srgb, var(--gc) 10%, transparent);
+    }
+    .gen-btn:hover::before { opacity: 1; }
+    .gen-btn:active { transform: translateY(1px); }
+    .gen-btn.busy { opacity: 0.6; pointer-events: none; }
+    .gen-icon {
+      font-size: 17px; display: block; margin-bottom: 10px;
+      color: var(--gc);
+    }
+    .gen-name {
+      font-size: 12px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--text); margin-bottom: 4px;
+    }
+    .gen-meta {
+      font-size: 11px; color: var(--dim);
+      font-family: 'SF Mono', monospace;
+    }
+    .gen-desc {
+      font-size: 11px; color: var(--muted); margin-top: 5px;
+      line-height: 1.4; font-style: italic;
+    }
+    .gen-again {
+      font-size: 10px; color: var(--gc); opacity: 0;
+      margin-top: 7px; font-family: 'SF Mono', monospace;
+      transition: opacity 0.2s;
+    }
+    .gen-btn:hover .gen-again { opacity: 0.65; }
+    @media (max-width: 760px) {
+      .generators { flex-wrap: wrap; }
+      .gen-btn { flex: calc(50% - 6px); min-width: 0; }
+    }
+
+    /* ─── Result panel — folds out downward from search bar ─── */
+    .result-panel {
+      display: none;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      clip-path: inset(0 0 100% 0 round 14px);
+      opacity: 0;
+      transition: clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.3s ease;
+    }
+    .result-panel.visible {
+      clip-path: inset(0 0 0% 0 round 14px);
+      opacity: 1;
+      margin-top: 20px;
+    }
+
+    .result-header {
+      padding: 16px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface-2);
+    }
+    .result-command {
+      font-family: 'SF Mono', monospace; font-size: 15px; color: var(--blue);
+    }
+    .result-meta { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .result-timer {
+      font-size: 11px; color: var(--dim); font-family: 'SF Mono', monospace;
+    }
+
+    /* ─── Tier cascade ─── */
+    .tier-cascade { padding: 20px 24px 8px; display: flex; flex-direction: row; gap: 8px; align-items: stretch; }
+
+    .tier-row {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-width: 0;
+      padding: 14px 14px 12px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-2);
+      opacity: 0.28;
+      position: relative; overflow: hidden;
+      transition: opacity 0.3s, border-color 0.3s, background 0.3s, box-shadow 0.3s, transform 0.2s;
+    }
+    .tier-row::after {
+      content: ''; position: absolute; left: 0; top: -120px;
+      width: 100%; height: 120px;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,0.08), transparent);
+      transform: translateY(0); opacity: 0;
+      transition: none;
+    }
+    .tier-row.checking::after {
+      opacity: 1;
+      animation: tier-scan 0.9s linear infinite;
+    }
+    @keyframes tier-scan {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(calc(100% + 120px + 100%)); }
+    }
+    .tier-row.checking { opacity: 0.7; }
+    .tier-row.matched {
+      opacity: 1;
+      border-color: var(--match-color);
+      background: color-mix(in srgb, var(--match-color) 9%, var(--surface-2));
+      box-shadow: 0 0 40px color-mix(in srgb, var(--match-color) 22%, transparent),
+                  0 0 0 1px color-mix(in srgb, var(--match-color) 30%, transparent);
+      animation: tier-match-pulse 0.5s ease-out;
+    }
+    @keyframes tier-match-pulse {
+      0%   { transform: scale(1.015); }
+      100% { transform: scale(1); }
+    }
+    .tier-row.skipped {
+      opacity: 0.22;
+      text-decoration-color: transparent;
+    }
+    .tier-row.skipped .tier-name::after {
+      content: ''; display: inline-block; vertical-align: middle;
+      width: 40px; height: 1px; background: var(--muted);
+      margin-left: 10px; opacity: 0.5;
+    }
+
+    .tier-left { display: flex; flex-direction: row; align-items: center; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
+    .tier-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+      border: 1.5px solid currentColor; text-align: center; flex-shrink: 0;
+    }
+    .tier-sub { font-size: 10px; color: var(--dim); letter-spacing: 0.5px; }
+
+    .tier-center { flex: 1; min-width: 0; }
+    .tier-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .tier-desc {
+      font-size: 11px; color: var(--muted); line-height: 1.5;
+      max-height: 44px; overflow: hidden;
+      transition: max-height 0.45s ease, opacity 0.35s ease;
+    }
+
+    .tier-status {
+      font-size: 10px; font-weight: 600; white-space: normal;
+      text-align: left; min-width: 0; margin-top: auto; padding-top: 10px;
+    }
+
+    /* ─── Classification panel (Tier 3) ─── */
+    .classification {
+      margin: 0 24px 16px;
+      padding: 20px 24px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--orange) 5%, var(--surface));
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px 28px;
+    }
+    @keyframes cl-reveal {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .classification.visible { display: grid; animation: cl-reveal 0.4s ease forwards; }
+    .classification.purple-theme {
+      background: color-mix(in srgb, var(--purple) 5%, var(--surface));
+    }
+    .cl-dim { display: flex; flex-direction: column; gap: 5px; }
+    .cl-label {
+      font-size: 10px; letter-spacing: 2px; color: var(--dim);
+      text-transform: uppercase; font-family: 'SF Mono', monospace;
+    }
+    .cl-value {
+      font-size: 15px; font-weight: 700; color: var(--text);
+      font-family: 'SF Mono', monospace;
+    }
+    .cl-value.accent { color: var(--orange); }
+    .cl-value.accent-purple { color: var(--purple); }
+    .cl-dots { display: flex; gap: 4px; margin-top: 2px; }
+    .cl-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); }
+    .cl-dot.on { background: var(--orange); }
+    .cl-dot.on-purple { background: var(--purple); }
+
+    /* ─── Output section ─── */
+    .output-section {
+      border-top: 1.5px solid var(--border);
+      padding: 24px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.45s, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s;
+    }
+    .output-section.visible { opacity: 1; transform: translateY(0); }
+
+    .output-inner {
+      display: flex; align-items: flex-start; gap: 28px;
+      padding: 28px 32px; border-radius: 12px;
+      border: 1.5px solid var(--border); background: var(--surface-2);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .output-icon { font-size: 52px; line-height: 1; flex-shrink: 0; }
+    .output-tool { flex: 1; min-width: 0; }
+    .output-name {
+      font-size: 32px; font-weight: 700;
+      font-family: 'SF Mono', monospace; margin-bottom: 10px;
+    }
+    .output-desc { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+    .output-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .meta-badge {
+      font-size: 12px; padding: 5px 14px; border-radius: 20px;
+      background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+    }
+    .meta-badge.hi {
+      border-color: var(--match-color); color: var(--match-color);
+      background: color-mix(in srgb, var(--match-color) 8%, var(--bg));
+    }
+
+    /* ─── Route history ─── */
+    .history-section { padding: 4px 24px 20px; display: none; }
+    .history-section.visible { display: block; }
+    .history-label {
+      font-size: 10px; letter-spacing: 2px; color: var(--dim);
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .history-items { display: flex; flex-wrap: wrap; gap: 6px; }
+    .history-pill {
+      font-size: 12px; padding: 5px 12px 5px 10px; border-radius: 20px;
+      border: 1px solid var(--border); color: var(--muted);
+      background: var(--bg); cursor: pointer; font-family: 'SF Mono', monospace;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      max-width: 240px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+      border-left: 3px solid var(--pill-color, var(--border));
+    }
+    .history-pill:hover {
+      border-color: var(--pill-color, var(--cyan));
+      border-left-color: var(--pill-color, var(--cyan));
+      color: var(--text);
+      background: color-mix(in srgb, var(--pill-color, var(--cyan)) 6%, var(--bg));
+    }
+
+    /* ─── Card visualizations ─── */
+    .card-vis {
+      margin: -28px -28px 20px -28px; padding: 14px 20px 14px 24px;
+      background: color-mix(in srgb, var(--card-color, var(--border)) 6%, var(--surface-2));
+      border-bottom: 1px solid color-mix(in srgb, var(--card-color, var(--border)) 20%, var(--border));
+      font-family: 'SF Mono', 'Cascadia Code', monospace; font-size: 11px;
+      overflow: hidden; position: relative; height: 78px;
+      display: flex; flex-direction: column; justify-content: center; gap: 6px;
+    }
+
+    /* Tier 0 — scanning regex highlight */
+    .t0-code { color: var(--dim); }
+    @keyframes t0-scan {
+      0%,15%  { background: transparent; color: var(--dim); border-radius: 3px; }
+      25%,65% { background: color-mix(in srgb, var(--green) 22%, transparent); color: var(--green); border-radius: 3px; }
+      75%,100%{ background: transparent; color: var(--dim); border-radius: 3px; }
+    }
+    .t0-word { padding: 1px 3px; animation: t0-scan 3.2s ease-in-out infinite; }
+    .t0-tag  { font-size: 10px; color: var(--green); opacity: 0.7; letter-spacing: 1px; }
+
+    /* Tier 2 — keyword lookup table cycling */
+    .t2-table { display: flex; flex-direction: column; gap: 2px; }
+    .t2-row {
+      padding: 2px 6px; border-radius: 4px; color: var(--dim);
+      display: flex; justify-content: space-between;
+    }
+    .t2-row span { color: var(--cyan); opacity: 0.5; }
+    @keyframes t2-on {
+      0%,5%   { background: color-mix(in srgb, var(--cyan) 14%, transparent); color: var(--text); }
+      0%,5%   { }
+      0%,5%   { }
+    }
+    @keyframes t2-on {
+      0%,8%   { background: color-mix(in srgb, var(--cyan) 14%, transparent); color: var(--text); }
+      22%,100%{ background: transparent; color: var(--dim); }
+    }
+    .t2-r1 { animation: t2-on 4.5s ease-in-out 0s infinite; }
+    .t2-r2 { animation: t2-on 4.5s ease-in-out 1.5s infinite; }
+    .t2-r3 { animation: t2-on 4.5s ease-in-out 3s infinite; }
+    .t2-r1 span, .t2-r2 span, .t2-r3 span { transition: opacity 0.3s; }
+
+    /* Tier 3 — classification chips appearing */
+    .t3-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+    .t3-chip {
+      font-size: 10px; padding: 2px 8px; border-radius: 20px;
+      border: 1px solid color-mix(in srgb, var(--orange) 35%, transparent);
+      color: var(--orange); opacity: 0;
+      animation: t3-chip-in 5.5s ease-in-out infinite;
+    }
+    @keyframes t3-chip-in {
+      0%,5%   { opacity: 0; transform: translateY(3px); }
+      15%,65% { opacity: 1; transform: translateY(0); }
+      80%,100%{ opacity: 0; transform: translateY(0); }
+    }
+    .t3-c1 { animation-delay: 0s; }
+    .t3-c2 { animation-delay: 0.15s; }
+    .t3-c3 { animation-delay: 0.3s; }
+    .t3-c4 { animation-delay: 0.45s; }
+    .t3-c5 { animation-delay: 0.6s; }
+    .t3-c6 { animation-delay: 0.75s; }
+    .t3-route { font-size: 10px; color: var(--orange); opacity: 0.65; letter-spacing: 1px; margin-top: 2px; }
+
+    /* Fleet — parallel progress tracks */
+    .tf-tracks { display: flex; flex-direction: column; gap: 5px; }
+    .tf-track { display: flex; align-items: center; gap: 8px; }
+    .tf-label { font-size: 10px; color: var(--dim); min-width: 80px; }
+    .tf-bar { flex: 1; height: 3px; background: color-mix(in srgb, var(--purple) 18%, transparent); border-radius: 2px; overflow: hidden; }
+    .tf-fill { height: 100%; background: var(--purple); border-radius: 2px; width: 0%; }
+    @keyframes tf-run {
+      0%     { width: 0%; }
+      55%,72%{ width: 100%; }
+      82%,100%{ width: 0%; }
+    }
+    .tf-f1 { animation: tf-run 3.8s ease-in-out 0s infinite; }
+    .tf-f2 { animation: tf-run 3.8s ease-in-out 0.18s infinite; }
+    .tf-f3 { animation: tf-run 3.8s ease-in-out 0.36s infinite; }
+    .tf-merge { font-size: 10px; color: var(--purple); opacity: 0.65; letter-spacing: 1px; margin-top: 2px; }
+
+    /* ─── Screen-2 up-arrow ─── */
+    .up-cue {
+      display: block; margin: 0 auto 0; padding: 16px 0 0;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); opacity: 0.4;
+      transition: opacity 0.2s, color 0.15s;
+    }
+    .up-cue:hover { opacity: 0.9; color: var(--cyan); }
+
+    /* ─── Stats bar ─── */
+    .stat-bar {
+      width: 100%; max-width: 1100px;
+      margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat {
+      text-align: center; padding: 28px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-size: 32px; font-weight: 800; color: var(--cyan);
+      font-family: 'SF Mono', monospace; line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+    /* ─── How it works section ─── */
+    .how-section {
+      width: 100%; max-width: 1100px;
+      padding: 40px 32px 52px;
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+    .how-card {
+      padding: 28px; border-radius: 14px;
+      border: 1.5px solid color-mix(in srgb, var(--card-color, var(--border)) 30%, var(--border));
+      background: var(--surface);
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .how-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: var(--card-color, var(--border));
+      opacity: 0.7;
+    }
+    .how-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top left, color-mix(in srgb, var(--card-color, transparent) 6%, transparent) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .how-card:hover {
+      border-color: color-mix(in srgb, var(--card-color, var(--cyan)) 60%, var(--border));
+      box-shadow: 0 0 32px color-mix(in srgb, var(--card-color, var(--cyan)) 12%, transparent);
+    }
+    .how-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-left: 8px; }
+    .how-tier-badge {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      padding: 5px 12px; border-radius: 6px; border: 1.5px solid currentColor;
+    }
+    .how-card-name { font-size: 16px; font-weight: 700; }
+    .how-card-sub { font-size: 12px; color: var(--dim); margin-top: 2px; }
+    .how-card-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; padding-left: 8px; }
+    .how-examples { display: flex; flex-direction: column; gap: 5px; padding-left: 8px; }
+    .how-example {
+      font-size: 12px; font-family: 'SF Mono', monospace;
+      color: var(--dim); padding: 6px 10px; border-radius: 6px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .how-example:hover {
+      border-color: var(--ex-color, var(--cyan)); color: var(--text);
+      background: color-mix(in srgb, var(--ex-color, var(--cyan)) 5%, var(--surface-2));
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      width: 100%; border-top: 1px solid var(--border);
+      padding: 20px 40px; display: flex; align-items: center;
+      justify-content: space-between; color: var(--muted); font-size: 13px;
+    }
+    footer a { color: var(--muted); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--muted) 35%, transparent); }
+    footer a:hover { color: var(--text); border-bottom-color: var(--text); }
+
+    /* ─── Spinner ─── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 13px; height: 13px; border: 2px solid var(--border);
+      border-top-color: var(--cyan); border-radius: 50%;
+      animation: spin 0.55s linear infinite; display: none; flex-shrink: 0;
+    }
+    .spinner.active { display: inline-block; }
+
+    /* ─── Side panels ─── */
+    .panel-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      z-index: 200; opacity: 0; pointer-events: none;
+      transition: opacity 0.25s; backdrop-filter: blur(2px);
+    }
+    .panel-backdrop.open { opacity: 1; pointer-events: all; }
+    .side-panel {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: 480px; max-width: 92vw;
+      background: var(--surface); border-left: 1px solid var(--border);
+      z-index: 201; display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      overflow: hidden;
+    }
+    .side-panel.open { transform: translateX(0); }
+    .panel-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 18px 24px; border-bottom: 1px solid var(--border);
+      background: var(--surface-2); flex-shrink: 0;
+    }
+    .panel-title {
+      font-size: 13px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--text); flex: 1;
+    }
+    .panel-close {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .panel-close:hover { border-color: var(--text); color: var(--text); }
+    .panel-body {
+      flex: 1; overflow-y: auto; padding: 28px 24px;
+      scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+      user-select: text; -webkit-user-select: text;
+    }
+    .panel-step { display: flex; gap: 16px; margin-bottom: 28px; }
+    .panel-step-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); color: var(--cyan);
+      font-size: 12px; font-weight: 700; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+    }
+    .panel-step-body { flex: 1; min-width: 0; }
+    .panel-step-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .panel-code {
+      font-family: 'SF Mono', monospace; font-size: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; color: var(--cyan);
+      margin-bottom: 6px; word-break: break-all;
+    }
+    .panel-note { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .panel-section-label {
+      font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 10px; margin-top: 24px;
+    }
+    .panel-section-label:first-child { margin-top: 0; }
+    .skill-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
+    .skill-row {
+      display: flex; gap: 10px; align-items: baseline;
+      padding: 7px 10px; border-radius: 6px;
+      border: 1px solid transparent; transition: border-color 0.12s, background 0.12s;
+    }
+    .skill-row:hover { border-color: var(--border); background: var(--surface-2); }
+    .skill-name {
+      font-family: 'SF Mono', monospace; font-size: 12px;
+      color: var(--cyan); white-space: nowrap; min-width: 140px;
+    }
+    .skill-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .hook-table { width: 100%; border-collapse: collapse; }
+    .hook-table th {
+      text-align: left; font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--dim); padding: 0 8px 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .hook-table td {
+      padding: 9px 8px 9px 0; font-size: 12px;
+      border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+      vertical-align: top;
+    }
+    .hook-event { font-family: 'SF Mono', monospace; color: var(--blue); white-space: nowrap; }
+    .hook-desc { color: var(--muted); line-height: 1.5; }
+    .campaign-block {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 12px;
+    }
+    .campaign-block-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+    .campaign-block-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .campaign-block-body code {
+      font-family: 'SF Mono', monospace; color: var(--cyan);
+      background: var(--bg); padding: 1px 5px; border-radius: 3px; font-size: 11px;
+    }
+
+    /* ─── Mode: result — hero compresses, generators fold, tiers collapse ─── */
+    body.mode-result .hero {
+      padding: 10px 40px 4px;
+    }
+    body.mode-result .hero-eyebrow {
+      max-height: 0; opacity: 0; margin-bottom: 0;
+    }
+    body.mode-result .hero h1 {
+      max-height: 0; opacity: 0; margin-bottom: 0; overflow: hidden;
+    }
+    body.mode-result .hero h1 br,
+    body.mode-result .hero h1 .h1-sub {
+      display: none;
+    }
+    body.mode-result .hero p {
+      max-height: 0; opacity: 0;
+    }
+    body.mode-result .search-wrap {
+      padding-top: 14px;
+    }
+    body.mode-result .search-hint {
+      display: none;
+    }
+    body.mode-result .generators {
+      max-height: 0; opacity: 0; margin-top: 0; margin-bottom: 0;
+    }
+    body.mode-result .playground {
+      padding-bottom: 20px;
+    }
+    body.mode-result .tier-row.skipped {
+      padding-top: 8px; padding-bottom: 8px; opacity: 0.1;
+    }
+    body.mode-result .tier-row.skipped .tier-desc {
+      max-height: 0; opacity: 0;
+    }
+    body.mode-result .tier-row.skipped .tier-sub {
+      opacity: 0;
+    }
+    body.mode-result .stat-bar,
+    body.mode-result .how-section,
+    body.mode-result footer {
+      display: none;
+    }
+    body.mode-result .screen-2 { display: none; }
+    body.mode-result .scroll-cue { opacity: 0 !important; pointer-events: none; }
+    body.mode-result #screen-1 {
+      overflow-y: auto; justify-content: flex-start;
+      scrollbar-width: none;
+    }
+    body.mode-result #screen-1::-webkit-scrollbar { display: none; }
+
+    /* ─── Scroll cue ─── */
+    .scroll-cue {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      background: none; border: none; cursor: pointer;
+      color: var(--muted);
+      display: flex; flex-direction: column; align-items: center; gap: 1px;
+      padding: 8px; border-radius: 8px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease, color 0.15s;
+      z-index: 50;
+    }
+    .scroll-cue.visible { opacity: 0.45; pointer-events: all; }
+    .scroll-cue:hover { opacity: 1 !important; color: var(--cyan); }
+    @keyframes cue-drift {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(10px); }
+    }
+    .scroll-cue.visible { animation: cue-drift 2s ease-in-out infinite; }
+
+    /* ─── Reset button ─── */
+    .reset-btn {
+      font-size: 11px; padding: 4px 12px; border-radius: 20px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; font-family: 'SF Mono', monospace;
+      transition: border-color 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .reset-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ─── Nav CTA ─── */
+    .nav-cta {
+      font-size: 12px; padding: 5px 14px; border-radius: 6px;
+      background: color-mix(in srgb, var(--cyan) 10%, var(--surface-2));
+      border: 1px solid color-mix(in srgb, var(--cyan) 35%, var(--border));
+      color: var(--cyan); text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover {
+      background: color-mix(in srgb, var(--cyan) 18%, var(--surface-2));
+      border-color: var(--cyan);
+    }
+
+    /* ─── Stat captions ─── */
+    .stat-caption {
+      font-size: 11px; color: var(--dim);
+      margin-top: 5px; line-height: 1.5;
+      max-width: 160px; margin-left: auto; margin-right: auto;
+    }
+
+    /* ─── Cascade section (replaces how-section 2×2 grid) ─── */
+    .cascade-section {
+      width: 100%; max-width: 700px;
+      padding: 48px 32px 0;
+      margin: 0 auto;
+    }
+    .cascade-section-heading {
+      text-align: center; margin-bottom: 32px;
+    }
+    .cascade-section-heading h2 {
+      font-size: 22px; font-weight: 600; color: var(--text);
+    }
+
+    .cascade-card {
+      padding: 24px 28px; border-radius: 14px;
+      border: 1.5px solid color-mix(in srgb, var(--card-color, var(--border)) 30%, var(--border));
+      background: var(--surface);
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .cascade-card > summary { list-style: none; }
+    .cascade-card > summary::-webkit-details-marker { display: none; }
+    .cascade-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: var(--card-color, var(--border)); opacity: 0.7;
+    }
+    .cascade-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top left, color-mix(in srgb, var(--card-color, transparent) 6%, transparent) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .cascade-card:hover {
+      border-color: color-mix(in srgb, var(--card-color, var(--cyan)) 60%, var(--border));
+      box-shadow: 0 0 32px color-mix(in srgb, var(--card-color, var(--cyan)) 12%, transparent);
+    }
+
+    .cascade-summary {
+      display: flex; align-items: center; gap: 12px; cursor: default;
+    }
+    .cascade-summary-text { flex: 1; min-width: 0; }
+    .cascade-summary-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .cascade-summary-sub { font-size: 11px; color: var(--dim); }
+    .cascade-summary-cost {
+      font-family: 'SF Mono', monospace; font-size: 11px; color: var(--dim);
+      white-space: nowrap; text-align: right;
+    }
+    .cascade-toggle {
+      font-size: 18px; color: var(--muted); line-height: 1;
+      display: none; flex-shrink: 0; width: 20px; text-align: center;
+      transition: transform 0.2s;
+    }
+    details.cascade-card[open] .cascade-toggle { transform: rotate(45deg); }
+
+    .cascade-body { margin-top: 18px; }
+    .cascade-body .card-vis { margin: 0 0 16px 0; border-radius: 8px; }
+    .cascade-body .how-card-desc { padding-left: 0; }
+    .cascade-body .how-examples { padding-left: 0; }
+    .cascade-footnote {
+      font-size: 11px; color: var(--dim); margin-top: 12px;
+      font-style: italic; line-height: 1.5;
+    }
+
+    /* Desktop: always show details content regardless of open attr */
+    @media (min-width: 761px) {
+      details.cascade-card > .cascade-body { display: block !important; }
+      .cascade-toggle { display: none !important; }
+      .cascade-summary { cursor: default; pointer-events: none; }
+    }
+
+    /* Connectors between cascade cards */
+    .cascade-connector {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 4px 0; gap: 2px;
+    }
+    .cascade-connector-line {
+      width: 1px; height: 18px;
+      background: color-mix(in srgb, var(--conn-color, var(--border)) 45%, var(--border));
+    }
+    .cascade-connector-text {
+      font-size: 10px; color: var(--dim); font-family: 'SF Mono', monospace;
+    }
+    .cascade-connector-chevron { color: var(--dim); font-size: 13px; line-height: 1; }
+
+    /* Tier 3 fork */
+    .tier3-fork { margin-top: 18px; }
+    .fork-stem {
+      width: 1px; height: 18px;
+      background: linear-gradient(to bottom,
+        color-mix(in srgb, var(--orange) 50%, transparent),
+        color-mix(in srgb, var(--purple) 50%, transparent));
+      margin: 0 auto;
+    }
+    .fork-branches { display: flex; gap: 14px; }
+    .fork-branch {
+      flex: 1; padding: 14px 16px; border-radius: 10px;
+      background: var(--surface-2); border: 1.5px solid var(--border);
+      border-left-width: 3px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .fork-branch:hover {
+      border-color: var(--branch-color, var(--cyan));
+      box-shadow: 0 0 16px color-mix(in srgb, var(--branch-color, var(--cyan)) 10%, transparent);
+    }
+    .fork-branch-name {
+      font-size: 14px; font-weight: 700; font-family: 'SF Mono', monospace; margin-bottom: 4px;
+    }
+    .fork-branch-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+    .fork-branch-examples { display: flex; flex-direction: column; gap: 4px; }
+    .fork-or-divider {
+      display: none; text-align: center; font-size: 11px; color: var(--dim);
+      padding: 6px 0; font-style: italic; align-self: center;
+    }
+
+    /* ─── Campaign depth section ─── */
+    .campaign-depth {
+      width: 100%; background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 52px 32px; margin-top: 48px;
+    }
+    .campaign-depth-inner { max-width: 860px; margin: 0 auto; }
+    .campaign-depth-header { text-align: center; margin-bottom: 12px; }
+    .campaign-depth-header h2 { font-size: 24px; font-weight: 700; color: var(--text); }
+    .campaign-depth-setup {
+      font-size: 15px; color: var(--muted); text-align: center;
+      margin-bottom: 40px; line-height: 1.65;
+    }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .feature-point {
+      padding: 20px; border-radius: 12px;
+      background: var(--surface-2); border: 1px solid var(--border);
+    }
+    .feature-icon { font-size: 18px; margin-bottom: 10px; }
+    .feature-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .feature-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .campaign-cta { text-align: center; margin-top: 32px; }
+    .campaign-cta a {
+      font-size: 13px; color: var(--cyan); text-decoration: none;
+      border-bottom: 1px solid color-mix(in srgb, var(--cyan) 35%, transparent);
+      padding-bottom: 2px; transition: border-color 0.15s;
+    }
+    .campaign-cta a:hover { border-color: var(--cyan); }
+
+    /* ─── Inline install section ─── */
+    .install-section {
+      width: 100%; background: var(--bg);
+      padding: 52px 32px; border-top: 1px solid var(--border);
+    }
+    .install-inner {
+      max-width: 860px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px;
+      align-items: center;
+    }
+    .install-left h2 {
+      font-size: 28px; font-weight: 700; color: var(--text);
+      line-height: 1.2; margin-bottom: 16px;
+    }
+    .install-left p { font-size: 14px; color: var(--muted); line-height: 1.75; }
+    .install-steps { display: flex; flex-direction: column; gap: 18px; }
+    .install-step { display: flex; gap: 14px; align-items: flex-start; }
+    .install-step-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); color: var(--cyan);
+      font-size: 12px; font-weight: 700; display: flex;
+      align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .install-step-body { flex: 1; min-width: 0; }
+    .install-step-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .install-code {
+      font-family: 'SF Mono', monospace; font-size: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; color: var(--cyan); word-break: break-all;
+    }
+    .install-guide-link {
+      display: block; text-align: right;
+      font-size: 12px; color: var(--muted); text-decoration: none;
+      margin-top: 16px; transition: color 0.15s;
+    }
+    .install-guide-link:hover { color: var(--cyan); }
+
+    /* ─── Screen 2 scrollable ─── */
+    .screen-2 { overflow-y: auto; scrollbar-width: none; }
+    .screen-2::-webkit-scrollbar { display: none; }
+
+    /* ─── Output Previews ─── */
+    .previews-section {
+      width: 100%; max-width: 700px;
+      padding: 48px 32px 0;
+      margin: 0 auto;
+    }
+    .previews-heading {
+      text-align: center; margin-bottom: 32px;
+    }
+    .previews-heading h2 {
+      font-size: 22px; font-weight: 600; color: var(--text);
+    }
+    .previews-heading p {
+      font-size: 14px; color: var(--muted); margin-top: 8px;
+    }
+    .preview-card {
+      padding: 0; border-radius: 10px; overflow: hidden;
+      border: 1.5px solid color-mix(in srgb, var(--preview-color, var(--border)) 30%, var(--border));
+      background: var(--surface);
+      margin-bottom: 20px;
+    }
+    .preview-card-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .preview-card-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--preview-color, var(--muted));
+    }
+    .preview-card-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--preview-color, var(--muted));
+      font-family: 'SF Mono', monospace;
+      letter-spacing: 0.5px;
+    }
+    .preview-card-context {
+      font-size: 11px; color: var(--dim);
+      margin-left: auto; font-family: 'SF Mono', monospace;
+    }
+    .preview-card-body {
+      padding: 18px 20px;
+      font-family: 'SF Mono', monospace;
+      font-size: 12.5px; line-height: 1.7;
+      color: var(--muted);
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .preview-card-body .pv-cmd { color: var(--cyan); }
+    .preview-card-body .pv-label { color: var(--text); font-weight: 600; }
+    .preview-card-body .pv-dim { color: var(--dim); }
+    .preview-card-body .pv-green { color: var(--green); }
+    .preview-card-body .pv-orange { color: var(--orange); }
+    .preview-card-body .pv-purple { color: var(--purple); }
+
+    /* ─── Final CTA ─── */
+    .final-cta {
+      width: 100%; max-width: 700px;
+      margin: 0 auto; padding: 48px 32px 32px;
+      text-align: center;
+    }
+    .final-cta-label {
+      font-size: 14px; color: var(--muted); margin-bottom: 14px;
+    }
+    .final-cta-cmd {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 14px 24px; border-radius: 10px;
+      background: var(--surface);
+      border: 1.5px solid color-mix(in srgb, var(--cyan) 35%, var(--border));
+      font-family: 'SF Mono', monospace; font-size: 14px;
+      color: var(--cyan); cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+    .final-cta-cmd:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 24px color-mix(in srgb, var(--cyan) 15%, transparent);
+    }
+    .final-cta-copy {
+      font-size: 10px; padding: 3px 9px; border-radius: 4px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer;
+      font-family: 'SF Mono', monospace;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .final-cta-copy:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 760px) {
+      nav { padding: 12px 20px; gap: 12px; }
+      .hero { padding: 40px 20px 16px; }
+      .hero h1 { font-size: 32px; }
+      .search-wrap { padding: 24px 16px 0; }
+      #cmd-input { padding: 18px 140px 18px 60px; font-size: 15px; }
+      .search-prompt { font-size: 15px; left: 20px; }
+      .playground { padding: 0 16px 40px; }
+      .tier-cascade { flex-direction: column; }
+      .tier-row { display: grid !important; grid-template-columns: 90px 1fr; flex: unset; padding: 12px 16px; }
+      .tier-left { flex-direction: column; gap: 4px; margin-bottom: 0; }
+      .tier-status { display: none !important; }
+      .how-section { grid-template-columns: 1fr; padding: 32px 16px 40px; }
+      .stat-bar { grid-template-columns: repeat(2, 1fr); }
+      .stat { border-bottom: 1px solid var(--border); }
+      .stat:nth-child(even) { border-right: none; }
+      .stat:nth-last-child(-n+2) { border-bottom: none; }
+      .nav-badge { display: none; }
+      .classification { grid-template-columns: repeat(2, 1fr); }
+      /* Cascade mobile */
+      .cascade-section { padding: 32px 16px 0; }
+      .cascade-toggle { display: block !important; }
+      .cascade-summary { cursor: pointer; pointer-events: auto !important; }
+      .feature-grid { grid-template-columns: 1fr; gap: 16px; }
+      .install-inner { grid-template-columns: 1fr; gap: 32px; }
+      .install-left h2 { font-size: 22px; }
+      .install-section { padding: 40px 16px; }
+      .campaign-depth { padding: 40px 16px; margin-top: 32px; }
+      .previews-section { padding: 32px 16px 0; }
+      .final-cta { padding: 32px 16px 24px; }
+      .final-cta-cmd { font-size: 12px; padding: 12px 16px; }
+      .fork-branches { flex-direction: column; }
+      .fork-or-divider { display: block; }
+    }
+    /* ─── Narrow mobile: hide star to prevent nav overflow ─── */
+    @media (max-width: 540px) {
+      .nav-star { display: none; }
+    }
+
+    /* ─── Copy button ─── */
+    .copy-btn {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      font-size: 10px; padding: 3px 9px; border-radius: 4px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; font-family: 'SF Mono', monospace;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      white-space: nowrap; z-index: 1;
+    }
+    .copy-btn:hover { border-color: var(--cyan); color: var(--cyan); background: color-mix(in srgb, var(--cyan) 6%, var(--surface-2)); }
+    .copy-btn.copied { border-color: var(--green); color: var(--green); background: color-mix(in srgb, var(--green) 6%, var(--surface-2)); }
+
+    /* ─── Try bar ─── */
+    .try-bar {
+      padding: 12px 24px 16px;
+      display: flex; align-items: center; gap: 10px;
+      border-top: 1px solid var(--border); flex-wrap: wrap;
+    }
+    .try-bar-label {
+      font-size: 11px; color: var(--dim);
+      font-family: 'SF Mono', monospace; white-space: nowrap;
+    }
+    .try-btn {
+      font-size: 11px; padding: 5px 14px; border-radius: 20px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--tc, var(--muted)); cursor: pointer;
+      font-family: 'SF Mono', monospace;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+    .try-btn:hover {
+      border-color: var(--tc); color: var(--tc);
+      background: color-mix(in srgb, var(--tc) 8%, transparent);
+    }
+
+    /* ─── Live agents indicator ─── */
+    .eyebrow-sep { opacity: 0.4; margin: 0 2px; }
+    .live-agents {
+      display: inline-flex; align-items: center; gap: 5px;
+      color: var(--green); font-size: 10px;
+    }
+    .live-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: currentColor;
+      animation: live-pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes live-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.25; transform: scale(0.7); }
+    }
+
+    /* ─── Gen card ambient glow ─── */
+    @keyframes card-breathe {
+      0%, 100% { box-shadow: none; background: color-mix(in srgb, var(--gc) 3%, var(--surface-2)); }
+      50% { box-shadow: 0 0 22px color-mix(in srgb, var(--gc) 12%, transparent); background: color-mix(in srgb, var(--gc) 7%, var(--surface-2)); }
+    }
+    .gen-btn { animation: card-breathe 5s ease-in-out infinite; }
+    .gen-btn:hover, .gen-btn.busy { animation: none; }
+
+    /* ─── Cascade connector flow ─── */
+    @keyframes conn-flow {
+      0%, 100% { opacity: 0.3; }
+      50%       { opacity: 1; }
+    }
+    .cascade-connector-line { animation: conn-flow 2.8s ease-in-out infinite; }
+    .cascade-connector:last-of-type .cascade-connector-line { animation-delay: 1.4s; }
+    .cascade-connector-chevron { animation: conn-flow 2.8s ease-in-out infinite; }
+    .cascade-connector:last-of-type .cascade-connector-chevron { animation-delay: 1.4s; }
+
+    /* ─── prefers-reduced-motion ─── */
+    @media (prefers-reduced-motion: reduce) {
+      .tier-row, .output-section, .result-panel,
+      .side-panel, .panel-backdrop { transition: none !important; }
+      .scroll-cue.visible { animation: none !important; }
+      .hero h1 { animation: none !important; }
+      .t0-word { animation: none !important; background: color-mix(in srgb, var(--green) 22%, transparent); color: var(--green); }
+      .t2-r1, .t2-r2, .t2-r3 { animation: none !important; }
+      .t3-chip { animation: none !important; opacity: 1 !important; transform: none !important; }
+      .tf-f1, .tf-f2, .tf-f3 { animation: none !important; width: 60% !important; }
+      .gen-btn { animation: none !important; }
+      .live-dot { animation: none !important; }
+      .cascade-connector-line, .cascade-connector-chevron { animation: none !important; opacity: 0.5 !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg-dots"></canvas>
+
+  <nav>
+    <a class="nav-logo" href="https://github.com/SethGammon/sinan">SINAN</a>
+    <span class="nav-sep">·</span>
+    <button class="nav-link" onclick="openPanel('skills')">Skills</button>
+    <button class="nav-link" onclick="openPanel('hooks')">Hooks</button>
+    <button class="nav-link" onclick="openPanel('campaigns')">Campaigns</button>
+    <div class="nav-right">
+      <span class="nav-badge">v3</span>
+      <a class="nav-star" id="nav-star" href="https://github.com/SethGammon/sinan">★ Star on GitHub</a>
+      <a class="nav-cta" href="#install-section" onclick="scrollToInstall(); return false;">Get Started</a>
+    </div>
+  </nav>
+
+  <div id="page-wrap">
+  <div id="screens-inner">
+  <div id="screen-1">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">
+      <span>Agent orchestration for Claude Code</span>
+      <span class="eyebrow-sep">·</span>
+      <span class="live-agents"><span class="live-dot"></span><span id="live-agent-count">3</span> agents active</span>
+    </div>
+    <h1>One command.<br><span class="h1-sub">The right agent, every time.</span></h1>
+    <p>Four routing tiers — pattern match to full LLM. Stops at the first match. Most commands cost nothing.</p>
+  </div>
+
+  <!-- Search bar -->
+  <div class="search-wrap">
+    <div class="search-bar">
+      <span class="search-prompt">/do</span>
+      <input id="cmd-input" type="text" placeholder="Type any engineering task…"
+             autocomplete="off" spellcheck="false" />
+      <div class="search-actions">
+        <span class="live-badge" id="live-badge"></span>
+        <button class="enter-key" id="enter-key" title="Route (Enter)" onclick="triggerRoute()">↵</button>
+      </div>
+    </div>
+    <div class="search-hint">
+      <kbd>Enter</kbd> to route &nbsp;·&nbsp; <kbd>↑ ↓</kbd> history &nbsp;·&nbsp; <kbd>Esc</kbd> clear
+    </div>
+  </div>
+
+  <!-- Playground -->
+  <div class="playground">
+
+    <!-- Generator buttons -->
+    <div class="generators">
+      <button class="gen-btn" style="--gc:var(--green)" onclick="generate('instant')">
+        <span class="gen-icon">⚡</span>
+        <div class="gen-name">Instant</div>
+        <div class="gen-meta">~0 tokens · &lt;1ms</div>
+        <div class="gen-desc">regex match — no model call</div>
+        <div class="gen-again">try another →</div>
+      </button>
+      <button class="gen-btn" style="--gc:var(--cyan)" onclick="generate('skill')">
+        <span class="gen-icon">◆</span>
+        <div class="gen-name">Skill</div>
+        <div class="gen-meta">~0 tokens · &lt;10ms</div>
+        <div class="gen-desc">keyword match — skill dispatched directly</div>
+        <div class="gen-again">try another →</div>
+      </button>
+      <button class="gen-btn" style="--gc:var(--orange)" onclick="generate('campaign')">
+        <span class="gen-icon">⬡</span>
+        <div class="gen-name">Campaign</div>
+        <div class="gen-meta">~500 tokens · Archon</div>
+        <div class="gen-desc">LLM classifier → multi-phase execution</div>
+        <div class="gen-again">try another →</div>
+      </button>
+      <button class="gen-btn" style="--gc:var(--purple)" onclick="generate('fleet')">
+        <span class="gen-icon">⬢</span>
+        <div class="gen-name">Fleet</div>
+        <div class="gen-meta">~500 tokens · parallel</div>
+        <div class="gen-desc">LLM classifier → agents in parallel worktrees</div>
+        <div class="gen-again">try another →</div>
+      </button>
+    </div>
+
+    <!-- Result panel (folds out on Enter) -->
+    <div class="result-panel" id="result-panel">
+      <div class="result-header">
+        <span class="spinner" id="spinner"></span>
+        <span class="result-command" id="result-command"></span>
+        <div class="result-meta">
+          <span class="result-timer" id="result-timer"></span>
+          <button class="reset-btn" onclick="resetDemo()" title="Reset — Esc">↺ new</button>
+        </div>
+      </div>
+
+      <div class="tier-cascade">
+        <div class="tier-row" id="tier0" style="--match-color: var(--green)">
+          <div class="tier-left">
+            <span class="tier-badge" style="color:var(--green)">TIER 0</span>
+            <span class="tier-sub">~0 tokens</span>
+          </div>
+          <div class="tier-center">
+            <div class="tier-name">Pattern Match</div>
+            <div class="tier-desc">Regex on raw input — fix typo, rename, commit, build, status</div>
+          </div>
+          <span class="tier-status" id="tier0-status"></span>
+        </div>
+
+        <div class="tier-row" id="tier1" style="--match-color: var(--blue)">
+          <div class="tier-left">
+            <span class="tier-badge" style="color:var(--blue)">TIER 1</span>
+            <span class="tier-sub">~0 tokens</span>
+          </div>
+          <div class="tier-center">
+            <div class="tier-name">Active State</div>
+            <div class="tier-desc">Resumes a campaign or fleet session already in progress</div>
+          </div>
+          <span class="tier-status" id="tier1-status"></span>
+        </div>
+
+        <div class="tier-row" id="tier2" style="--match-color: var(--cyan)">
+          <div class="tier-left">
+            <span class="tier-badge" style="color:var(--cyan)">TIER 2</span>
+            <span class="tier-sub">~0 tokens</span>
+          </div>
+          <div class="tier-center">
+            <div class="tier-name">Keyword Match</div>
+            <div class="tier-desc">Matched against the installed skill keyword table — review, test, debug, scaffold…</div>
+          </div>
+          <span class="tier-status" id="tier2-status"></span>
+        </div>
+
+        <div class="tier-row" id="tier3" style="--match-color: var(--orange)">
+          <div class="tier-left">
+            <span class="tier-badge" style="color:var(--orange)">TIER 3</span>
+            <span class="tier-sub">~500 tokens</span>
+          </div>
+          <div class="tier-center">
+            <div class="tier-name">LLM Classifier</div>
+            <div class="tier-desc">6-dimension classification: scope · complexity · intent · persist · parallel · taste</div>
+          </div>
+          <span class="tier-status" id="tier3-status"></span>
+        </div>
+      </div>
+
+      <!-- Tier 3 classification breakdown -->
+      <div class="classification" id="classification">
+        <div class="cl-dim">
+          <span class="cl-label">Intent</span>
+          <span class="cl-value accent" id="cl-intent">build</span>
+        </div>
+        <div class="cl-dim">
+          <span class="cl-label">Scope</span>
+          <span class="cl-value" id="cl-scope">single-domain</span>
+        </div>
+        <div class="cl-dim">
+          <span class="cl-label">Complexity</span>
+          <div class="cl-dots" id="cl-dots"></div>
+        </div>
+        <div class="cl-dim">
+          <span class="cl-label">Spans sessions</span>
+          <span class="cl-value accent" id="cl-persist">yes</span>
+        </div>
+        <div class="cl-dim">
+          <span class="cl-label">Parallel fleet</span>
+          <span class="cl-value" id="cl-parallel">no</span>
+        </div>
+        <div class="cl-dim">
+          <span class="cl-label">Needs judgment</span>
+          <span class="cl-value" id="cl-taste">yes</span>
+        </div>
+      </div>
+
+      <div class="output-section" id="output-section">
+        <div class="output-inner" id="output-inner">
+          <div class="output-icon" id="output-icon"></div>
+          <div class="output-tool">
+            <div class="output-name" id="output-name"></div>
+            <div class="output-desc" id="output-desc"></div>
+            <div class="output-meta" id="output-meta"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="history-section" id="history-section">
+        <div class="history-label">Recently routed</div>
+        <div class="history-items" id="history-items"></div>
+      </div>
+      <div class="try-bar" id="try-bar" style="display:none">
+        <span class="try-bar-label">try another →</span>
+        <button class="try-btn" style="--tc:var(--green)" onclick="generate('instant')">⚡ Instant</button>
+        <button class="try-btn" style="--tc:var(--cyan)" onclick="generate('skill')">◆ Skill</button>
+        <button class="try-btn" style="--tc:var(--orange)" onclick="generate('campaign')">⬡ Campaign</button>
+        <button class="try-btn" style="--tc:var(--purple)" onclick="generate('fleet')">⬢ Fleet</button>
+      </div>
+    </div>
+
+  </div><!-- /playground -->
+
+  </div><!-- /screen-1 -->
+
+  <div class="screen-2" id="screen-2">
+
+  <!-- Vertical tier cascade -->
+  <div class="cascade-section">
+    <div class="cascade-section-heading">
+      <h2>How routing works</h2>
+    </div>
+
+    <!-- Tier 0 -->
+    <details class="cascade-card" style="--card-color:var(--green)" open>
+      <summary class="cascade-summary">
+        <span class="how-tier-badge" style="color:var(--green)">TIER 0</span>
+        <div class="cascade-summary-text">
+          <div class="cascade-summary-name">Pattern Match</div>
+          <div class="cascade-summary-sub">Regex · 9 built-in patterns</div>
+        </div>
+        <div class="cascade-summary-cost">~0 tokens · &lt;1ms</div>
+        <span class="cascade-toggle">+</span>
+      </summary>
+      <div class="cascade-body">
+        <div class="card-vis">
+          <div class="t0-code"><span class="t0-pre">/do </span><span class="t0-word">fix typo</span><span class="t0-pre"> on line 42</span></div>
+          <div class="t0-tag">✓ REGEX HIT · &lt;1ms · 0 TOKENS</div>
+        </div>
+        <p class="how-card-desc">Pure regex against the raw input string. No model call, no skill load. Catches exact-intent commands that need no classification — typos, renames, commits, status checks. If it matches here, Claude executes it directly and stops.</p>
+        <div class="how-examples">
+          <div class="how-example" style="--ex-color:var(--green)" data-cmd="fix the typo on line 42">/do fix the typo on line 42</div>
+          <div class="how-example" style="--ex-color:var(--green)" data-cmd="rename AuthService to AuthHandler">/do rename AuthService to AuthHandler</div>
+          <div class="how-example" style="--ex-color:var(--green)" data-cmd="commit my changes">/do commit my changes</div>
+        </div>
+        <p class="cascade-footnote">Tier 1 (active session context) is evaluated in live Claude Code sessions — skipped in this demo.</p>
+      </div>
+    </details>
+
+    <div class="cascade-connector" style="--conn-color:var(--cyan)">
+      <div class="cascade-connector-line"></div>
+      <span class="cascade-connector-text">No match · evaluates next tier</span>
+      <div class="cascade-connector-chevron">↓</div>
+    </div>
+
+    <!-- Tier 2 -->
+    <details class="cascade-card" style="--card-color:var(--cyan)">
+      <summary class="cascade-summary">
+        <span class="how-tier-badge" style="color:var(--cyan)">TIER 2</span>
+        <div class="cascade-summary-text">
+          <div class="cascade-summary-name">Keyword Lookup</div>
+          <div class="cascade-summary-sub">12 registered skill keywords</div>
+        </div>
+        <div class="cascade-summary-cost">~0 tokens · &lt;10ms</div>
+        <span class="cascade-toggle">+</span>
+      </summary>
+      <div class="cascade-body">
+        <div class="card-vis">
+          <div class="t2-table">
+            <div class="t2-row t2-r1">review <span>→ /review</span></div>
+            <div class="t2-row t2-r2">debug <span>→ /systematic-debugging</span></div>
+            <div class="t2-row t2-r3">scaffold <span>→ /scaffold</span></div>
+          </div>
+        </div>
+        <p class="how-card-desc">The input is scanned against a keyword table built from every installed skill. "review" → /review, "debug" → /systematic-debugging. New skills register their own keywords automatically. No LLM needed.</p>
+        <div class="how-examples">
+          <div class="how-example" style="--ex-color:var(--cyan)" data-cmd="review the auth module">/do review the auth module</div>
+          <div class="how-example" style="--ex-color:var(--cyan)" data-cmd="write tests for UserService">/do write tests for UserService</div>
+          <div class="how-example" style="--ex-color:var(--cyan)" data-cmd="scaffold a new dashboard component">/do scaffold a new dashboard component</div>
+        </div>
+      </div>
+    </details>
+
+    <div class="cascade-connector" style="--conn-color:var(--orange)">
+      <div class="cascade-connector-line"></div>
+      <span class="cascade-connector-text">No match · evaluates next tier</span>
+      <div class="cascade-connector-chevron">↓</div>
+    </div>
+
+    <!-- Tier 3 — single card, forked output -->
+    <details class="cascade-card" style="--card-color:var(--orange)">
+      <summary class="cascade-summary">
+        <span class="how-tier-badge" style="color:var(--orange)">TIER 3</span>
+        <div class="cascade-summary-text">
+          <div class="cascade-summary-name">LLM Classifier</div>
+          <div class="cascade-summary-sub">One evaluation · two possible dispatches</div>
+        </div>
+        <div class="cascade-summary-cost">~500 tokens · &lt;2s</div>
+        <span class="cascade-toggle">+</span>
+      </summary>
+      <div class="cascade-body">
+        <div class="card-vis">
+          <div class="t3-chips">
+            <span class="t3-chip t3-c1">scope: cross-domain</span>
+            <span class="t3-chip t3-c2">complexity: 4</span>
+            <span class="t3-chip t3-c3">intent: create</span>
+            <span class="t3-chip t3-c4">persist: true</span>
+            <span class="t3-chip t3-c5">parallel: false</span>
+            <span class="t3-chip t3-c6">taste: true</span>
+          </div>
+          <div class="t3-route">→ /classifier dispatched</div>
+        </div>
+        <p class="how-card-desc">Classifies 6 dimensions: scope, complexity (1–5), intent, multi-session persistence, parallel execution, and taste. The result determines the dispatch — Archon for contained work, Fleet for platform-wide scope.</p>
+        <div class="tier3-fork">
+          <div class="fork-stem"></div>
+          <div class="fork-branches">
+            <div class="fork-branch" style="--branch-color:var(--orange); border-left-color:var(--orange)">
+              <div class="fork-branch-name" style="color:var(--orange)">→ Archon</div>
+              <div class="fork-branch-desc">Single-feature, single-session work</div>
+              <div class="fork-branch-examples">
+                <div class="how-example" style="--ex-color:var(--orange); color:var(--muted)" data-cmd="build me a recipe app">/do build me a recipe app</div>
+                <div class="how-example" style="--ex-color:var(--orange); color:var(--muted)" data-cmd="add Stripe payments to checkout">/do add Stripe payments to checkout</div>
+              </div>
+            </div>
+            <div class="fork-or-divider">or</div>
+            <div class="fork-branch" style="--branch-color:var(--purple); border-left-color:var(--purple)">
+              <div class="fork-branch-name" style="color:var(--purple)">→ Fleet</div>
+              <div class="fork-branch-desc">Platform-wide or parallel work</div>
+              <div class="fork-branch-examples">
+                <div class="how-example" style="--ex-color:var(--purple); color:#c9d1d9" data-cmd="migrate the platform to TypeScript strict mode">/do migrate the platform to TypeScript strict mode</div>
+                <div class="how-example" style="--ex-color:var(--purple); color:#c9d1d9" data-cmd="redesign the entire data layer">/do redesign the entire data layer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </details>
+  </div><!-- /cascade-section -->
+
+  <!-- Output previews — real Sinan output, not wireframes -->
+  <div class="previews-section">
+    <div class="previews-heading">
+      <h2>What you actually get</h2>
+      <p>Real output from real sessions. No wireframes, no mockups.</p>
+    </div>
+
+    <!-- Preview 1: /do routing -->
+    <div class="preview-card" style="--preview-color:var(--green)">
+      <div class="preview-card-header">
+        <div class="preview-card-dot"></div>
+        <div class="preview-card-label">ROUTING</div>
+        <div class="preview-card-context">/do review the auth module</div>
+      </div>
+      <div class="preview-card-body"><span class="pv-dim">Tier 2 keyword match</span>
+<span class="pv-label">Routing to</span> <span class="pv-cmd">/review</span> <span class="pv-dim">because input contains "review" (keyword match, 0 tokens)</span>
+
+<span class="pv-green">--- HANDOFF ---</span>
+<span class="pv-label">- 5-pass review complete</span>: auth module (src/auth/)
+- <span class="pv-orange">3 issues found</span>: 1 security (token expiry unchecked), 2 style
+- Security issue is blocking — fix before merge
+- No test regressions detected
+<span class="pv-green">---</span></div>
+    </div>
+
+    <!-- Preview 2: Campaign HANDOFF -->
+    <div class="preview-card" style="--preview-color:var(--orange)">
+      <div class="preview-card-header">
+        <div class="preview-card-dot"></div>
+        <div class="preview-card-label">CAMPAIGN</div>
+        <div class="preview-card-context">/archon — Phase 3 of 4</div>
+      </div>
+      <div class="preview-card-body"><span class="pv-dim">Phase 3: Build · auth-overhaul campaign</span>
+
+<span class="pv-orange">--- HANDOFF ---</span>
+<span class="pv-label">- Built OAuth2 integration</span> with PKCE flow (src/auth/oauth.ts)
+- Session middleware rewritten — JWT with refresh rotation
+- <span class="pv-green">typecheck: clean</span> · <span class="pv-green">tests: 47 pass, 0 fail</span> · <span class="pv-green">build: success</span>
+- Next: Phase 4 (verify) — security audit + integration test
+- Session resumes automatically — campaign state preserved to disk
+<span class="pv-orange">---</span></div>
+    </div>
+
+    <!-- Preview 3: Fleet wave coordination -->
+    <div class="preview-card" style="--preview-color:var(--purple)">
+      <div class="preview-card-header">
+        <div class="preview-card-dot"></div>
+        <div class="preview-card-label">FLEET</div>
+        <div class="preview-card-context">/fleet — Wave 2 of 3</div>
+      </div>
+      <div class="preview-card-body"><span class="pv-dim">Wave 2 complete · 3 agents · isolated worktrees</span>
+
+<span class="pv-purple">Agent A</span> <span class="pv-dim">(wt-fleet-a)</span>: migrated api/ to strict TypeScript <span class="pv-green">✓</span>
+<span class="pv-purple">Agent B</span> <span class="pv-dim">(wt-fleet-b)</span>: migrated components/ to strict TypeScript <span class="pv-green">✓</span>
+<span class="pv-purple">Agent C</span> <span class="pv-dim">(wt-fleet-c)</span>: migrated utils/ — <span class="pv-orange">1 conflict</span> with Agent A
+
+<span class="pv-label">Discovery relay</span>: Agent A found 12 implicit <span class="pv-cmd">any</span> casts in shared types
+  → relayed to Agents B and C before Wave 3
+
+<span class="pv-label">Merge status</span>: A <span class="pv-green">merged</span> · B <span class="pv-green">merged</span> · C <span class="pv-orange">pending conflict resolution</span>
+<span class="pv-dim">Wave 3 will resolve C's conflict and run final typecheck.</span></div>
+    </div>
+  </div><!-- /previews-section -->
+
+  <!-- Campaign depth section -->
+  <div class="campaign-depth">
+    <div class="campaign-depth-inner">
+      <div class="campaign-depth-header">
+        <h2>Work that spans sessions. Automatically.</h2>
+      </div>
+      <p class="campaign-depth-setup">Complex tasks run across sessions without losing direction — or your confidence.</p>
+      <div class="feature-grid">
+        <div class="feature-point">
+          <div class="feature-icon">⧫</div>
+          <div class="feature-title">Checks at every phase</div>
+          <div class="feature-desc">A quality spot-check runs at the end of every phase. The next phase only starts when it passes.</div>
+        </div>
+        <div class="feature-point">
+          <div class="feature-icon">◎</div>
+          <div class="feature-title">Auto-pause on failure</div>
+          <div class="feature-desc">After 3 consecutive failures on the same approach, the campaign parks and waits for you.</div>
+        </div>
+        <div class="feature-point">
+          <div class="feature-icon">◈</div>
+          <div class="feature-title">Nothing breaks silently</div>
+          <div class="feature-desc">Type baselines and test counts are captured before the campaign and verified after every build phase.</div>
+        </div>
+      </div>
+      <div class="campaign-cta">
+        <a href="#" onclick="openPanel('campaigns'); return false;">Read the full campaign lifecycle →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stat-bar">
+    <div class="stat">
+      <div class="stat-num">45</div>
+      <div class="stat-label">Skills</div>
+      <div class="stat-caption">covering code quality, debugging, research, orchestration, and more</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-label">Orchestrators</div>
+      <div class="stat-caption">Marshal, Archon, Fleet, Autopilot</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">29</div>
+      <div class="stat-label">Hook Events</div>
+      <div class="stat-caption">automatic quality gates without agent intervention</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">~0</div>
+      <div class="stat-label">Config Required</div>
+      <div class="stat-caption">works on any repo, any language</div>
+    </div>
+  </div>
+
+  <!-- Inline install -->
+  <div class="install-section" id="install-section">
+    <div class="install-inner">
+      <div class="install-left">
+        <h2>Try it now.</h2>
+        <p>Works on any Claude Code project.<br>No config required — Sinan detects your stack on first run.</p>
+      </div>
+      <div class="install-right">
+        <div class="install-steps">
+          <div class="install-step">
+            <div class="install-step-num">1</div>
+            <div class="install-step-body">
+              <div class="install-step-label">Install Claude Code</div>
+              <div class="install-code">npm install -g @anthropic-ai/claude-code</div>
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="install-step-num">2</div>
+            <div class="install-step-body">
+              <div class="install-step-label">Add Sinan as a plugin</div>
+              <div class="install-code">claude plugin marketplace add SethGammon/sinan</div>
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="install-step-num">3</div>
+            <div class="install-step-body">
+              <div class="install-step-label">Install the Sinan plugin</div>
+              <div class="install-code">/plugin install sinan@sinan-local</div>
+            </div>
+          </div>
+        </div>
+        <a class="install-guide-link" href="#" onclick="openPanel('install'); return false;">Full install guide →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final CTA — single copy-pasteable command -->
+  <div class="final-cta">
+    <div class="final-cta-label">One command. Any project.</div>
+    <div class="final-cta-cmd" onclick="navigator.clipboard.writeText('claude plugin marketplace add SethGammon/sinan').then(()=>{this.querySelector('.final-cta-copy').textContent='copied!';setTimeout(()=>{this.querySelector('.final-cta-copy').textContent='copy'},1500)})" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
+      claude plugin marketplace add SethGammon/sinan
+      <button class="final-cta-copy">copy</button>
+    </div>
+  </div>
+
+  <button class="up-cue" onclick="goToScreen(0)" aria-label="Back to top" title="Back to top">
+    <svg width="22" height="13" viewBox="0 0 22 13" fill="none">
+      <path d="M1 11.5L11 2.5L21 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <footer>
+    <span>Sinan — Agent Orchestration for Claude Code &nbsp;·&nbsp; <a href="https://repo-explainer.com/SethGammon/sinan/">Architecture overview</a></span>
+    <span>
+      <a id="footer-star" href="https://github.com/SethGammon/sinan">★ Star on GitHub</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/SethGammon/sinan/blob/main/LICENSE">MIT License</a>
+    </span>
+  </footer>
+  </div><!-- /screen-2 -->
+  </div><!-- /screens-inner -->
+  </div><!-- /page-wrap -->
+
+  <!-- Panels — outside #screens-inner so position:fixed is viewport-relative -->
+  <!-- Panel backdrop -->
+  <div class="panel-backdrop" id="panel-backdrop" onclick="closePanel()"></div>
+
+  <!-- Install panel -->
+  <div class="side-panel" id="panel-install">
+    <div class="panel-header">
+      <span class="panel-title">Install</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="panel-body">
+      <div class="panel-step">
+        <div class="panel-step-num">1</div>
+        <div class="panel-step-body">
+          <div class="panel-step-label">Install Claude Code</div>
+          <div class="panel-code">npm install -g @anthropic-ai/claude-code</div>
+          <div class="panel-note">Requires Node 18+ and an Anthropic API key or Claude.ai Pro.</div>
+        </div>
+      </div>
+      <div class="panel-step">
+        <div class="panel-step-num">2</div>
+        <div class="panel-step-body">
+          <div class="panel-step-label">Add Sinan as a plugin</div>
+          <div class="panel-code">claude plugin marketplace add SethGammon/sinan</div>
+          <div class="panel-note">Adds the Sinan marketplace. Then install sinan@sinan-local from /plugin.</div>
+        </div>
+      </div>
+      <div class="panel-step">
+        <div class="panel-step-num">3</div>
+        <div class="panel-step-body">
+          <div class="panel-step-label">Open any project and start</div>
+          <div class="panel-code">cd your-project<br>claude<br>/do setup --express</div>
+          <div class="panel-note">Setup detects the stack, refreshes hooks, and creates the project state Sinan uses for campaigns, fleet work, and telemetry.</div>
+        </div>
+      </div>
+      <div class="panel-section-label">Optional: per-project config</div>
+      <div class="campaign-block">
+        <div class="campaign-block-title">Generate harness.json</div>
+        <div class="campaign-block-body">Run <code>/do setup</code> to create <code>.claude/harness.json</code> with project-specific settings — hook toggles, agent timeouts, doc sync, quality rules. All settings have working defaults so this step is optional.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills panel -->
+  <div class="side-panel" id="panel-skills">
+    <div class="panel-header">
+      <span class="panel-title">Skills — 45 installed</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="panel-body">
+      <div class="panel-note" style="margin-bottom:20px">Invoke any skill directly with <code style="font-family:'SF Mono',monospace;color:var(--cyan);font-size:11px">/skill-name</code>, or let <code style="font-family:'SF Mono',monospace;color:var(--cyan);font-size:11px">/do</code> route to the right one automatically.</div>
+      <div class="panel-section-label">Routing</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">/do</span><span class="skill-desc">Universal intent router. Dispatches to the cheapest capable tool — no configuration needed.</span></div>
+      </div>
+      <div class="panel-section-label">Orchestration</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">/archon</span><span class="skill-desc">Multi-session campaign executor. Decomposes into phases, enforces quality gates, self-corrects direction drift.</span></div>
+        <div class="skill-row"><span class="skill-name">/fleet</span><span class="skill-desc">Parallel coordinator. Spawns 2–3 agents in isolated git worktrees per wave.</span></div>
+        <div class="skill-row"><span class="skill-name">/marshal</span><span class="skill-desc">Single-session orchestrator. Chains skills end-to-end within one conversation.</span></div>
+        <div class="skill-row"><span class="skill-name">/autopilot</span><span class="skill-desc">Intake-to-delivery pipeline. Processes items from .planning/intake/ automatically.</span></div>
+      </div>
+      <div class="panel-section-label">App Creation</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">/prd</span><span class="skill-desc">Generates a Product Requirements Document from a natural language description.</span></div>
+        <div class="skill-row"><span class="skill-name">/architect</span><span class="skill-desc">Converts a PRD into a file tree, build phases, and verifiable end conditions.</span></div>
+        <div class="skill-row"><span class="skill-name">/create-app</span><span class="skill-desc">End-to-end app creation. Works on greenfield projects and existing codebases.</span></div>
+      </div>
+      <div class="panel-section-label">Code Quality</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">/review</span><span class="skill-desc">5-pass structured review: correctness, security, performance, readability, consistency.</span></div>
+        <div class="skill-row"><span class="skill-name">/test-gen</span><span class="skill-desc">Generates runnable tests using your actual framework. Iterates up to 3× on failures.</span></div>
+        <div class="skill-row"><span class="skill-name">/doc-gen</span><span class="skill-desc">Three modes: function-level, module-level, or API reference. Reads your existing doc style first.</span></div>
+        <div class="skill-row"><span class="skill-name">/refactor</span><span class="skill-desc">Safe multi-file refactoring. Typechecks before and after every change. Auto-reverts on failure.</span></div>
+        <div class="skill-row"><span class="skill-name">/scaffold</span><span class="skill-desc">Project-aware file generation. Reads naming conventions from existing code before generating.</span></div>
+        <div class="skill-row"><span class="skill-name">/create-skill</span><span class="skill-desc">Extracts a repeated pattern into a reusable Sinan skill.</span></div>
+      </div>
+      <div class="panel-section-label">Research &amp; Debugging</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">/research</span><span class="skill-desc">Structured investigation with confidence levels and cited sources.</span></div>
+        <div class="skill-row"><span class="skill-name">/research-fleet</span><span class="skill-desc">Parallel multi-scout research. 3–5 independent angles simultaneously, then compressed.</span></div>
+        <div class="skill-row"><span class="skill-name">/wiki</span><span class="skill-desc">LLM-native markdown knowledge base. Ingests sources, compiles interlinked topic files, and answers from cited wiki pages.</span></div>
+        <div class="skill-row"><span class="skill-name">/experiment</span><span class="skill-desc">Metric-driven optimization loops in isolated worktrees. Stops when metric plateaus.</span></div>
+        <div class="skill-row"><span class="skill-name">/systematic-debugging</span><span class="skill-desc">4-phase root cause: observe → hypothesize → verify → fix. Emergency stop after 2 failures.</span></div>
+        <div class="skill-row"><span class="skill-name">/live-preview</span><span class="skill-desc">Mid-build visual verification via screenshot. Used by Archon to validate UI phases.</span></div>
+      </div>
+      <div class="panel-section-label">Quality &amp; Verification</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">/design</span><span class="skill-desc">Extracts or generates a design manifest: colors, typography, spacing, component patterns.</span></div>
+        <div class="skill-row"><span class="skill-name">/qa</span><span class="skill-desc">Browser QA via Playwright. Click-through testing with pass/fail assertions.</span></div>
+        <div class="skill-row"><span class="skill-name">/postmortem</span><span class="skill-desc">Auto-generates structured postmortems from campaign telemetry and git history.</span></div>
+      </div>
+      <div class="panel-section-label">Utilities</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">/session-handoff</span><span class="skill-desc">Compresses current session context for transfer to a new session.</span></div>
+        <div class="skill-row"><span class="skill-name">/setup</span><span class="skill-desc">First-run harness configuration. Generates harness.json and registers skill keywords.</span></div>
+        <div class="skill-row"><span class="skill-name">/triage</span><span class="skill-desc">Pulls open GitHub issues and PRs, classifies by severity, searches codebase for context.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hooks panel -->
+  <div class="side-panel" id="panel-hooks">
+    <div class="panel-header">
+      <span class="panel-title">Hooks — 13 events</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="panel-body">
+      <div class="panel-note" style="margin-bottom:20px">Hooks fire automatically on Claude Code lifecycle events — no agent intervention needed.</div>
+      <table class="hook-table">
+        <thead><tr><th style="width:145px">Event</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="hook-event">SessionStart</td><td class="hook-desc">Scans .planning/intake/, restores compressed context, scaffolds .planning/ on first run.</td></tr>
+          <tr><td class="hook-event">PreCompact</td><td class="hook-desc">Detects unwritten work before context compression. Auto-saves a handoff to disk.</td></tr>
+          <tr><td class="hook-event">PostCompact</td><td class="hook-desc">Re-injects the saved handoff into the new compressed context so nothing is lost.</td></tr>
+          <tr><td class="hook-event">PreToolUse</td><td class="hook-desc">Campaign scope enforcement — blocks edits outside a campaign's declared scope.</td></tr>
+          <tr><td class="hook-event">PostToolUse</td><td class="hook-desc">Runs per-file typecheck on every Edit or Write. Failures surface immediately.</td></tr>
+          <tr><td class="hook-event">Stop</td><td class="hook-desc">Quality gate before session ends. Checks for uncommitted work and open campaign phases.</td></tr>
+          <tr><td class="hook-event">StopFailure</td><td class="hook-desc">API failure telemetry — logs to .planning/telemetry/ and triggers recovery if configured.</td></tr>
+          <tr><td class="hook-event">TaskCreated</td><td class="hook-desc">Logs agent task boundary start events to the audit trail.</td></tr>
+          <tr><td class="hook-event">TaskCompleted</td><td class="hook-desc">Logs task completion with duration and outcome to agent-runs.jsonl.</td></tr>
+          <tr><td class="hook-event">SubagentStop</td><td class="hook-desc">Ensures sub-agents write a HANDOFF block and release scope claims before exiting.</td></tr>
+          <tr><td class="hook-event">SessionEnd</td><td class="hook-desc">Campaign cleanup, triggers the doc sync queue.</td></tr>
+          <tr><td class="hook-event">WorktreeCreate</td><td class="hook-desc">Installs hooks and scaffolds .planning/ in isolated Fleet worktrees.</td></tr>
+          <tr><td class="hook-event">WorktreeRemove</td><td class="hook-desc">Fleet cleanup — triggers merge conflict check and logs worktree metrics.</td></tr>
+        </tbody>
+      </table>
+      <div class="panel-section-label" style="margin-top:24px">Configuration</div>
+      <div class="campaign-block">
+        <div class="campaign-block-title">Enable / disable hooks</div>
+        <div class="campaign-block-body">Toggle individual hooks in <code>.claude/harness.json</code> under the <code>hooks</code> key. Example: <code>"postToolUse": { "enabled": false }</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Campaigns panel -->
+  <div class="side-panel" id="panel-campaigns">
+    <div class="panel-header">
+      <span class="panel-title">Campaigns</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="panel-body">
+      <div class="panel-note" style="margin-bottom:20px">A <strong style="color:var(--text)">campaign</strong> is work that spans multiple sessions. State is persisted to disk and resumed exactly where it left off.</div>
+      <div class="campaign-block">
+        <div class="campaign-block-title">Starting a campaign</div>
+        <div class="campaign-block-body"><code>/archon build a real-time notifications system</code> — or let <code>/do</code> route there automatically. Archon creates a file at <code>.planning/campaigns/{slug}.md</code> before executing anything.</div>
+      </div>
+      <div class="campaign-block">
+        <div class="campaign-block-title">Phase types</div>
+        <div class="campaign-block-body">Campaigns break into 3–8 ordered phases: <strong style="color:var(--text)">research</strong> → <strong style="color:var(--text)">plan</strong> → <strong style="color:var(--text)">build</strong> → <strong style="color:var(--text)">wire</strong> → <strong style="color:var(--text)">verify</strong> → <strong style="color:var(--text)">prune</strong>. Each has machine-verifiable end conditions (file exists, command passes, metric threshold) — a phase isn't marked complete until they pass.</div>
+      </div>
+      <div class="campaign-block">
+        <div class="campaign-block-title">Self-correction (automatic)</div>
+        <div class="campaign-block-body">
+          · <strong style="color:var(--text)">Direction alignment</strong> every 2 phases — catches scope drift before it compounds<br>
+          · <strong style="color:var(--text)">Quality spot-check</strong> every phase — reads the most significant output, verifies it meets the project's bar<br>
+          · <strong style="color:var(--text)">Regression guard</strong> after build phases — runs typecheck, escalates on 5+ new errors<br>
+          · <strong style="color:var(--text)">Anti-pattern scan</strong> — catches transition-all, confirm(), missing Escape handlers
+        </div>
+      </div>
+      <div class="campaign-block">
+        <div class="campaign-block-title">Resuming across sessions</div>
+        <div class="campaign-block-body">Run <code>/do continue</code> or <code>/archon</code> with no arguments. The SessionStart hook restores context. Archon reads the campaign's Active Context section and picks up at the exact sub-step.</div>
+      </div>
+      <div class="campaign-block">
+        <div class="campaign-block-title">Archon vs Fleet</div>
+        <div class="campaign-block-body"><strong style="color:var(--orange)">Archon</strong> — sequential phases, one agent per phase. Best for complex single-domain work.<br><br><strong style="color:var(--purple)">Fleet</strong> — parallel agents in isolated worktrees, 2–3 per wave. Best for platform-wide work where phases are independent. <code>/do</code> routes to Fleet automatically when it detects platform-wide scope.</div>
+      </div>
+      <div class="campaign-block">
+        <div class="campaign-block-title">Circuit breakers</div>
+        <div class="campaign-block-body">Campaigns park automatically when: 3+ consecutive failures on the same approach · 5+ new type errors in a single phase · direction drift detected twice in a row · quality bar fails 3 times. You get a clear status and a decision point.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll cue (fixed, outside sliding area) -->
+  <button class="scroll-cue" id="scroll-cue" onclick="goToScreen(1)" aria-label="Scroll to learn more">
+    <svg width="22" height="13" viewBox="0 0 22 13" fill="none">
+      <path d="M1 1.5L11 10.5L21 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <svg width="22" height="13" viewBox="0 0 22 13" fill="none" style="opacity:0.35">
+      <path d="M1 1.5L11 10.5L21 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <script>
+    // ─── Routing logic ─────────────────────────────────────────────────────
+    const TIER0 = [
+      { re: /\b(fix|correct)\s+(the\s+)?typo\b/i,    label: 'pattern: "fix typo"',     color: 'var(--green)' },
+      { re: /\brename\s+\w+\s+to\b/i,                label: 'pattern: "rename X to Y"', color: 'var(--green)' },
+      { re: /\b(commit|stage)\b/i,                    label: 'pattern: "commit"',        color: 'var(--green)' },
+      { re: /\b(typecheck|type.?check)\b|\bbuild\b(?!\s+(?:me\s+)?(?:a|an)\b)/i, label: 'pattern: "build/check"',   color: 'var(--green)' },
+      { re: /\b(run tests?|test suite)\b/i,           label: 'pattern: "run tests"',     color: 'var(--green)' },
+      { re: /\bstatus\b/i,                            label: 'pattern: "status"',        color: 'var(--green)' },
+      { re: /\b(continue|keep going|resume)\b/i,      label: 'pattern: "continue"',      color: 'var(--green)' },
+      { re: /\bsetup\b/i,                             label: 'pattern: "setup"',         color: 'var(--green)' },
+      { re: /\b(list|--list)\b/i,                     label: 'pattern: "list"',          color: 'var(--green)' },
+    ];
+
+    const TIER2 = [
+      { re: /\b(review|code.?review)\b/i,             skill: '/review',
+        desc: '5-pass structured code review: correctness, security, performance, readability, consistency.', icon: '◆' },
+      { re: /\b(test|tests|write tests|generate tests?)\b/i, skill: '/test-gen',
+        desc: 'Generates runnable tests using your actual framework. Iterates up to 3x on failures before stopping.', icon: '⚗' },
+      { re: /\b(document|docs|docstring|readme)\b/i,  skill: '/doc-gen',
+        desc: 'Three modes: function-level, module-level, or API reference. Reads your existing doc style first.', icon: '📄' },
+      { re: /\b(refactor|extract|split file)\b/i,     skill: '/refactor',
+        desc: 'Safe multi-file refactoring. Typechecks before and after every change. Reverts automatically on failure.', icon: '↻' },
+      { re: /\b(scaffold|new module|new component|bootstrap)\b/i, skill: '/scaffold',
+        desc: 'Project-aware file generation. Reads your naming conventions and patterns from existing code before generating.', icon: '⬡' },
+      { re: /\b(research|investigate|look into|find out)\b/i, skill: '/research',
+        desc: 'Structured investigation with confidence levels and cited sources. Writes findings to .planning/research/.', icon: '⌕' },
+      { re: /\b(wiki|knowledge base|llm wiki|project wiki|knowledge management|karpathy wiki)\b/i, skill: '/wiki',
+        desc: 'LLM-native markdown knowledge base. Ingests sources, compiles interlinked topic files, and answers from cited wiki pages.', icon: '▤' },
+      { re: /\b(debug|root.?cause|diagnose|why is|investigate.?bug)\b/i, skill: '/systematic-debugging',
+        desc: '4-phase root cause analysis: observe → hypothesize → verify → fix. Emergency stop after 2 failed attempts.', icon: '⚡' },
+      { re: /\b(prd|requirements|spec|plan an app)\b/i, skill: '/prd',
+        desc: 'Generates a Product Requirements Document from a natural language description of your app.', icon: '📋' },
+      { re: /\b(architect|file structure|plan the build)\b/i, skill: '/architect',
+        desc: 'Converts a PRD into file tree, build phases, and machine-verifiable end conditions for each phase.', icon: '🏗' },
+      { re: /\b(experiment|optimize|a\/b|measure)\b/i, skill: '/experiment',
+        desc: 'Optimization loops with scalar fitness functions in isolated worktrees. Stops when metric stops improving.', icon: '⚗' },
+      { re: /\b(triage|issues|pull requests)\b/i,     skill: '/triage',
+        desc: 'Pulls open issues and PRs from GitHub, classifies them by severity, and searches the codebase for context.', icon: '📌' },
+      { re: /\b(postmortem|retro|what broke)\b/i,     skill: '/postmortem',
+        desc: 'Auto-generates structured postmortems from campaign telemetry and git history.', icon: '📊' },
+    ];
+
+    const TIER3 = [
+      { re: /\b(overhaul|redesign|rewrite|rearchitect|rebuild|migrate)\b.*\b(all|entire|platform|services|system)\b/i,
+        tool: '/fleet', icon: '⬢',
+        desc: 'Parallel campaign coordinator. Spawns 2-3 agents in isolated git worktrees per wave. Discoveries shared between waves via compressed briefs. Merge arbitration on completion.',
+        dims: { intent: 'redesign', scope: 'platform-wide', complexity: 5, persist: true, parallel: true, taste: true }, color: 'var(--purple)' },
+      { re: /\b(migrate|migration)\b/i,
+        tool: '/fleet', icon: '⬢',
+        desc: 'Parallel campaign coordinator. Spawns 2-3 agents in isolated git worktrees per wave. Discoveries shared between waves via compressed briefs. Merge arbitration on completion.',
+        dims: { intent: 'migrate', scope: 'platform-wide', complexity: 5, persist: true, parallel: true, taste: true }, color: 'var(--purple)' },
+      { re: /\b(redesign|overhaul)\b/i,
+        tool: '/fleet', icon: '⬢',
+        desc: 'Parallel campaign coordinator. Spawns 2-3 agents in isolated git worktrees per wave. Discoveries shared between waves via compressed briefs.',
+        dims: { intent: 'redesign', scope: 'cross-domain', complexity: 4, persist: true, parallel: true, taste: true }, color: 'var(--purple)' },
+      { re: /\b(create|build|make|generate)\b.*\b(app|application|tool|service|site|website|feature|system)\b/i,
+        tool: '/archon', icon: '⬡',
+        desc: 'Multi-session campaign executor. Decomposes into phases, delegates to Marshal sub-agents, enforces quality gates at each phase. Self-corrects direction every 2 phases.',
+        dims: { intent: 'create', scope: 'single-domain', complexity: 4, persist: true, parallel: false, taste: true }, color: 'var(--orange)' },
+      { re: /\b(add|implement|integrate)\b/i,
+        tool: '/create-app', icon: '⬡',
+        desc: 'Feature addition mode. Reads existing codebase conventions and architecture, adds the feature without breaking existing patterns.',
+        dims: { intent: 'add', scope: 'single-domain', complexity: 3, persist: false, parallel: false, taste: false }, color: 'var(--orange)' },
+    ];
+
+    function route(cmd) {
+      for (const p of TIER0) {
+        if (p.re.test(cmd)) return {
+          tier: 0, label: p.label, color: p.color,
+          tool: 'Direct Edit', icon: '✎',
+          desc: 'Claude performs the change inline — no skill loaded, no orchestrator spawned. Fastest possible path.',
+          tokens: '0', latency: '<1ms'
+        };
+      }
+      for (const k of TIER2) {
+        if (k.re.test(cmd)) return {
+          tier: 2, label: 'keyword hit', color: 'var(--cyan)',
+          tool: k.skill, icon: k.icon, desc: k.desc,
+          tokens: '0', latency: '<10ms'
+        };
+      }
+      for (const r of TIER3) {
+        if (r.re.test(cmd)) return {
+          tier: 3, label: `intent: ${r.dims.intent}`, color: r.color,
+          tool: r.tool, icon: r.icon, desc: r.desc,
+          tokens: '~500', latency: '~1–2s', dims: r.dims
+        };
+      }
+      return {
+        tier: 3, label: 'confidence < 0.7 → safe default', color: 'var(--purple)',
+        tool: '/marshal', icon: '⟳',
+        desc: 'Single-session meta-orchestrator. Takes any direction and executes it end-to-end by chaining the appropriate skills in sequence.',
+        tokens: '~500', latency: '~1–2s'
+      };
+    }
+
+    // ─── Live preview ─────────────────────────────────────────────────────
+    const input = document.getElementById('cmd-input');
+    const liveBadge = document.getElementById('live-badge');
+    const enterKey = document.getElementById('enter-key');
+
+    function updateLivePreview(val) {
+      if (!val.trim()) {
+        liveBadge.textContent = '';
+        liveBadge.className = 'live-badge';
+        enterKey.classList.remove('lit');
+        return;
+      }
+      const r = route(val.trim());
+      liveBadge.textContent = `→ T${r.tier} · ${r.tool} · ${r.tokens} tokens`;
+      liveBadge.style.color = r.color;
+      liveBadge.className = 'live-badge active';
+      enterKey.classList.add('lit');
+    }
+
+    input.addEventListener('input', e => updateLivePreview(e.target.value));
+
+    // ─── Animation ────────────────────────────────────────────────────────
+    const TIER_IDS = ['tier0', 'tier1', 'tier2', 'tier3'];
+    let history = [];
+    let histIdx = -1;
+
+    async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function resetTiers() {
+      for (const id of TIER_IDS) {
+        const el = document.getElementById(id);
+        el.className = 'tier-row';
+        el.querySelector('.tier-status').textContent = '';
+      }
+      document.getElementById('output-section').classList.remove('visible');
+      document.getElementById('classification').classList.remove('visible', 'purple-theme');
+    }
+
+    async function animateRoute(cmd) {
+      resetTiers();
+      const panel = document.getElementById('result-panel');
+      const spinner = document.getElementById('spinner');
+      const resultCmd = document.getElementById('result-command');
+      const timerEl = document.getElementById('result-timer');
+
+      // Compress hero + fold generators, reveal result
+      document.body.classList.add('mode-result');
+      if (currentScreen === 1) goToScreen(0);
+      updateScrollCue();
+      panel.style.display = 'block';
+      requestAnimationFrame(() => panel.classList.add('visible'));
+      resultCmd.textContent = `/do ${cmd}`;
+      spinner.classList.add('active');
+      timerEl.textContent = '';
+      const t0 = performance.now();
+
+      const result = route(cmd);
+
+      for (let i = 0; i <= 3; i++) {
+        const tierEl = document.getElementById(`tier${i}`);
+        const statusEl = document.getElementById(`tier${i}-status`);
+
+        if (i === 1) {
+          await sleep(200);
+          tierEl.classList.add('skipped');
+          statusEl.textContent = '— no active session';
+          statusEl.style.color = 'var(--muted)';
+          continue;
+        }
+
+        tierEl.classList.add('checking');
+        statusEl.textContent = 'evaluating…';
+        statusEl.style.color = 'var(--muted)';
+
+        const delay = i === 0 ? 360 : i === 2 ? 460 : 580;
+        await sleep(delay);
+
+        if (i === result.tier) {
+          tierEl.classList.remove('checking');
+          tierEl.classList.add('matched');
+          statusEl.textContent = `✓  ${result.label}`;
+          statusEl.style.color = result.color;
+
+          for (let j = i + 1; j <= 3; j++) {
+            document.getElementById(`tier${j}`).classList.add('skipped');
+            const s = document.getElementById(`tier${j}-status`);
+            s.textContent = '— skipped'; s.style.color = 'var(--muted)';
+          }
+          break;
+        } else {
+          tierEl.classList.remove('checking');
+          tierEl.classList.add('skipped');
+          statusEl.textContent = '— no match';
+          statusEl.style.color = 'var(--muted)';
+        }
+      }
+
+      spinner.classList.remove('active');
+      const elapsed = Math.round(performance.now() - t0);
+      timerEl.textContent = `${elapsed}ms`;
+
+      // Classification breakdown for Tier 3
+      if (result.tier === 3 && result.dims) {
+        const cl = document.getElementById('classification');
+        cl.classList.add('visible');
+        if (result.color === 'var(--purple)') cl.classList.add('purple-theme');
+
+        const isP = result.color === 'var(--purple)';
+        const ac = isP ? 'accent-purple' : 'accent';
+        const dc = isP ? 'on-purple' : 'on';
+
+        document.getElementById('cl-intent').textContent = result.dims.intent;
+        document.getElementById('cl-intent').className = `cl-value ${ac}`;
+        document.getElementById('cl-scope').textContent = result.dims.scope;
+        document.getElementById('cl-parallel').textContent = result.dims.parallel ? 'yes' : 'no';
+        document.getElementById('cl-parallel').className = `cl-value ${result.dims.parallel ? ac : ''}`;
+        document.getElementById('cl-persist').textContent = result.dims.persist ? 'yes' : 'no';
+        document.getElementById('cl-persist').className = `cl-value ${result.dims.persist ? ac : ''}`;
+        document.getElementById('cl-taste').textContent = result.dims.taste ? 'yes' : 'no';
+
+        const dotsEl = document.getElementById('cl-dots');
+        dotsEl.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+          const d = document.createElement('div');
+          d.className = `cl-dot${i < result.dims.complexity ? ' ' + dc : ''}`;
+          dotsEl.appendChild(d);
+        }
+      }
+
+      await sleep(320);
+
+      // Output card
+      document.getElementById('output-icon').textContent = result.icon || '◆';
+      document.getElementById('output-icon').style.color = result.color;
+      document.getElementById('output-name').textContent = result.tool;
+      document.getElementById('output-name').style.color = result.color;
+      document.getElementById('output-desc').textContent = result.desc;
+
+      const inner = document.getElementById('output-inner');
+      inner.style.borderColor = result.color;
+      inner.style.boxShadow = `0 0 28px color-mix(in srgb, ${result.color} 12%, transparent)`;
+
+      const outSection = document.getElementById('output-section');
+      outSection.style.borderColor = `color-mix(in srgb, ${result.color} 30%, var(--border))`;
+
+      document.getElementById('output-meta').innerHTML = `
+        <span class="meta-badge hi" style="--match-color:${result.color}">Tier ${result.tier}</span>
+        <span class="meta-badge">${result.tokens} tokens to classify</span>
+        <span class="meta-badge">${result.latency} dispatch</span>
+        ${result.dims && result.dims.persist ? `<span class="meta-badge hi" style="--match-color:${result.color}">multi-session</span>` : ''}
+        ${result.dims && result.dims.parallel ? `<span class="meta-badge hi" style="--match-color:${result.color}">parallel fleet</span>` : ''}
+      `;
+
+      outSection.classList.add('visible');
+      document.getElementById('try-bar').style.display = 'flex';
+      // Scroll output card into view within screen-1
+      setTimeout(() => outSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+
+      // Tier-colored pulse — blast radius maps to cost
+      const inputEl = document.getElementById('cmd-input');
+      if (inputEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const rect = inputEl.getBoundingClientRect();
+        const px = rect.left + rect.width / 2;
+        const py = rect.top + rect.height / 2;
+        const tierMaxR = result.tier === 0 ? 120 : result.tier === 2 ? 220 : 500;
+        const tierSpeed = result.tier === 0 ? 6 : result.tier === 2 ? 7 : 9;
+        const tierColor = result.color;
+        if (window.fireTierPulse) window.fireTierPulse(px, py, tierMaxR, tierSpeed, tierColor);
+      }
+
+      // History
+      history = [{ cmd, result }, ...history.filter(h => h.cmd !== cmd)].slice(0, 6);
+      histIdx = -1;
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const sec = document.getElementById('history-section');
+      const items = document.getElementById('history-items');
+      if (history.length < 2) { sec.classList.remove('visible'); return; }
+      sec.classList.add('visible');
+      items.innerHTML = '';
+      history.slice(1).forEach(h => {
+        const pill = document.createElement('button');
+        pill.className = 'history-pill';
+        pill.style.setProperty('--pill-color', h.result.color);
+        pill.textContent = h.cmd;
+        pill.title = `→ ${h.result.tool}`;
+        pill.addEventListener('click', () => {
+          input.value = h.cmd;
+          animateRoute(h.cmd);
+        });
+        items.appendChild(pill);
+      });
+    }
+
+    function resetDemo() {
+      const panel = document.getElementById('result-panel');
+      document.body.classList.remove('mode-result');
+      panel.classList.remove('visible');
+      document.getElementById('screen-1').scrollTop = 0;
+      document.getElementById('try-bar').style.display = 'none';
+      // Re-hide from layout after clip-path out-animation completes (700ms)
+      setTimeout(() => { panel.style.display = ''; }, 750);
+      input.value = '';
+      histIdx = -1;
+      updateLivePreview('');
+      resetTiers();
+      goToScreen(0);
+      setTimeout(() => { input.focus(); updateScrollCue(); }, 300);
+    }
+
+    function triggerRoute() {
+      if (input.value.trim()) animateRoute(input.value.trim());
+    }
+
+    // ─── Event handlers ───────────────────────────────────────────────────
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        animateRoute(input.value.trim());
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const cmds = history.map(h => h.cmd);
+        if (cmds.length > 0) {
+          histIdx = Math.min(histIdx + 1, cmds.length - 1);
+          input.value = cmds[histIdx];
+          updateLivePreview(input.value);
+        }
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (histIdx > 0) {
+          histIdx--;
+          input.value = history[histIdx].cmd;
+        } else {
+          histIdx = -1;
+          input.value = '';
+        }
+        updateLivePreview(input.value);
+      }
+      if (e.key === 'Escape' && !activePanel) {
+        if (document.body.classList.contains('mode-result')) {
+          resetDemo();
+        } else {
+          input.value = '';
+          histIdx = -1;
+          updateLivePreview('');
+        }
+      }
+    });
+
+    // ─── Generator pools ─────────────────────────────────────────────────
+    const POOLS = {
+      instant: [
+        'fix the typo on line 42',
+        'rename UserController to UserHandler',
+        'commit my changes',
+        'typecheck',
+        'rename AuthService to AuthHandler',
+        'list skills',
+        'status',
+      ],
+      skill: [
+        'review the auth module',
+        'write tests for the payment service',
+        'document the API endpoints',
+        'refactor the auth middleware',
+        'scaffold a new notifications module',
+        'why is the API returning 500',
+        'research the best caching strategy',
+        'debug the login failure',
+      ],
+      campaign: [
+        'build me a recipe app',
+        'add a dark mode toggle',
+        'implement Stripe payments',
+        'create a real-time chat feature',
+        'add OAuth login to the app',
+        'implement a search feature',
+      ],
+      fleet: [
+        'overhaul all three services',
+        'redesign the entire data layer',
+        'migrate the platform to TypeScript strict mode',
+        'rebuild the entire API layer',
+      ],
+    };
+
+    const lastIdx = { instant: -1, skill: -1, campaign: -1, fleet: -1 };
+    let isTyping = false;
+
+    function pickNext(tier) {
+      const pool = POOLS[tier];
+      const candidates = pool.map((_, i) => i).filter(i => i !== lastIdx[tier]);
+      const idx = candidates[Math.floor(Math.random() * candidates.length)];
+      lastIdx[tier] = idx;
+      return pool[idx];
+    }
+
+    async function typeInto(text) {
+      input.value = '';
+      updateLivePreview('');
+      for (const ch of text) {
+        input.value += ch;
+        updateLivePreview(input.value);
+        await sleep(32 + Math.random() * 24);
+      }
+      await sleep(200);
+    }
+
+    async function generate(tier) {
+      if (isTyping) return;
+      isTyping = true;
+      // Mark button busy
+      const btn = [...document.querySelectorAll('.gen-btn')]
+        .find(b => b.getAttribute('onclick') === `generate('${tier}')`);
+      if (btn) btn.classList.add('busy');
+
+      const text = pickNext(tier);
+      await typeInto(text);
+      animateRoute(text);
+
+      if (btn) btn.classList.remove('busy');
+      isTyping = false;
+    }
+
+    // How-section example links
+    document.querySelectorAll('.how-example[data-cmd]').forEach(el => {
+      el.addEventListener('click', () => {
+        input.value = el.dataset.cmd;
+        updateLivePreview(el.dataset.cmd);
+        animateRoute(el.dataset.cmd);
+        goToScreen(0);
+      });
+    });
+
+    // Focus input on load
+    setTimeout(() => input.focus(), 100);
+
+    // ─── Side panels ──────────────────────────────────────────────────────
+    let activePanel = null;
+
+    function openPanel(name) {
+      if (activePanel === name) { closePanel(); return; }
+      if (activePanel) {
+        document.getElementById(`panel-${activePanel}`).classList.remove('open');
+        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('panel-active'));
+      }
+      activePanel = name;
+      document.getElementById('panel-backdrop').classList.add('open');
+      document.getElementById(`panel-${name}`).classList.add('open');
+      const btn = [...document.querySelectorAll('.nav-link')].find(
+        el => el.getAttribute('onclick') === `openPanel('${name}')`
+      );
+      if (btn) btn.classList.add('panel-active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePanel() {
+      if (!activePanel) return;
+      document.getElementById('panel-backdrop').classList.remove('open');
+      document.getElementById(`panel-${activePanel}`).classList.remove('open');
+      document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('panel-active'));
+      document.body.style.overflow = '';
+      activePanel = null;
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && activePanel) { closePanel(); e.stopPropagation(); }
+    });
+
+    // ─── Cinematic scroll ─────────────────────────────────────────────────────
+    let currentScreen = 0, isTransitioning = false;
+
+    // Set layout heights imperatively from measured nav
+    function setupLayout() {
+      const nav = document.querySelector('nav');
+      const navH = nav ? nav.offsetHeight : 48;
+      const pageH = window.innerHeight - navH;
+      document.documentElement.style.setProperty('--nav-h', navH + 'px');
+      const pageWrap = document.getElementById('page-wrap');
+      const screen1 = document.getElementById('screen-1');
+      const screen2 = document.getElementById('screen-2');
+      if (pageWrap) pageWrap.style.height = pageH + 'px';
+      if (screen1) screen1.style.height = pageH + 'px';
+      if (screen2) screen2.style.height = pageH + 'px';
+    }
+    setupLayout();
+    window.addEventListener('resize', setupLayout);
+
+    function easeInOutQuart(t) {
+      return t < 0.5 ? 8*t*t*t*t : 1 - Math.pow(-2*t + 2, 4) / 2;
+    }
+
+    function goToScreen(n) {
+      if (isTransitioning) return;
+      if (n === currentScreen) return;
+      const inner = document.getElementById('screens-inner');
+      const h = document.getElementById('page-wrap').clientHeight;
+      const startY = currentScreen * -h;
+      const endY = n * -h;
+      const diff = endY - startY;
+      isTransitioning = true;
+      const startTime = performance.now();
+      function tick(now) {
+        const t = Math.min((now - startTime) / 780, 1);
+        inner.style.transform = `translateY(${startY + diff * easeInOutQuart(t)}px)`;
+        if (t < 1) requestAnimationFrame(tick);
+        else {
+          inner.style.transform = `translateY(${endY}px)`;
+          currentScreen = n;
+          isTransitioning = false;
+          updateScrollCue();
+          if (n === 1 && !window._statsAnimated) { window._statsAnimated = true; animateStats(); }
+          if (n === 0) {
+            const s2 = document.getElementById('screen-2');
+            if (s2) s2.scrollTop = 0;
+          }
+        }
+      }
+      currentScreen = n;
+      updateScrollCue();
+      requestAnimationFrame(tick);
+    }
+
+    // Wheel interception
+    let wheelAcc = 0, wheelTimer = null;
+    window.addEventListener('wheel', (e) => {
+      if (e.target.closest('.panel-body, .side-panel')) return;
+      if (isTransitioning) { e.preventDefault(); return; }
+      if (document.body.classList.contains('mode-result')) {
+        // Allow native scroll within screen-1; block everything else
+        if (e.target.closest('#screen-1')) return;
+        e.preventDefault(); return;
+      }
+      if (currentScreen === 1) {
+        const s2 = document.getElementById('screen-2');
+        const atTop = !s2 || s2.scrollTop <= 0;
+        if (e.deltaY < 0 && atTop) {
+          e.preventDefault();
+          goToScreen(0);
+        }
+        // else let screen-2 scroll naturally
+        return;
+      }
+      // On screen 1
+      e.preventDefault();
+      wheelAcc += e.deltaY;
+      clearTimeout(wheelTimer);
+      wheelTimer = setTimeout(() => { wheelAcc = 0; }, 300);
+      if (wheelAcc > 40) { wheelAcc = 0; goToScreen(1); }
+    }, { passive: false });
+
+    // Touch support
+    let touchStartY = 0;
+    window.addEventListener('touchstart', e => {
+      if (e.target.closest('.panel-body')) return;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    window.addEventListener('touchend', e => {
+      if (e.target.closest('.panel-body')) return;
+      if (isTransitioning || document.body.classList.contains('mode-result')) return;
+      const diff = touchStartY - e.changedTouches[0].clientY;
+      if (diff > 50 && currentScreen === 0) goToScreen(1);
+      else if (diff < -50 && currentScreen === 1) {
+        const s2 = document.getElementById('screen-2');
+        if (!s2 || s2.scrollTop <= 0) goToScreen(0);
+      }
+    }, { passive: true });
+
+    // Scroll cue
+    const scrollCue = document.getElementById('scroll-cue');
+    function updateScrollCue() {
+      const show = currentScreen === 0 && !document.body.classList.contains('mode-result');
+      scrollCue.classList.toggle('visible', show);
+    }
+    setTimeout(() => updateScrollCue(), 1200);
+
+    // ─── Dot grid background (physics: liquid repulsion + spring) ─────────────
+    (function () {
+      const canvas = document.getElementById('bg-dots');
+      const ctx = canvas.getContext('2d');
+      const SPACING = 36, BASE_R = 1.2, MAX_R = 2.8;
+      const REPEL_DIST = 90, REPEL_STRENGTH = 6;
+      const SPRING = 0.045, DAMPING = 0.88;
+      let W, H, cols, rows;
+      let dots = null;
+      const STRIDE = 7;
+      let mx = -9999, my = -9999, raf = null, lastTime = 0;
+      const pulses = []; // { x, y, r, maxR, speed, type: 'burst'|'ripple', age }
+      const FRAME_MS = 1000 / 60;
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        cols = Math.ceil(W / SPACING) + 1;
+        rows = Math.ceil(H / SPACING) + 1;
+        const n = cols * rows;
+        dots = new Float32Array(n * STRIDE);
+        for (let i = 0; i < n; i++) {
+          const ox = (i % cols) * SPACING, oy = ((i / cols) | 0) * SPACING;
+          const b = i * STRIDE;
+          dots[b]=ox; dots[b+1]=oy; dots[b+2]=ox; dots[b+3]=oy;
+          dots[b+4]=0; dots[b+5]=0; dots[b+6]=0;
+        }
+      }
+
+      function draw(now) {
+        raf = requestAnimationFrame(draw);
+        if (now - lastTime < FRAME_MS) return;
+        const dt = Math.min(now - lastTime, 32) / 16;
+        lastTime = now;
+        const n = cols * rows;
+        for (let i = 0; i < n; i++) {
+          const b = i * STRIDE;
+          const ox=dots[b], oy=dots[b+1];
+          let x=dots[b+2], y=dots[b+3], vx=dots[b+4], vy=dots[b+5];
+          const dx=x-mx, dy=y-my, dist=Math.sqrt(dx*dx+dy*dy)||1;
+          if (dist < REPEL_DIST) {
+            const force = (1 - dist/REPEL_DIST) * REPEL_STRENGTH;
+            vx += (dx/dist)*force*dt; vy += (dy/dist)*force*dt;
+          }
+          vx += (ox-x)*SPRING*dt; vy += (oy-y)*SPRING*dt;
+          vx *= DAMPING; vy *= DAMPING;
+          x += vx*dt; y += vy*dt;
+          dots[b+2]=x; dots[b+3]=y; dots[b+4]=vx; dots[b+5]=vy;
+          const disp = Math.sqrt((x-ox)*(x-ox)+(y-oy)*(y-oy));
+          dots[b+6] = Math.min(1, disp / (REPEL_DIST * 0.35));
+        }
+
+        // Update pulses and apply to dots
+        for (let p = pulses.length - 1; p >= 0; p--) {
+          const pulse = pulses[p];
+          pulse.r += pulse.speed * dt;
+          pulse.age += dt;
+          if (pulse.r > pulse.maxR) { pulses.splice(p, 1); continue; }
+          const fade = 1 - pulse.r / pulse.maxR;
+          for (let i = 0; i < n; i++) {
+            const b = i * STRIDE;
+            const ox = dots[b], oy = dots[b+1];
+            const px = ox - pulse.x, py = oy - pulse.y;
+            const dist = Math.sqrt(px*px + py*py);
+            if (pulse.type === 'burst') {
+              // Radial push: strongest near the expanding front
+              const front = Math.abs(dist - pulse.r);
+              if (front < 40) {
+                const force = (1 - front/40) * 12 * fade;
+                const ang = dist || 1;
+                dots[b+4] += (px/ang)*force; dots[b+5] += (py/ang)*force;
+              }
+            } else {
+              // Ripple: ring of light (heat boost), no displacement
+              const front = Math.abs(dist - pulse.r);
+              if (front < 28) {
+                const boost = (1 - front/28) * fade * 0.8;
+                dots[b+6] = Math.min(1, dots[b+6] + boost);
+              }
+            }
+          }
+        }
+
+        ctx.clearRect(0,0,W,H);
+        ctx.beginPath(); ctx.fillStyle='rgba(30,38,50,0.72)';
+        for (let i=0;i<n;i++) {
+          const b=i*STRIDE;
+          if(dots[b+6]<0.04){ const x=dots[b+2],y=dots[b+3]; ctx.moveTo(x+BASE_R,y); ctx.arc(x,y,BASE_R,0,Math.PI*2); }
+        }
+        ctx.fill();
+        // Determine active tint from most recent tinted burst pulse
+        let activeTint = null;
+        for (let p = 0; p < pulses.length; p++) {
+          if (pulses[p].tint) { activeTint = pulses[p].tint; break; }
+        }
+        const glowColor = activeTint ? activeTint.replace('var(--green)', '63,185,80').replace('var(--cyan)', '0,210,255').replace('var(--orange)', '240,136,62').replace('var(--purple)', '188,140,255') : '0,210,255';
+        for (let i=0;i<n;i++) {
+          const b=i*STRIDE, t=dots[b+6]; if(t<0.04) continue;
+          const x=dots[b+2],y=dots[b+3],r=BASE_R+(MAX_R-BASE_R)*t*t;
+          ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+          ctx.fillStyle=`rgba(${glowColor},${(0.15+0.6*t).toFixed(2)})`; ctx.fill();
+        }
+      }
+
+      function start() { if(!raf){ lastTime=performance.now(); raf=requestAnimationFrame(draw); } }
+      function stop()  { if(raf){ cancelAnimationFrame(raf); raf=null; } }
+
+      resize();
+      window.addEventListener('resize', resize);
+      window.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+      window.addEventListener('click', e => {
+        if (e.target.closest('button, a, input, .panel-body')) return;
+        pulses.push({ x: e.clientX, y: e.clientY, r: 0, maxR: 200, speed: 8, type: 'burst', age: 0 });
+      });
+      window.addEventListener('contextmenu', e => {
+        if (e.target.closest('button, a, input, .panel-body')) return;
+        e.preventDefault();
+        pulses.push({ x: e.clientX, y: e.clientY, r: 0, maxR: 260, speed: 5, type: 'ripple', age: 0 });
+      });
+      window.addEventListener('mouseleave', () => {
+        mx=-9999; my=-9999;
+        // zero velocities so dots glide home cleanly instead of oscillating
+        if(dots) for(let i=0;i<dots.length;i+=STRIDE){ dots[i+4]=0; dots[i+5]=0; }
+      });
+      document.addEventListener('visibilitychange', ()=>document.hidden?stop():(lastTime=performance.now(),start()));
+      start();
+
+      // Expose tier-colored pulse for animateRoute
+      window.fireTierPulse = function(x, y, maxR, speed, cssColor) {
+        pulses.push({ x, y, r: 0, maxR, speed, type: 'burst', age: 0, tint: cssColor });
+      };
+      // Expose ambient ripple for background activity simulation
+      window.fireAmbientPulse = function(x, y) {
+        pulses.push({ x, y, r: 0, maxR: 80 + Math.random() * 80, speed: 2.5 + Math.random() * 2, type: 'ripple', age: 0 });
+      };
+    })();
+
+    // ─── scrollToInstall — bypasses cinematic snap ────────────────────────
+    function scrollToInstall() {
+      const screen2 = document.getElementById('screen-2');
+      const installEl = document.getElementById('install-section');
+      const doScroll = () => {
+        if (screen2 && installEl) {
+          screen2.scrollTo({ top: installEl.offsetTop, behavior: 'smooth' });
+        }
+      };
+      if (currentScreen !== 1) {
+        if (isTransitioning) return;
+        const inner = document.getElementById('screens-inner');
+        const h = document.getElementById('page-wrap').clientHeight;
+        const startY = currentScreen * -h;
+        const endY = -h;
+        const diff = endY - startY;
+        isTransitioning = true;
+        const startTime = performance.now();
+        function tick(now) {
+          const t = Math.min((now - startTime) / 780, 1);
+          inner.style.transform = `translateY(${startY + diff * easeInOutQuart(t)}px)`;
+          if (t < 1) { requestAnimationFrame(tick); }
+          else {
+            inner.style.transform = `translateY(${endY}px)`;
+            currentScreen = 1;
+            isTransitioning = false;
+            updateScrollCue();
+            doScroll();
+          }
+        }
+        requestAnimationFrame(tick);
+      } else {
+        doScroll();
+      }
+    }
+
+    // ─── Idle placeholder cycling ─────────────────────────────────────────
+    (function initPlaceholder() {
+      const hints = [
+        'Type any engineering task…',
+        'try: fix the typo on line 42',
+        'try: review the auth module',
+        'try: build me a recipe app',
+        'try: debug the login failure',
+        'try: migrate the platform to TypeScript',
+        'try: scaffold a dashboard component',
+        'try: write tests for UserService',
+      ];
+      let idx = 0, timer = null;
+      function rotate() {
+        if (document.hidden || input === document.activeElement || input.value.trim()
+            || document.body.classList.contains('mode-result')) {
+          timer = setTimeout(rotate, 3000); return;
+        }
+        idx = (idx + 1) % hints.length;
+        input.placeholder = hints[idx];
+        timer = setTimeout(rotate, 3200);
+      }
+      input.addEventListener('focus', () => {
+        clearTimeout(timer); timer = null;
+        input.placeholder = 'Type any engineering task…';
+      });
+      input.addEventListener('blur', () => {
+        if (!input.value.trim()) timer = setTimeout(rotate, 4000);
+      });
+      timer = setTimeout(rotate, 6000);
+    })();
+
+    // ─── Stats count-up on first screen-2 visit ────────────────────────────
+    function animateStats() {
+      const rows = document.querySelectorAll('.stat-num');
+      const targets = [33, 4, 14, 0]; // 0 = ~0 (special case)
+      rows.forEach((el, i) => {
+        const target = targets[i];
+        if (target === 0) {
+          el.style.opacity = '0';
+          setTimeout(() => {
+            el.style.transition = 'opacity 0.6s';
+            el.style.opacity = '1';
+          }, i * 160 + 200);
+          return;
+        }
+        el.textContent = '0';
+        const delay = i * 160;
+        const duration = 900;
+        const startTime = performance.now() + delay;
+        function tick(now) {
+          if (now < startTime) { requestAnimationFrame(tick); return; }
+          const progress = Math.min((now - startTime) / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(ease * target);
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+
+    // ─── Live agent counter ────────────────────────────────────────────────
+    (function liveAgentCounter() {
+      const el = document.getElementById('live-agent-count');
+      if (!el) return;
+      let count = 2 + Math.floor(Math.random() * 4);
+      function tick() {
+        if (!document.hidden) {
+          const delta = Math.random() < 0.5 ? 1 : -1;
+          count = Math.max(1, Math.min(12, count + delta));
+          el.textContent = count;
+        }
+        setTimeout(tick, 2500 + Math.random() * 3500);
+      }
+      setTimeout(tick, 4000);
+    })();
+
+    // ─── Autonomous background pulses (background agent activity) ─────────
+    (function autoPulse() {
+      let _W = window.innerWidth, _H = window.innerHeight;
+      window.addEventListener('resize', () => { _W = window.innerWidth; _H = window.innerHeight; });
+      function fire() {
+        if (!document.hidden && window.fireAmbientPulse) {
+          const x = _W * (0.1 + Math.random() * 0.8);
+          const y = _H * (0.1 + Math.random() * 0.8);
+          window.fireAmbientPulse(x, y);
+        }
+        setTimeout(fire, 3000 + Math.random() * 4000);
+      }
+      setTimeout(fire, 5000);
+    })();
+
+    // ─── Copy-to-clipboard for code blocks ────────────────────────────────
+    (function initCopyButtons() {
+      document.querySelectorAll('.install-code, .panel-code').forEach(block => {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'position:relative;display:block';
+        block.parentNode.insertBefore(wrap, block);
+        wrap.appendChild(block);
+        block.style.paddingRight = '52px';
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.textContent = 'copy';
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(block.textContent.trim()).then(() => {
+            btn.textContent = 'copied!';
+            btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1600);
+          }).catch(() => {
+            const sel = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(block);
+            sel.removeAllRanges(); sel.addRange(range);
+          });
+        });
+        wrap.appendChild(btn);
+      });
+    })();
+
+    // ─── GitHub star count ─────────────────────────────────────────────────
+    (function fetchStars() {
+      const CACHE_KEY = 'sinan_stars';
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      function applyCount(n) {
+        const label = `★ ${n.toLocaleString()} · Star on GitHub`;
+        const nav = document.getElementById('nav-star');
+        const footer = document.getElementById('footer-star');
+        if (nav) nav.textContent = label;
+        if (footer) footer.textContent = label;
+        sessionStorage.setItem(CACHE_KEY, n);
+      }
+      if (cached) { applyCount(Number(cached)); return; }
+      fetch('https://api.github.com/repos/SethGammon/sinan')
+        .then(r => r.ok ? r.json() : null)
+        .then(d => { if (d && d.stargazers_count != null) applyCount(d.stargazers_count); })
+        .catch(() => {});
+    })();
+  </script>
+</body>
+</html>

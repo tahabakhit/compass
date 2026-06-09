@@ -1,0 +1,5 @@
+interface:
+  display_name: "Review"
+  short_description: "Use when 5-pass structured code review — correctness, security, performance, readability, consistency"
+policy:
+  allow_implicit_invocation: false

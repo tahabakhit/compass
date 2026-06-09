@@ -1,0 +1,23 @@
+{
+  "name": "sinan-local",
+  "interface": {
+    "displayName": "Sinan Local Plugins"
+  },
+  "plugins": [
+    {
+      "name": "sinan",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools",
+      "interface": {
+        "displayName": "Sinan"
+      }
+    }
+  ]
+}

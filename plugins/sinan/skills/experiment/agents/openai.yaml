@@ -1,0 +1,5 @@
+interface:
+  display_name: "Experiment"
+  short_description: "Use when automated optimization loop with scalar fitness function. Proposes changes in isolated worktrees, measures with a metric command, keeps improvements, discards..."
+policy:
+  allow_implicit_invocation: false

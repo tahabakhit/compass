@@ -1,0 +1,272 @@
+#!/usr/bin/env node
+'use strict';
+
+const assert = require('assert');
+const childProcess = require('child_process');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+const { applyStackDecision, buildConsole, renderConsole } = require('./operator-console');
+
+function write(filePath, content) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, content, 'utf8');
+}
+
+function withTempProject(run) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-operator-console-'));
+  try {
+    return run(dir);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+function readinessReport({ branch, head, pr, generated }) {
+  return [
+    `# PR Readiness: ${branch}`,
+    '',
+    `Generated: ${generated}`,
+    'Status: ready',
+    `PR: ${pr}`,
+    `Branch: ${branch}`,
+    `Head: ${head}`,
+    '',
+    '## Gates',
+    '',
+    '| Gate | Status | Detail |',
+    '|---|---|---|',
+    `| Pull request URL | pass | ${pr} |`,
+    '| Git worktree | pass | clean |',
+    '| Dashboard repairs | pass | no queued repairs |',
+    '| Verification | pass | npm run test exited 0 |',
+  ].join('\n');
+}
+
+withTempProject((projectRoot) => {
+  write(path.join(projectRoot, '.planning', 'telemetry', 'doc-sync-queue.jsonl'), [
+    JSON.stringify({ event: 'session-end', status: 'pending', timestamp: '2026-06-05T12:00:00.000Z' }),
+  ].join('\n') + '\n');
+
+  const consoleState = buildConsole(projectRoot, { run: false });
+  const output = renderConsole(consoleState);
+
+  assert.equal(consoleState.status, 'repair-ready');
+  assert.equal(consoleState.nextAction.command, '/learn --doc-sync');
+  assert.equal(consoleState.nextAction.canRunNow, true);
+  assert.equal(consoleState.summary.status, 'repair-ready');
+  assert.equal(consoleState.summary.command, '/learn --doc-sync');
+  assert.equal(consoleState.summary.canRunNow, true);
+  assert.equal(consoleState.summary.boundary, 'local-repair');
+  assert.equal(consoleState.summary.risk, 'low');
+  assert.equal(consoleState.summary.pending.docSync, 1);
+  assert.equal(consoleState.summary.artifactsStale, 0);
+  assert.equal(consoleState.summary.artifactsNeedAttention, 0);
+  assert.equal(consoleState.summary.historicalArtifactsStale, 0);
+  assert.equal(consoleState.summary.reportPath, '.planning/operator-console/latest.md');
+  assert.equal(consoleState.summary.nextReportPath, '.planning/next-actions/latest.md');
+  assert.equal(consoleState.boundary.kind, 'local-repair');
+  assert.equal(consoleState.boundary.risk, 'low');
+  assert.equal(consoleState.dashboard.pending.docSync, 1);
+  assert.equal(consoleState.reportPath, '.planning/operator-console/latest.md');
+  assert(fs.existsSync(path.join(projectRoot, '.planning', 'operator-console', 'latest.md')));
+  assert(fs.existsSync(path.join(projectRoot, '.planning', 'next-actions', 'latest.md')));
+  assert(output.includes('Sinan Operator Console'));
+  assert(output.includes('Status: repair-ready'));
+  assert(output.includes('Can run now: yes'));
+  assert(output.includes('Boundary'));
+  assert(output.includes('Profile: baseline'));
+  assert(output.includes('---HANDOFF---'));
+  assert(!output.includes('undefined'));
+});
+
+withTempProject((projectRoot) => {
+  write(path.join(projectRoot, '.planning', 'telemetry', 'doc-sync-queue.jsonl'), [
+    JSON.stringify({ event: 'session-end', status: 'pending', timestamp: '2026-06-05T12:00:00.000Z' }),
+  ].join('\n') + '\n');
+
+  const consoleState = buildConsole(projectRoot, { run: true, maxSteps: 2 });
+  const output = renderConsole(consoleState);
+
+  assert.equal(consoleState.status, 'idle');
+  assert.equal(consoleState.dashboard.pending.docSync, 0);
+  assert.equal(consoleState.summary.status, 'idle');
+  assert.equal(consoleState.summary.pending.docSync, 0);
+  assert.equal(consoleState.summary.canRunNow, false);
+  assert.equal(consoleState.summary.artifactsNeedAttention, 0);
+  assert.equal(consoleState.decision.steps.length, 1);
+  assert(output.includes('Mode: run'));
+  assert(output.includes('1. Drain doc-sync queue'));
+  assert(output.includes('exit: 0'));
+});
+
+withTempProject((projectRoot) => {
+  write(path.join(projectRoot, '.planning', 'campaigns', 'active.md'), [
+    '---',
+    'status: active',
+    '---',
+    '',
+    '# Campaign: Active',
+    '',
+    'Status: active',
+    '',
+    '## Phases',
+    '',
+    '| # | Status | Type | Phase | Done When |',
+    '|---|--------|------|-------|-----------|',
+    '| 1 | in-progress | build | Build | done |',
+  ].join('\n'));
+
+  const consoleState = buildConsole(projectRoot, { run: false });
+  const output = renderConsole(consoleState);
+
+  assert.equal(consoleState.status, 'approval-needed');
+  assert.equal(consoleState.nextAction.command, '/do continue');
+  assert.equal(consoleState.nextAction.canRunNow, false);
+  assert.equal(consoleState.boundary.kind, 'agent-continuation');
+  assert.equal(consoleState.boundary.risk, 'medium');
+  assert.equal(consoleState.summary.boundary, 'agent-continuation');
+  assert.equal(consoleState.summary.risk, 'medium');
+  assert(consoleState.summary.approvalCapsulePath.startsWith('.planning/approval-capsules/'));
+  assert(consoleState.summary.approvalCapsulePath.endsWith('-do-continue.md'));
+  assert.equal(consoleState.summary.latestApprovalCapsulePath, '.planning/approval-capsules/latest.md');
+  assert(consoleState.boundary.request.includes('/do continue'));
+  assert(fs.existsSync(path.join(projectRoot, '.planning', 'approval-capsules', 'latest.md')));
+  assert(output.includes('Status: approval-needed'));
+  assert(output.includes('Kind: agent-continuation'));
+  assert(output.includes('Risk: medium'));
+  assert(output.includes('Boundary checks:'));
+});
+
+withTempProject((projectRoot) => {
+  write(path.join(projectRoot, '.planning', 'pr-readiness', 'base.md'), readinessReport({
+    branch: 'codex/base',
+    head: 'a111111',
+    pr: 'https://github.com/SethGammon/sinan/pull/1',
+    generated: '2026-06-05T12:01:00.000Z',
+  }));
+  write(path.join(projectRoot, '.planning', 'pr-readiness', 'top.md'), readinessReport({
+    branch: 'codex/top',
+    head: 'b222222',
+    pr: 'https://github.com/SethGammon/sinan/pull/2',
+    generated: '2026-06-05T12:02:00.000Z',
+  }));
+
+  const consoleState = buildConsole(projectRoot, { run: false });
+  const output = renderConsole(consoleState);
+
+  assert.equal(consoleState.status, 'approval-needed');
+  assert.equal(consoleState.nextAction.label, 'Approve stack landing order');
+  assert(consoleState.nextAction.command.includes('/pull/1 -> https://github.com/SethGammon/sinan/pull/2'));
+  assert.equal(consoleState.boundary.kind, 'stack-approval');
+  assert.equal(consoleState.boundary.risk, 'medium-high');
+  assert.equal(consoleState.summary.stackStatus, 'approval-needed');
+  assert.equal(consoleState.summary.stackPrs, 2);
+  assert.equal(consoleState.summary.stackBlocked, 0);
+  assert.equal(consoleState.summary.stackReportPath, '.planning/stack-readiness/latest.md');
+  assert(consoleState.summary.stackApprovalCapsulePath.startsWith('.planning/approval-capsules/'));
+  assert.equal(consoleState.summary.latestStackApprovalCapsulePath, '.planning/approval-capsules/latest.md');
+  assert(fs.existsSync(path.join(projectRoot, '.planning', 'stack-readiness', 'latest.md')));
+  assert(fs.existsSync(path.join(projectRoot, '.planning', 'approval-capsules', 'latest.md')));
+  assert(output.includes('Stack: status=approval-needed, prs=2, blocked=0'));
+  assert(output.includes('Kind: stack-approval'));
+  assert(output.includes('Stack approval capsule: .planning/approval-capsules/'));
+});
+
+{
+  const consoleState = applyStackDecision({
+    mode: 'inspect',
+    status: 'idle',
+    nextAction: { label: 'No urgent Sinan action detected', command: 'npm run dashboard', canRunNow: false },
+    boundary: { kind: 'none', risk: 'low', request: 'No approval required.', verification: [] },
+  }, {
+    status: 'blocked',
+    ready: false,
+    reportPath: '.planning/stack-readiness/latest.md',
+    nextAction: {
+      label: 'Resolve blocked PR readiness report',
+      command: 'node scripts/pr-ready.js --pr <pull-request-url> --run-verification',
+      canRunNow: false,
+      why: 'At least one PR readiness report is blocked or missing a passing gate.',
+    },
+    reports: [{
+      branch: 'codex/stale',
+      pr: 'https://github.com/SethGammon/sinan/pull/7',
+      head: '0000000',
+      currentHead: '1111111',
+      status: 'ready',
+      path: '.planning/pr-readiness/codex-stale.md',
+    }],
+    blocked: [{ reasons: ['readiness head 0000000 does not match current branch head 1111111'] }],
+  });
+
+  assert.equal(consoleState.status, 'needs-review');
+  assert.equal(consoleState.nextAction.label, 'Resolve blocked PR readiness report');
+  assert.equal(consoleState.boundary.kind, 'stack-readiness-blocked');
+  assert.equal(consoleState.boundary.risk, 'medium');
+  assert.equal(consoleState.stack.status, 'blocked');
+  assert.equal(consoleState.stack.blockedCount, 1);
+  assert.equal(consoleState.stack.reports[0].currentHead, '1111111');
+}
+
+withTempProject((projectRoot) => {
+  write(path.join(projectRoot, '.planning', 'approval-capsules', 'latest.md'), [
+    'Sinan Approval Capsule',
+    '========================================',
+    'Generated: 2026-06-05T12:00:00.000Z',
+    'Command: /do continue',
+    'Boundary: agent-continuation',
+    'Risk: medium',
+    'Request: Approve running `/do continue` for this project.',
+  ].join('\n'));
+
+  const consoleState = buildConsole(projectRoot, { run: false });
+
+  assert.equal(consoleState.status, 'idle');
+  assert.equal(consoleState.summary.artifactsStale, 1);
+  assert.equal(consoleState.summary.artifactsNeedAttention, 0);
+  assert.equal(consoleState.summary.historicalArtifactsStale, 1);
+});
+
+withTempProject((projectRoot) => {
+  fs.mkdirSync(path.join(projectRoot, '.planning'), { recursive: true });
+  const output = childProcess.execFileSync(process.execPath, [
+    path.join(__dirname, 'operator-console.js'),
+    '--project-root',
+    projectRoot,
+    '--json',
+  ], { encoding: 'utf8' });
+
+  const payload = JSON.parse(output);
+  assert.equal(payload.status, 'idle');
+  assert.equal(payload.reportPath, '.planning/operator-console/latest.md');
+  assert.equal(payload.summary.status, 'idle');
+  assert.equal(payload.summary.reportPath, '.planning/operator-console/latest.md');
+  assert(fs.existsSync(path.join(projectRoot, payload.reportPath)));
+});
+
+withTempProject((projectRoot) => {
+  fs.mkdirSync(path.join(projectRoot, '.planning'), { recursive: true });
+  const output = childProcess.execFileSync(process.execPath, [
+    path.join(__dirname, 'operator-console.js'),
+    '--project-root',
+    projectRoot,
+    '--summary',
+  ], { encoding: 'utf8' });
+
+  const payload = JSON.parse(output);
+  assert.equal(payload.status, 'idle');
+  assert.equal(payload.mode, 'inspect');
+  assert.equal(payload.command, 'npm run dashboard');
+  assert.equal(payload.canRunNow, false);
+  assert.equal(payload.boundary, 'none');
+  assert.equal(payload.risk, 'low');
+  assert.equal(payload.reportPath, '.planning/operator-console/latest.md');
+  assert.equal(payload.nextReportPath, '.planning/next-actions/latest.md');
+  assert(!Object.prototype.hasOwnProperty.call(payload, 'decision'));
+  assert(!Object.prototype.hasOwnProperty.call(payload, 'dashboard'));
+  assert(fs.existsSync(path.join(projectRoot, payload.reportPath)));
+});
+
+console.log('operator console tests passed');

@@ -1,0 +1,50 @@
+{
+  "name": "zhi",
+  "version": "0.10.3",
+  "description": "Zhi knowledge-base plugin for Codex. Build topic-scoped wikis, route across local hubs, ingest sources, compile articles, audit, query, lint, and generate outputs.",
+  "author": {
+    "name": "nvk + tahabakhit",
+    "url": "https://github.com/tahabakhit"
+  },
+  "homepage": "https://github.com/tahabakhit/llm-wiki",
+  "repository": "https://github.com/tahabakhit/llm-wiki",
+  "license": "MIT",
+  "keywords": [
+    "zhi",
+    "paper",
+    "wiki",
+    "knowledge-base",
+    "research",
+    "markdown",
+    "obsidian",
+    "codex",
+    "multi-hub",
+    "router",
+    "scaffold",
+    "audit",
+    "librarian",
+    "collect",
+    "inventory",
+    "datasets",
+    "archive"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Zhi",
+    "shortDescription": "Paper-inspired knowledge-base workflows for Codex",
+    "longDescription": "Zhi packages the LLM Wiki workflow as a paper-inspired knowledge plugin: local multi-hub routing, first-run scaffolding, source ingestion, catalog collection, inventory, dataset manifests, archive lifecycle, audit, query, lint, and sustained research.",
+    "developerName": "tahabakhit",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/tahabakhit/llm-wiki",
+    "defaultPrompt": [
+      "Use Zhi to research a topic and compile it into a wiki.",
+      "Use Zhi to ingest notes or source collections into my local knowledge hub.",
+      "Use Zhi to query, audit, lint, or archive a wiki topic."
+    ],
+    "brandColor": "#2F855A"
+  }
+}

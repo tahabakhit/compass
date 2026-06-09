@@ -1,0 +1,5 @@
+interface:
+  display_name: "Watch"
+  short_description: "Use when file sentinel that monitors the working directory for changes and marker comments, then auto-triggers appropriate skills. Poll-based via git diff against the last scan..."
+policy:
+  allow_implicit_invocation: false

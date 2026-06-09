@@ -1,0 +1,5 @@
+interface:
+  display_name: "Merge Review"
+  short_description: "Use when reviews pending fleet worktree merges before they're accepted. Reads the merge-check queue, detects file-level conflicts between branches, proposes a safe merge order,..."
+policy:
+  allow_implicit_invocation: false

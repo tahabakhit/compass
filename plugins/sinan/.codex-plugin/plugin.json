@@ -1,0 +1,53 @@
+{
+  "name": "sinan",
+  "version": "0.1.0",
+  "description": "Codex-native Sinan harness for durable agent orchestration",
+  "author": {
+    "name": "Sinan",
+    "url": "https://github.com/SethGammon/sinan"
+  },
+  "repository": "https://github.com/SethGammon/sinan",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "openai",
+    "agent",
+    "harness",
+    "orchestration",
+    "skills",
+    "hooks",
+    "mcp",
+    "automation",
+    "tdd",
+    "red-team"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Sinan",
+    "shortDescription": "Sinan orchestration with low-overhead routing and verification: 50 skills",
+    "longDescription": "Sinan is a cross-project Codex and Claude Code harness for durable planning state, proportional routing, explicit specialist skills, lifecycle hooks, telemetry, and capped context snapshots.",
+    "developerName": "Sinan",
+    "category": "Developer Tools",
+    "websiteURL": "https://github.com/SethGammon/sinan",
+    "privacyPolicyURL": "https://github.com/SethGammon/sinan",
+    "termsOfServiceURL": "https://github.com/SethGammon/sinan",
+    "capabilities": [
+      "orchestration",
+      "campaigns",
+      "parallel-agents",
+      "quality-gates",
+      "telemetry",
+      "intent-routing",
+      "tdd",
+      "red-team-review",
+      "context-snapshots",
+      "mcp",
+      "codex-hooks"
+    ],
+    "defaultPrompt": [
+      "Use Sinan to route this task through the cheapest capable workflow.",
+      "Use Sinan to continue active harness state and apply the appropriate verification loop."
+    ]
+  }
+}

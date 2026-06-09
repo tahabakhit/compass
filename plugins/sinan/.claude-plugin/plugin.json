@@ -1,0 +1,22 @@
+{
+  "name": "sinan",
+  "description": "Agent orchestration harness for Claude Code and Codex with durable planning, proportional routing, hooks, and explicit specialist skills",
+  "version": "0.1.0",
+  "author": {
+    "name": "Sinan"
+  },
+  "license": "MIT",
+  "keywords": [
+    "sinan",
+    "orchestration",
+    "campaigns",
+    "fleet",
+    "marshal",
+    "archon",
+    "skills",
+    "claude-code",
+    "codex",
+    "tdd",
+    "red-team"
+  ]
+}

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Adversarial Review"
+  short_description: "Use when red-team review for high-risk changes. Looks for concrete failure paths, abuse cases, security gaps, and tests that should fail before fixes."
+policy:
+  allow_implicit_invocation: false

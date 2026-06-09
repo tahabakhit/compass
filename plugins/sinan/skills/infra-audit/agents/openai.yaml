@@ -1,0 +1,5 @@
+interface:
+  display_name: "Infra Audit"
+  short_description: "Use when reads docker-compose, env files, ORM configs, and connection strings to map current infrastructure. Flags missing layers (cache, queue, analytics) based on observed..."
+policy:
+  allow_implicit_invocation: false

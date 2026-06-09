@@ -1,0 +1,5 @@
+interface:
+  display_name: "Ascii Diagram"
+  short_description: "Use when generate perfectly aligned ASCII diagrams — architecture, flow, sequence, box-and-arrow. Uses a programmatic character-grid approach so alignment is guaranteed by..."
+policy:
+  allow_implicit_invocation: false

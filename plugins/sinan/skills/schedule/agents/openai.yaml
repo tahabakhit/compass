@@ -1,0 +1,5 @@
+interface:
+  display_name: "Schedule"
+  short_description: "Use when manages recurring and one-off scheduled tasks. Session-scoped scheduling via CronCreate/CronDelete/CronList. Documents the cloud path for tasks that need to survive..."
+policy:
+  allow_implicit_invocation: false

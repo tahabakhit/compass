@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "zhi",
+  "version": "0.10.3",
+  "description": "Zhi paper-inspired knowledge-base plugin marketplace.",
+  "owner": {
+    "name": "tahabakhit"
+  },
+  "plugins": [
+    {
+      "name": "zhi",
+      "description": "Zhi knowledge-base plugin. Commands remain /wiki and /wiki:* for compatibility; install identity is zhi.",
+      "version": "0.10.3",
+      "author": {
+        "name": "nvk + tahabakhit"
+      },
+      "source": "./claude-plugin",
+      "category": "productivity"
+    }
+  ]
+}

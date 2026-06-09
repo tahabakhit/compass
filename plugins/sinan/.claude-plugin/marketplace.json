@@ -1,0 +1,20 @@
+{
+  "name": "sinan-local",
+  "description": "Local Sinan plugin marketplace",
+  "owner": {
+    "name": "Sinan",
+    "email": "noreply@github.com"
+  },
+  "plugins": [
+    {
+      "name": "sinan",
+      "description": "Sinan orchestration with explicit TDD, red-team, and context discipline",
+      "version": "0.1.0",
+      "source": "./",
+      "author": {
+        "name": "Sinan",
+        "email": "noreply@github.com"
+      }
+    }
+  ]
+}
