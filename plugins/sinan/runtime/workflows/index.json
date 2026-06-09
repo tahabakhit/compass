@@ -1,12 +1,12 @@
 {
   "workflows": [
-    "agent-scaffold",
     "architecture-sweep",
     "clarify",
     "cleanup",
     "debug",
     "implement",
     "research-audit",
-    "review"
+    "review",
+    "scaffold"
   ]
 }

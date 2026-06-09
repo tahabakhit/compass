@@ -156,7 +156,7 @@
       }
     },
     {
-      "id": "agent-scaffold",
+      "id": "scaffold",
       "priority": 83,
       "match": {
         "anyPromptIncludes": [
@@ -175,10 +175,10 @@
       "route": {
         "taskSize": "full",
         "intent": "setup",
-        "workflow": "agent-scaffold",
+        "workflow": "scaffold",
         "nativeMode": "codex-plan",
         "skills": [
-          "agent-scaffold"
+          "scaffold"
         ],
         "agents": {
           "count": 0,

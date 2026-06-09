@@ -131,9 +131,9 @@ function routeHintForPrompt(prompt, platform = "codex") {
     return baseRoute({
       taskSize: "full",
       intent: "setup",
-      workflow: "agent-scaffold",
+      workflow: "scaffold",
       nativeMode: platform === "claude" ? "claude-plan" : "codex-plan",
-      skills: ["agent-scaffold"],
+      skills: ["scaffold"],
       hooks: ["bash-guard"],
       reason: "Agent scaffolding should inspect and propose before writing.",
     });

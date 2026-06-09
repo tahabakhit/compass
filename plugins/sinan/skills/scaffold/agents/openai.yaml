@@ -1,11 +1,12 @@
 interface:
-  display_name: "Agent Scaffold"
+  display_name: "Scaffold"
   short_description: "Create agent guidance surfaces"
-  default_prompt: "Use $agent-scaffold to set up agent instructions for this repo."
+  default_prompt: "Use $scaffold to set up agent instructions for this repo."
 policy:
   allow_implicit_invocation: false
 routing:
   triggers:
+    - scaffold
     - agent scaffold
     - scaffold instructions
     - agent instructions

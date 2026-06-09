@@ -1,8 +1,9 @@
 {
-  "id": "agent-scaffold",
+  "id": "scaffold",
   "description": "Inspect and propose agent instruction scaffolding.",
   "triggers": [
     "setup workspace",
+    "scaffold",
     "scaffold instructions",
     "agent scaffold",
     "doctor instructions"

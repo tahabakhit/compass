@@ -85,7 +85,7 @@ function defaultInput(prompt) {
       "zoom-out",
       "architecture",
       "architecture-deepening",
-      "agent-scaffold",
+      "scaffold",
       "handoff",
       "compress",
     ],
@@ -97,7 +97,7 @@ function defaultInput(prompt) {
       "research-audit",
       "cleanup",
       "architecture-sweep",
-      "agent-scaffold",
+      "scaffold",
     ],
   };
 }
@@ -192,9 +192,9 @@ function fallbackRoute(input) {
     return {
       taskSize: "full",
       intent: "setup",
-      workflow: "agent-scaffold",
+      workflow: "scaffold",
       nativeMode: input.platform === "claude" ? "claude-plan" : "codex-plan",
-      skills: ["agent-scaffold"],
+      skills: ["scaffold"],
       agents: { count: 0, roles: [] },
       hooks: ["bash-guard"],
       budget: "small",

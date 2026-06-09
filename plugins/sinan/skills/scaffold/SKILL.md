@@ -1,13 +1,13 @@
 ---
-name: agent-scaffold
+name: scaffold
 description: Use when setting up or refreshing agent-facing repo guidance such as AGENTS.md, CLAUDE.md, GLOSSARY.md conventions, ADR conventions, and GitHub workflow/label guidance.
 ---
 
-# Agent Scaffold
+# Scaffold
 
 Use this skill when a repo needs agent-facing instruction and memory surfaces before or during early implementation.
 
-This is not an app generator. Use `repo-bootstrap` language for empty-repo technical setup and `app-scaffold` language for framework/application shell creation.
+This is not an app generator. Use `bootstrap` for empty-repo technical setup and `starter` for generating the initial framework/app files.
 
 ## Workflow
 
@@ -15,7 +15,7 @@ This is not an app generator. Use `repo-bootstrap` language for empty-repo techn
 2. If files exist, preserve manual text and only update marked Sinan blocks.
 3. Make `AGENTS.md` the canonical shared project guidance.
 4. Make `CLAUDE.md` import `AGENTS.md`, then add only Claude Code-specific notes.
-5. Capture the startup flow: repo bootstrap, brainstorm, decision capture, agent scaffold, app scaffold or first-slice implementation, review, deepen, handoff.
+5. Capture the startup flow: bootstrap, brainstorm, decision capture, scaffold, starter or first-slice implementation, review, deepen, handoff.
 6. Propose the scaffold before writing unless the user explicitly asked to generate it.
 7. Run `node scripts/scaffold-instructions.js --target <repo>` to write, or `--check` to verify.
 
