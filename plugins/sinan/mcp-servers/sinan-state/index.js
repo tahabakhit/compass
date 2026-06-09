@@ -101,7 +101,7 @@ function handleRequest(req) {
 
   if (method === 'initialize') {
     respond(id, {
-      protocolVersion: '2024-11-05',
+      protocolVersion: params?.protocolVersion || '2025-06-18',
       capabilities: { tools: {}, resources: {} },
       serverInfo: { name: 'sinan-state', version: '1.0.0' },
       instructions: 'Use sinan_status before long-running Sinan workflows, then preserve .planning state when invoking Sinan skills.',

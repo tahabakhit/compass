@@ -22,7 +22,7 @@ thread in the target project and run:
 
 - `.codex-plugin/plugin.json` describes Sinan as a Codex-native harness.
 - `skills/` provides the installed skill set.
-- `hooks/hooks.json` bundles translated Codex hook commands.
+- `hooks/hooks.json` bundles translated hook commands with Codex and Claude plugin-root fallbacks.
 - `.mcp.json` exposes the local state MCP server.
 - `.planning/verification/codex-readiness.json` records readiness checks when
   the local installer is used during plugin development.

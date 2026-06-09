@@ -77,7 +77,7 @@ async function run() {
         if (!manifest.version) errors.push('plugin.json missing version');
         if (!manifest.description) errors.push('plugin.json missing description');
         if (!manifest.skills) errors.push('plugin.json missing skills pointer');
-        if (manifest.hooks) errors.push('plugin.json should not use unsupported hooks field');
+        if (manifest.hooks) errors.push('plugin.json should rely on default hooks/hooks.json');
         if (!manifest.interface) errors.push('plugin.json missing interface');
         if (/claude/i.test(manifest.description)) errors.push('plugin.json description should be Codex-native, not Claude-specific');
         if (!/(Codex-native|Sinan orchestration)/.test(manifest.interface.shortDescription || '')) errors.push('plugin.json shortDescription should describe orchestration');
@@ -100,6 +100,9 @@ async function run() {
       const firstHook = pluginHooks.hooks.PermissionRequest?.[0]?.hooks?.[0];
       if (!firstHook?.command?.includes('${PLUGIN_ROOT}')) {
         errors.push('plugin hooks should use PLUGIN_ROOT-relative commands');
+      }
+      if (!firstHook?.command?.includes('${CLAUDE_PLUGIN_ROOT')) {
+        errors.push('plugin hooks should fall back to CLAUDE_PLUGIN_ROOT');
       }
       if (!firstHook?.commandWindows?.includes('%PLUGIN_ROOT%')) {
         errors.push('plugin hooks should include Windows PLUGIN_ROOT command');

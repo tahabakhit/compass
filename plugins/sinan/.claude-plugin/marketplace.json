@@ -9,7 +9,7 @@
     {
       "name": "sinan",
       "description": "Sinan orchestration with explicit TDD, red-team, and context discipline",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/tahabakhit/ming.git",

@@ -3,7 +3,7 @@
   "name": "sinan",
   "displayName": "Sinan",
   "description": "Agent orchestration harness for Claude Code and Codex with durable planning, proportional routing, hooks, and explicit specialist skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Sinan",
     "url": "https://github.com/tahabakhit/ming/tree/main/plugins/sinan"

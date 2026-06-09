@@ -395,7 +395,7 @@ function generatePluginManifest() {
 }
 
 function generatePluginHooks() {
-  console.log('Generating plugin-bundled Codex hooks...');
+  console.log('Generating plugin-bundled hooks...');
 
   const hooksTemplatePath = path.join(SINAN_ROOT, 'hooks', 'hooks-template.json');
   const hooksTemplate = readJSON(hooksTemplatePath);
@@ -708,7 +708,7 @@ function main() {
     console.log('Dry run complete. No files were written.');
   } else {
     console.log('Codex compatibility artifacts generated.');
-    console.log('Plugin-bundled hooks are in `hooks/hooks.json`; `scripts/install-hooks-codex.js` is only needed for legacy `.codex/hooks.json` installs.');
+    console.log('Plugin-bundled hooks are in `hooks/hooks.json`; commands resolve PLUGIN_ROOT or CLAUDE_PLUGIN_ROOT.');
   }
 }
 

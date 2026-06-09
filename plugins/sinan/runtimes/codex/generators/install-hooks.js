@@ -106,7 +106,7 @@ function translateCodexHooks(hooksTemplate, adapterScriptPath, options = {}) {
 function translateCodexPluginHooks(hooksTemplate) {
   const adapter = '${PLUGIN_ROOT}/hooks_src/codex-adapter.js';
   return translateCodexHooks(hooksTemplate, adapter, {
-    commandForHook: (hookName) => `node "\${PLUGIN_ROOT}/hooks_src/codex-adapter.js" ${hookName}`,
+    commandForHook: (hookName) => `sh -lc 'root="\${PLUGIN_ROOT:-\${CLAUDE_PLUGIN_ROOT:-}}"; if [ -z "$root" ]; then root="$PWD"; fi; exec node "$root/hooks_src/codex-adapter.js" "$1"' sh ${hookName}`,
     commandWindowsForHook: (hookName) => `node "%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js" ${hookName}`,
   });
 }

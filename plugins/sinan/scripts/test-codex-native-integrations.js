@@ -44,7 +44,7 @@ function testGeneratedCodexArtifacts() {
     const manifest = readJson(manifestPath);
     assert.doesNotThrow(() => JSON.parse(fs.readFileSync(manifestPath, 'utf8')), 'Codex plugin manifest must be strict JSON');
     assert.equal(manifest.skills, './.agents/skills/');
-    assert(!manifest.hooks, 'Codex plugin manifest must not use unsupported hooks field');
+    assert(!manifest.hooks, 'Codex plugin manifest should rely on the default hooks/hooks.json');
     assert.equal(manifest.mcpServers, './.mcp.json');
     assert(!/claude/i.test(manifest.description), 'Codex manifest description should not be Claude-specific');
     assert(/Codex-native|Sinan orchestration/.test(manifest.interface.shortDescription), 'manifest should describe orchestration');
@@ -62,6 +62,7 @@ function testGeneratedCodexArtifacts() {
     assert(firstPluginHook, 'plugin hooks should include generated PLUGIN_ROOT commands');
     const firstCommand = firstPluginHook.command;
     assert(firstCommand.includes('${PLUGIN_ROOT'), 'plugin hook command should use PLUGIN_ROOT');
+    assert(firstCommand.includes('${CLAUDE_PLUGIN_ROOT'), 'plugin hook command should fall back to CLAUDE_PLUGIN_ROOT');
     assert(firstPluginHook.commandWindows.includes('%PLUGIN_ROOT%'), 'plugin hook commandWindows should use PLUGIN_ROOT');
 
     const fleetAgent = fs.readFileSync(path.join(tmp, '.codex', 'agents', 'fleet.toml'), 'utf8');

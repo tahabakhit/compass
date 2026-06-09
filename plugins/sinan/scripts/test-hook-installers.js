@@ -80,6 +80,7 @@ assert(translated.hooks.SubagentStop, 'codex translation should install Subagent
 const pluginHooks = translateCodexPluginHooks(hooksTemplate);
 const pluginPermissionHook = pluginHooks.hooks.PermissionRequest[0].hooks[0];
 assert(pluginPermissionHook.command.includes('${PLUGIN_ROOT'), 'plugin hooks should use PLUGIN_ROOT in POSIX command');
+assert(pluginPermissionHook.command.includes('${CLAUDE_PLUGIN_ROOT'), 'plugin hooks should fall back to CLAUDE_PLUGIN_ROOT in POSIX command');
 assert(pluginPermissionHook.commandWindows.includes('%PLUGIN_ROOT%'), 'plugin hooks should use PLUGIN_ROOT in Windows command');
 
 withTempDir((projectRoot) => {

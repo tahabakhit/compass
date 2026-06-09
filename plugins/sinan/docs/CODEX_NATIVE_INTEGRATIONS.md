@@ -17,7 +17,7 @@ Improvement: Codex can load Sinan as a plugin surface instead of depending only 
 
 ## 2. Modern hooks
 
-Codex hook projection now enables `[features].hooks = true`, maps `PermissionRequest`, `PreCompact`, `PostCompact`, `SubagentStart`, and `SubagentStop`, and emits plugin-bundled `hooks/hooks.json` using `PLUGIN_ROOT` on POSIX and Windows.
+Codex hook projection now enables `[features].hooks = true`, maps `PermissionRequest`, `PreCompact`, `PostCompact`, `SubagentStart`, and `SubagentStop`, and emits plugin-bundled `hooks/hooks.json` using `PLUGIN_ROOT` with a `CLAUDE_PLUGIN_ROOT` fallback.
 
 Improvement: Sinan safety, telemetry, compaction, and subagent handoff hooks run through native Codex lifecycle events where available.
 
