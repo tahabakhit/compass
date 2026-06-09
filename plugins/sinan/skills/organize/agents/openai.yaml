@@ -1,5 +1,0 @@
-interface:
-  display_name: "Organize"
-  short_description: "Use when three-pass project health scan: architectural compliance (are source files in the right layers?), filesystem hygiene (loose files, misplaced assets, stale artifacts),..."
-policy:
-  allow_implicit_invocation: false

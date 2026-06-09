@@ -1,5 +1,0 @@
-interface:
-  display_name: "Postmortem"
-  short_description: "Use when auto-generates a structured postmortem from a completed campaign. Reads the campaign file, telemetry logs, and feature ledger. Produces a documented analysis of what..."
-policy:
-  allow_implicit_invocation: false

@@ -1,5 +1,0 @@
-interface:
-  display_name: "Session Handoff"
-  short_description: "Use when synthesizes the current session into a structured HANDOFF block for context transfer between sessions. Captures what was built, decisions made, and unresolved items."
-policy:
-  allow_implicit_invocation: false

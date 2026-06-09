@@ -1,29 +1,17 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sinan",
   "displayName": "Sinan",
-  "description": "Agent orchestration harness for Claude Code and Codex with durable planning, proportional routing, hooks, and explicit specialist skills",
-  "version": "0.1.1",
+  "version": "0.2.0",
+  "description": "Claude-compatible projection of the Sinan V2 orchestration plugin with small skills and declarative workflow guidance.",
   "author": {
-    "name": "Sinan",
-    "url": "https://github.com/tahabakhit/ming/tree/main/plugins/sinan"
+    "name": "Sinan"
   },
-  "homepage": "https://github.com/tahabakhit/ming/tree/main/plugins/sinan",
-  "repository": "https://github.com/tahabakhit/ming",
   "license": "MIT",
   "keywords": [
-    "sinan",
     "orchestration",
-    "campaigns",
-    "fleet",
-    "marshal",
-    "archon",
-    "skills",
-    "claude-code",
-    "codex",
-    "tdd",
-    "red-team"
+    "routing",
+    "workflows",
+    "skills"
   ],
-  "skills": "./skills/",
-  "mcpServers": "./.mcp.json"
+  "skills": "./skills/"
 }

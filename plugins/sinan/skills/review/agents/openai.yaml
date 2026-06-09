@@ -1,5 +1,18 @@
 interface:
   display_name: "Review"
-  short_description: "Use when 5-pass structured code review — correctness, security, performance, readability, consistency"
+  short_description: "Find evidence-backed code review risks"
+  default_prompt: "Use $review to inspect this diff for high-confidence issues."
 policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - review
+    - audit diff
+    - pr feedback
+    - code review
+  intents:
+    - review
+  task_sizes:
+    - full
+    - workflow
   allow_implicit_invocation: false

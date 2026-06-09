@@ -1,0 +1,20 @@
+interface:
+  display_name: "Zoom Out"
+  short_description: "Map unfamiliar code in system context"
+  default_prompt: "Use $zoom-out to map how this area fits into the project."
+policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - zoom out
+    - system map
+    - unfamiliar code
+    - broader context
+  intents:
+    - research
+    - architecture
+  task_sizes:
+    - light
+    - full
+    - workflow
+  allow_implicit_invocation: false

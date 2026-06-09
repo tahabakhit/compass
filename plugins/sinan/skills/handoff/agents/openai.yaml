@@ -1,0 +1,17 @@
+interface:
+  display_name: "Handoff"
+  short_description: "Write compact continuation summaries"
+  default_prompt: "Use $handoff to summarize this work for a future session."
+policy:
+  allow_implicit_invocation: true
+routing:
+  triggers:
+    - handoff
+    - continuation summary
+    - compact handoff
+    - resume later
+  intents:
+    - handoff
+  task_sizes:
+    - light
+  allow_implicit_invocation: true

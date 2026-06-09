@@ -1,5 +1,0 @@
-interface:
-  display_name: "Daemon"
-  short_description: "Use when continuous autonomous operation mode. Keeps campaigns running 24/7 by chaining Claude Code sessions via RemoteTrigger. Each session picks up from the campaign's..."
-policy:
-  allow_implicit_invocation: false

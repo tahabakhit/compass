@@ -1,5 +1,0 @@
-interface:
-  display_name: "Self Consistency Reasoner"
-  short_description: "Use when internal majority-vote reasoning method for high-stakes diagnosis and completion verification. Generates independent reasoning paths to catch confident but wrong..."
-policy:
-  allow_implicit_invocation: false

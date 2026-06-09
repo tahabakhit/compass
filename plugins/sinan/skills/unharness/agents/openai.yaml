@@ -1,5 +1,0 @@
-interface:
-  display_name: "Unharness"
-  short_description: "Use when remove Sinan from a project. Exports valuable state (campaigns, postmortems, research, backlog, discoveries) to docs/sinan/ as human-readable markdown, then removes..."
-policy:
-  allow_implicit_invocation: false

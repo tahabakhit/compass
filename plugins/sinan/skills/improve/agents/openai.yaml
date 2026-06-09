@@ -1,5 +1,0 @@
-interface:
-  display_name: "Improve"
-  short_description: "Use when autonomous quality improvement loop. Scores a target against a rubric, selects the highest-leverage axis, attacks it, verifies, documents, and loops. No pre-planning..."
-policy:
-  allow_implicit_invocation: false

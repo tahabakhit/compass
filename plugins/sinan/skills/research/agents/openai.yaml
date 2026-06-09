@@ -1,5 +1,0 @@
-interface:
-  display_name: "Research"
-  short_description: "Use when focused research investigations. Converts questions into structured findings with confidence levels and source citations. Does not make decisions — produces..."
-policy:
-  allow_implicit_invocation: false

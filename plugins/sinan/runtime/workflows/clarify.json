@@ -1,0 +1,40 @@
+{
+  "id": "clarify",
+  "description": "Resolve ambiguity before planning or implementation.",
+  "triggers": [
+    "clarify",
+    "unclear",
+    "ambiguous"
+  ],
+  "mode": {
+    "default": "small"
+  },
+  "native": {
+    "codex": "plan_mode_optional",
+    "claude": "plan_mode_optional"
+  },
+  "phases": [
+    {
+      "id": "inspect-request"
+    },
+    {
+      "id": "ask-focused-questions"
+    },
+    {
+      "id": "confirm-acceptance"
+    }
+  ],
+  "gates": [
+    "ambiguity-reduced",
+    "acceptance-criteria-recorded"
+  ],
+  "budget": {
+    "default_agents": 0,
+    "max_agents": 1,
+    "max_minutes": 10
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

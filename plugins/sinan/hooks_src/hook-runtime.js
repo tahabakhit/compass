@@ -1,0 +1,122 @@
+"use strict";
+
+const fs = require("node:fs");
+const path = require("node:path");
+const childProcess = require("node:child_process");
+
+const ROOT = path.resolve(__dirname, "..");
+
+function readStdin() {
+  return fs.readFileSync(0, "utf8");
+}
+
+function parseInput(source) {
+  const trimmed = String(source || "").trim();
+  if (!trimmed) return {};
+  try {
+    return JSON.parse(trimmed);
+  } catch (error) {
+    return {
+      parseError: error.message,
+      rawInput: trimmed.slice(0, 4000),
+    };
+  }
+}
+
+function printResult(result) {
+  process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+}
+
+function runHook(handler) {
+  try {
+    const result = handler(parseInput(readStdin()));
+    printResult(result);
+  } catch (error) {
+    printResult({
+      action: "continue",
+      hook: "unknown",
+      severity: "error",
+      reason: error.message,
+    });
+    process.exitCode = 1;
+  }
+}
+
+function safeCwd(value) {
+  const cwd = value || process.cwd();
+  return path.resolve(cwd);
+}
+
+function runGit(cwd, args) {
+  try {
+    return childProcess.execFileSync("git", args, {
+      cwd,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+      timeout: 1500,
+    }).trim();
+  } catch {
+    return "";
+  }
+}
+
+function repoSnapshot(input = {}) {
+  const cwd = safeCwd(input.cwd || input.workspace || input.projectRoot);
+  const branch = runGit(cwd, ["branch", "--show-current"]);
+  const status = runGit(cwd, ["status", "--short"]);
+  const topLevel = runGit(cwd, ["rev-parse", "--show-toplevel"]);
+
+  return {
+    cwd,
+    repoRoot: topLevel || null,
+    git: {
+      branch,
+      dirty: Boolean(status),
+      summary: status.split("\n").filter(Boolean).slice(0, 12),
+    },
+  };
+}
+
+function extractPrompt(input = {}) {
+  return (
+    input.prompt ||
+    input.userPrompt ||
+    input.message ||
+    input.payload?.prompt ||
+    input.payload?.userPrompt ||
+    input.transcript?.at?.(-1)?.content ||
+    ""
+  );
+}
+
+function extractCommand(input = {}) {
+  return (
+    input.command ||
+    input.toolInput?.command ||
+    input.tool_input?.command ||
+    input.payload?.command ||
+    input.payload?.toolInput?.command ||
+    ""
+  );
+}
+
+function isMeaningfulWork(input = {}) {
+  if (input.meaningfulWork === true) return true;
+  if (input.meaningfulWork === false) return false;
+  if (Array.isArray(input.changedFiles) && input.changedFiles.length > 0) return true;
+  if (Array.isArray(input.testsRun) && input.testsRun.length > 0) return true;
+  if (input.route && input.route.taskSize && input.route.taskSize !== "micro") return true;
+  return false;
+}
+
+module.exports = {
+  ROOT,
+  extractCommand,
+  extractPrompt,
+  isMeaningfulWork,
+  parseInput,
+  printResult,
+  repoSnapshot,
+  runHook,
+  safeCwd,
+};

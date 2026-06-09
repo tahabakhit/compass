@@ -1,5 +1,0 @@
-interface:
-  display_name: "Architect"
-  short_description: "Use when given a PRD, produces an implementation architecture: file tree, component breakdown, data model, and a phased build plan with end conditions that Archon can execute..."
-policy:
-  allow_implicit_invocation: false

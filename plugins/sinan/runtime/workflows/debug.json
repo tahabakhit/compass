@@ -1,0 +1,51 @@
+{
+  "id": "debug",
+  "description": "Diagnose, fix, and regression-test a failing behavior.",
+  "triggers": [
+    "debug",
+    "failing",
+    "broken",
+    "regression"
+  ],
+  "mode": {
+    "default": "medium"
+  },
+  "native": {
+    "codex": "plan_mode_optional",
+    "claude": "plan_mode_optional"
+  },
+  "phases": [
+    {
+      "id": "reproduce"
+    },
+    {
+      "id": "minimize"
+    },
+    {
+      "id": "hypothesize"
+    },
+    {
+      "id": "instrument"
+    },
+    {
+      "id": "fix"
+    },
+    {
+      "id": "regression-test"
+    }
+  ],
+  "gates": [
+    "reproduction-understood",
+    "tests-pass",
+    "regression-covered"
+  ],
+  "budget": {
+    "default_agents": 0,
+    "max_agents": 2,
+    "max_minutes": 45
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

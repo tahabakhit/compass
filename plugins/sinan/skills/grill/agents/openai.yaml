@@ -1,0 +1,20 @@
+interface:
+  display_name: "Grill"
+  short_description: "Clarify ambiguity with focused questions"
+  default_prompt: "Use $grill to clarify the acceptance criteria for this request."
+policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - grill me
+    - clarify
+    - ambiguous
+    - acceptance criteria
+  intents:
+    - clarify
+    - implement
+    - architecture
+  task_sizes:
+    - light
+    - full
+  allow_implicit_invocation: false

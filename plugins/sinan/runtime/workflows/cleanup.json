@@ -1,0 +1,53 @@
+{
+  "id": "cleanup",
+  "description": "Delete, migrate, or reorganize only after evidence and checks.",
+  "triggers": [
+    "cleanup",
+    "delete",
+    "prune",
+    "migrate",
+    "reorganize"
+  ],
+  "mode": {
+    "default": "medium"
+  },
+  "native": {
+    "codex": "plan_mode_required",
+    "claude": "plan_mode_required"
+  },
+  "phases": [
+    {
+      "id": "inventory"
+    },
+    {
+      "id": "classify"
+    },
+    {
+      "id": "plan"
+    },
+    {
+      "id": "execute"
+    },
+    {
+      "id": "verify"
+    },
+    {
+      "id": "review"
+    }
+  ],
+  "gates": [
+    "inventory-recorded",
+    "replacement-coverage-exists",
+    "tests-pass",
+    "diff-reviewed"
+  ],
+  "budget": {
+    "default_agents": 1,
+    "max_agents": 3,
+    "max_minutes": 75
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

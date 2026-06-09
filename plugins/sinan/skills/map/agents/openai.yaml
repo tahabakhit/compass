@@ -1,5 +1,0 @@
-interface:
-  display_name: "Map"
-  short_description: "Use when structural codebase index generator. Builds a compact JSON map of files, exports, imports, dependency graph, and roles. Queryable by keyword. Injected into fleet..."
-policy:
-  allow_implicit_invocation: false

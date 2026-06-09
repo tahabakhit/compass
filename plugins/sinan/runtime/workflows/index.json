@@ -1,0 +1,12 @@
+{
+  "workflows": [
+    "architecture-sweep",
+    "clarify",
+    "cleanup",
+    "debug",
+    "implement",
+    "research-audit",
+    "review",
+    "workspace-setup"
+  ]
+}

@@ -1,5 +1,18 @@
 interface:
-  display_name: "Tdd"
-  short_description: "Use when strict red-green-refactor workflow for behavior changes. Use when the user asks for TDD, tests first, regression fixes, or any change where behavior should be locked..."
+  display_name: "TDD"
+  short_description: "Build changes through red-green-refactor"
+  default_prompt: "Use $tdd to implement this behavior with a focused failing test first."
 policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - tdd
+    - test driven
+    - red green refactor
+    - implement with tests
+  intents:
+    - implement
+  task_sizes:
+    - full
+    - workflow
   allow_implicit_invocation: false

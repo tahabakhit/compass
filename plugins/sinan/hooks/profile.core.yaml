@@ -1,0 +1,32 @@
+schemaVersion: 1
+profile: core
+description: Four default Sinan hooks for light context, routing hints, Bash guard, and stop handoff.
+hooks:
+  - id: session-context
+    event: SessionStart
+    matcher: null
+    script: hooks_src/session-context.js
+    purpose: Capture lightweight repo orientation without heavy routing.
+    timeoutSeconds: 10
+    trustReviewRequired: true
+  - id: prompt-router
+    event: UserPromptSubmit
+    matcher: null
+    script: hooks_src/prompt-router.js
+    purpose: Classify the prompt cheaply and emit an optional route hint.
+    timeoutSeconds: 5
+    trustReviewRequired: true
+  - id: bash-guard
+    event: PreToolUse
+    matcher: Bash
+    script: hooks_src/bash-guard.js
+    purpose: Block destructive shell commands and obvious secret mistakes.
+    timeoutSeconds: 3
+    trustReviewRequired: true
+  - id: stop-handoff
+    event: Stop
+    matcher: null
+    script: hooks_src/stop-handoff.js
+    purpose: Write a concise checklist only after meaningful work.
+    timeoutSeconds: 10
+    trustReviewRequired: true

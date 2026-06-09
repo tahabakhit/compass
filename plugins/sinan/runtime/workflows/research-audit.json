@@ -1,0 +1,56 @@
+{
+  "id": "research-audit",
+  "description": "Coordinate source-backed research lanes and synthesize docs.",
+  "triggers": [
+    "research",
+    "audit",
+    "compare",
+    "design"
+  ],
+  "mode": {
+    "default": "large"
+  },
+  "native": {
+    "codex": "subagents_allowed",
+    "claude": "dynamic_workflow_optional"
+  },
+  "phases": [
+    {
+      "id": "scope"
+    },
+    {
+      "id": "assign-lanes"
+    },
+    {
+      "id": "gather"
+    },
+    {
+      "id": "reconcile"
+    },
+    {
+      "id": "pressure-test"
+    },
+    {
+      "id": "write-docs"
+    },
+    {
+      "id": "verify-docs"
+    }
+  ],
+  "gates": [
+    "lanes-completed",
+    "sources-recorded",
+    "contradictions-resolved",
+    "required-docs-written"
+  ],
+  "budget": {
+    "default_agents": 3,
+    "max_agents": 7,
+    "max_minutes": 120,
+    "confirmation_required": true
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

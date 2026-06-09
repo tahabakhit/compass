@@ -1,5 +1,0 @@
-interface:
-  display_name: "Completion Evidence"
-  short_description: "Use when verification-before-completion gate. Use before saying done, fixed, tests pass, ready to merge, or any similar completion claim."
-policy:
-  allow_implicit_invocation: false

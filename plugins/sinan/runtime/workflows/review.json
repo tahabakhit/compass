@@ -1,0 +1,46 @@
+{
+  "id": "review",
+  "description": "Produce high-confidence review findings with evidence.",
+  "triggers": [
+    "review",
+    "audit diff",
+    "pr feedback"
+  ],
+  "mode": {
+    "default": "medium"
+  },
+  "native": {
+    "codex": "subagents_allowed",
+    "claude": "plan_mode_optional"
+  },
+  "phases": [
+    {
+      "id": "inspect-diff"
+    },
+    {
+      "id": "trace-behavior"
+    },
+    {
+      "id": "identify-risks"
+    },
+    {
+      "id": "verify-findings"
+    },
+    {
+      "id": "report"
+    }
+  ],
+  "gates": [
+    "findings-evidenced",
+    "no-speculation"
+  ],
+  "budget": {
+    "default_agents": 1,
+    "max_agents": 3,
+    "max_minutes": 45
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

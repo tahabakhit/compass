@@ -1,0 +1,19 @@
+interface:
+  display_name: "Diagnose"
+  short_description: "Debug from reproduction to regression test"
+  default_prompt: "Use $diagnose to debug this failing behavior with evidence."
+policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - diagnose
+    - debug
+    - failing test
+    - broken
+    - regression
+  intents:
+    - debug
+  task_sizes:
+    - full
+    - workflow
+  allow_implicit_invocation: false

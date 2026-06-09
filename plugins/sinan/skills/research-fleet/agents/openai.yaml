@@ -1,5 +1,0 @@
-interface:
-  display_name: "Research Fleet"
-  short_description: "Use when parallel research using Fleet wave mechanics. Spawns multiple scout agents, each investigating a different angle of the same question. Findings are compressed between..."
-policy:
-  allow_implicit_invocation: false

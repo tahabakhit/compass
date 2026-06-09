@@ -1,0 +1,51 @@
+{
+  "id": "implement",
+  "description": "Build one verified vertical slice.",
+  "triggers": [
+    "build",
+    "implement",
+    "add feature",
+    "change"
+  ],
+  "mode": {
+    "default": "medium"
+  },
+  "native": {
+    "codex": "plan_mode_optional",
+    "claude": "plan_mode_optional"
+  },
+  "phases": [
+    {
+      "id": "clarify",
+      "when": "ambiguity_high"
+    },
+    {
+      "id": "inspect"
+    },
+    {
+      "id": "plan"
+    },
+    {
+      "id": "implement"
+    },
+    {
+      "id": "verify"
+    },
+    {
+      "id": "review"
+    }
+  ],
+  "gates": [
+    "tests-pass",
+    "diff-reviewed"
+  ],
+  "budget": {
+    "default_agents": 1,
+    "max_agents": 3,
+    "max_minutes": 60
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

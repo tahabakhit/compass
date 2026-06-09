@@ -1,0 +1,48 @@
+{
+  "id": "architecture-sweep",
+  "description": "Map a system and find simplification opportunities.",
+  "triggers": [
+    "architecture",
+    "simplify",
+    "deepening",
+    "system map"
+  ],
+  "mode": {
+    "default": "medium"
+  },
+  "native": {
+    "codex": "subagents_allowed",
+    "claude": "plan_mode_optional"
+  },
+  "phases": [
+    {
+      "id": "zoom-out"
+    },
+    {
+      "id": "map-boundaries"
+    },
+    {
+      "id": "find-pressure"
+    },
+    {
+      "id": "propose-sequence"
+    },
+    {
+      "id": "validate-tradeoffs"
+    }
+  ],
+  "gates": [
+    "boundaries-named",
+    "tradeoffs-recorded",
+    "migration-sequence-clear"
+  ],
+  "budget": {
+    "default_agents": 1,
+    "max_agents": 3,
+    "max_minutes": 75
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

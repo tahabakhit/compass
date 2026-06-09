@@ -1,5 +1,0 @@
-interface:
-  display_name: "Refactor"
-  short_description: "Use when safe multi-file refactoring with automatic rollback. Establishes a type/test baseline, plans all changes, executes file-by-file, and verifies zero regressions. Reverts..."
-policy:
-  allow_implicit_invocation: false

@@ -1,53 +1,35 @@
 {
   "name": "sinan",
-  "version": "0.1.1",
-  "description": "Codex-native Sinan harness for durable agent orchestration",
+  "version": "0.2.0",
+  "description": "Codex-first orchestration plugin with small skills, deterministic routing, declarative workflows, and a four-hook core.",
   "author": {
-    "name": "Sinan",
-    "url": "https://github.com/tahabakhit/ming"
+    "name": "Sinan"
   },
-  "repository": "https://github.com/tahabakhit/ming",
   "license": "MIT",
   "keywords": [
-    "codex",
-    "openai",
-    "agent",
-    "harness",
     "orchestration",
-    "skills",
+    "routing",
+    "workflows",
     "hooks",
-    "mcp",
-    "automation",
-    "tdd",
-    "red-team"
+    "skills"
   ],
   "skills": "./skills/",
-  "mcpServers": "./.mcp.json",
+  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Sinan",
-    "shortDescription": "Sinan orchestration with low-overhead routing and verification: 50 skills",
-    "longDescription": "Sinan is a cross-project Codex and Claude Code harness for durable planning state, proportional routing, explicit specialist skills, lifecycle automation, telemetry, and capped context snapshots.",
+    "shortDescription": "Route work into skills, workflows, and native modes",
+    "longDescription": "Sinan is a Codex-first orchestration plugin that keeps small tasks light, routes broad work into declarative workflows, and bundles a compact hook core for context, prompt routing, Bash safety, and handoff.",
     "developerName": "Sinan",
-    "category": "Developer Tools",
-    "websiteURL": "https://github.com/tahabakhit/ming",
-    "privacyPolicyURL": "https://github.com/tahabakhit/ming",
-    "termsOfServiceURL": "https://github.com/tahabakhit/ming",
+    "category": "Productivity",
     "capabilities": [
-      "orchestration",
-      "campaigns",
-      "parallel-agents",
-      "quality-gates",
-      "telemetry",
-      "intent-routing",
-      "tdd",
-      "red-team-review",
-      "context-snapshots",
-      "mcp",
-      "codex-hooks"
+      "Read",
+      "Write"
     ],
     "defaultPrompt": [
-      "Use Sinan to route this task through the cheapest capable workflow.",
-      "Use Sinan to continue active harness state and apply the appropriate verification loop."
-    ]
+      "Use Sinan to route this task.",
+      "Use Sinan to plan this implementation.",
+      "Use Sinan to review this change."
+    ],
+    "brandColor": "#10A37F"
   }
 }

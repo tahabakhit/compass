@@ -1,5 +1,0 @@
-interface:
-  display_name: "Workspace"
-  short_description: "Use when multi-repo campaign coordinator. Same lifecycle as fleet -- scope claims, discovery relay, wave-based execution -- but the unit of work is a repo, not a file...."
-policy:
-  allow_implicit_invocation: false

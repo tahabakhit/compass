@@ -1,0 +1,27 @@
+interface:
+  display_name: "Sinan"
+  short_description: "Route tasks into the right work shape"
+  default_prompt: "Use $sinan to choose the right workflow and native mode for this task."
+policy:
+  allow_implicit_invocation: true
+routing:
+  triggers:
+    - sinan
+    - route this
+    - choose workflow
+    - orchestrate
+  intents:
+    - clarify
+    - implement
+    - debug
+    - review
+    - research
+    - cleanup
+    - architecture
+    - handoff
+    - setup
+  task_sizes:
+    - light
+    - full
+    - workflow
+  allow_implicit_invocation: true

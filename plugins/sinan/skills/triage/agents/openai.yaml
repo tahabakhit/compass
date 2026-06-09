@@ -1,5 +1,0 @@
-interface:
-  display_name: "Triage"
-  short_description: "Use when gitHub issue and PR investigator. Pulls open issues/PRs, classifies them, searches the codebase for root cause or reviews contributed code, proposes fixes with..."
-policy:
-  allow_implicit_invocation: false

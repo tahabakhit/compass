@@ -1,0 +1,19 @@
+interface:
+  display_name: "Architecture"
+  short_description: "Simplify boundaries and migration plans"
+  default_prompt: "Use $architecture to review this design for simpler boundaries."
+policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - architecture
+    - simplify
+    - deepening
+    - boundaries
+  intents:
+    - architecture
+    - cleanup
+  task_sizes:
+    - full
+    - workflow
+  allow_implicit_invocation: false

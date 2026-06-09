@@ -1,0 +1,19 @@
+interface:
+  display_name: "Compress"
+  short_description: "Keep technical replies terse and exact"
+  default_prompt: "Use $compress to answer this with minimal tokens and no lost facts."
+policy:
+  allow_implicit_invocation: true
+routing:
+  triggers:
+    - compress
+    - be brief
+    - less tokens
+    - compact mode
+  intents:
+    - research
+    - handoff
+  task_sizes:
+    - micro
+    - light
+  allow_implicit_invocation: true

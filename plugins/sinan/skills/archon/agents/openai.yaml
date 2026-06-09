@@ -1,5 +1,0 @@
-interface:
-  display_name: "Archon"
-  short_description: "Use when autonomous multi-session campaign agent. Decomposes large work into phases, delegates to sub-agents, reviews output, and maintains campaign state across context..."
-policy:
-  allow_implicit_invocation: false

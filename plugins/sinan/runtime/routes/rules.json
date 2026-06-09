@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "rules": [
+    {
+      "id": "micro-command-output",
+      "priority": 100,
+      "match": {
+        "anyPromptIncludes": [
+          "run `date`",
+          "show git status",
+          "what is in `package.json`"
+        ]
+      },
+      "route": {
+        "taskSize": "micro",
+        "intent": "research",
+        "workflow": null,
+        "nativeMode": "none",
+        "skills": [],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [],
+        "budget": "small",
+        "reason": "Simple command output."
+      }
+    },
+    {
+      "id": "micro-rewrite-translate",
+      "priority": 100,
+      "match": {
+        "anyPromptIncludes": [
+          "summarize this paragraph",
+          "translate this",
+          "make this sentence clearer",
+          "what does this file do"
+        ]
+      },
+      "route": {
+        "taskSize": "micro",
+        "intent": "research",
+        "workflow": null,
+        "nativeMode": "none",
+        "skills": [],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [],
+        "budget": "small",
+        "reason": "Simple read or language task; no Sinan overhead."
+      }
+    },
+    {
+      "id": "implement-feature",
+      "priority": 80,
+      "match": {
+        "anyPromptIncludes": [
+          "add oauth login",
+          "add feature",
+          "implement",
+          "build"
+        ],
+        "intentHints": [
+          "implement"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "implement",
+        "workflow": "implement",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "tdd"
+        ],
+        "agents": {
+          "count": 1,
+          "roles": [
+            "review"
+          ]
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "medium",
+        "reason": "Risky multi-file implementation needs plan and tests."
+      }
+    },
+    {
+      "id": "cleanup-delete",
+      "priority": 80,
+      "match": {
+        "anyPromptIncludes": [
+          "delete unused hook scripts",
+          "cleanup",
+          "prune",
+          "reorganize"
+        ],
+        "intentHints": [
+          "cleanup"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "cleanup",
+        "workflow": "cleanup",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "architecture"
+        ],
+        "agents": {
+          "count": 1,
+          "roles": [
+            "verification"
+          ]
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "medium",
+        "reason": "Deletion needs inventory, replacement coverage, and review."
+      }
+    },
+    {
+      "id": "debug-failing-test",
+      "priority": 70,
+      "match": {
+        "anyPromptIncludes": [
+          "failing test",
+          "broken",
+          "regression"
+        ],
+        "intentHints": [
+          "debug"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "debug",
+        "workflow": "debug",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "diagnose"
+        ],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "medium",
+        "reason": "Debugging benefits from reproduce-minimize-fix verification."
+      }
+    },
+    {
+      "id": "handoff",
+      "priority": 65,
+      "match": {
+        "anyPromptIncludes": [
+          "handoff",
+          "continuation summary",
+          "compact handoff"
+        ],
+        "intentHints": [
+          "handoff"
+        ]
+      },
+      "route": {
+        "taskSize": "light",
+        "intent": "handoff",
+        "workflow": null,
+        "nativeMode": "none",
+        "skills": [
+          "handoff"
+        ],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [],
+        "budget": "small",
+        "reason": "Focused continuation summary; no workflow needed."
+      }
+    },
+    {
+      "id": "broad-research-audit",
+      "priority": 60,
+      "match": {
+        "anyPromptIncludes": [
+          "audit",
+          "research",
+          "compare"
+        ],
+        "intentHints": [
+          "research"
+        ]
+      },
+      "route": {
+        "taskSize": "workflow",
+        "intent": "research",
+        "workflow": "research-audit",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "zoom-out"
+        ],
+        "agents": {
+          "count": 3,
+          "roles": [
+            "research",
+            "review",
+            "compatibility"
+          ]
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "large",
+        "reason": "Broad source-backed work earns workflow and bounded lanes."
+      }
+    }
+  ]
+}

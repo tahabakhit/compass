@@ -1,5 +1,0 @@
-interface:
-  display_name: "Wiki"
-  short_description: "Use when markdown-first knowledge base where the LLM acts as librarian. Ingests raw sources, compiles and interlinks topic files, self-maintains an index. No vector DB or..."
-policy:
-  allow_implicit_invocation: false

@@ -1,0 +1,50 @@
+{
+  "id": "workspace-setup",
+  "description": "Inspect and propose project instruction scaffolding.",
+  "triggers": [
+    "setup workspace",
+    "scaffold instructions",
+    "doctor instructions"
+  ],
+  "mode": {
+    "default": "small"
+  },
+  "native": {
+    "codex": "plan_mode_optional",
+    "claude": "plan_mode_optional"
+  },
+  "phases": [
+    {
+      "id": "inspect-surfaces"
+    },
+    {
+      "id": "detect-project"
+    },
+    {
+      "id": "propose-diff"
+    },
+    {
+      "id": "wait-for-confirmation"
+    },
+    {
+      "id": "write-if-approved"
+    },
+    {
+      "id": "verify-generated-surfaces"
+    }
+  ],
+  "gates": [
+    "proposal-shown-before-write",
+    "manual-text-preserved",
+    "generated-markers-present"
+  ],
+  "budget": {
+    "default_agents": 0,
+    "max_agents": 1,
+    "max_minutes": 30
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

@@ -1,5 +1,0 @@
-interface:
-  display_name: "Autopilot"
-  short_description: "Use when intake-to-delivery pipeline. Processes pending items from .planning/intake/: briefs new ideas, executes approved work through research → plan → build → verify. Drop a..."
-policy:
-  allow_implicit_invocation: false

@@ -1,5 +1,0 @@
-interface:
-  display_name: "Qa"
-  short_description: "Use when browser-based QA verification. Launches a real browser, navigates the app, clicks buttons, fills forms, and tests user flows. Works as a standalone skill or as a phase..."
-policy:
-  allow_implicit_invocation: false

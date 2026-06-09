@@ -1,5 +1,0 @@
-interface:
-  display_name: "Evolve"
-  short_description: "Use when research-driven multi-cycle improvement director. Forms causal hypotheses about why scores are low, validates them with scout agents before attacking, dispatches..."
-policy:
-  allow_implicit_invocation: false
