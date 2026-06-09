@@ -77,14 +77,15 @@ function defaultInput(prompt) {
     },
     availableSkills: [
       "task-router",
-      "grill",
+      "brainstorm",
+      "decision-capture",
       "diagnose",
       "tdd",
       "review",
       "zoom-out",
       "architecture",
       "architecture-deepening",
-      "project-scaffold",
+      "agent-scaffold",
       "handoff",
       "compress",
     ],
@@ -96,7 +97,7 @@ function defaultInput(prompt) {
       "research-audit",
       "cleanup",
       "architecture-sweep",
-      "project-scaffold",
+      "agent-scaffold",
     ],
   };
 }
@@ -159,17 +160,45 @@ function fallbackRoute(input) {
     };
   }
 
+  if (/\b(brainstorm|think through|shape this idea|product direction|ambiguous|acceptance criteria)\b/.test(prompt)) {
+    return {
+      taskSize: "full",
+      intent: "clarify",
+      workflow: "clarify",
+      nativeMode: input.platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["brainstorm"],
+      agents: { count: 0, roles: [] },
+      hooks: ["bash-guard"],
+      budget: "small",
+      reason: "Ambiguous work should be shaped before decisions or implementation.",
+    };
+  }
+
+  if (/\b(decision capture|capture decisions|glossary\.md|adr|architecture decision)\b/.test(prompt)) {
+    return {
+      taskSize: "full",
+      intent: "clarify",
+      workflow: "clarify",
+      nativeMode: input.platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["decision-capture"],
+      agents: { count: 0, roles: [] },
+      hooks: ["bash-guard"],
+      budget: "small",
+      reason: "Durable project memory should be confirmed before writing.",
+    };
+  }
+
   if (/\b(setup|set up|scaffold|doctor)\b/.test(prompt)) {
     return {
       taskSize: "full",
       intent: "setup",
-      workflow: "project-scaffold",
+      workflow: "agent-scaffold",
       nativeMode: input.platform === "claude" ? "claude-plan" : "codex-plan",
-      skills: ["project-scaffold"],
+      skills: ["agent-scaffold"],
       agents: { count: 0, roles: [] },
       hooks: ["bash-guard"],
       budget: "small",
-      reason: "Workspace setup should inspect and propose before writing.",
+      reason: "Agent scaffolding should inspect and propose before writing.",
     };
   }
 

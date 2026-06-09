@@ -1,11 +1,15 @@
 interface:
-  display_name: "Grill"
-  short_description: "Clarify ambiguity with focused questions"
-  default_prompt: "Use $grill to clarify the acceptance criteria for this request."
+  display_name: "Brainstorm"
+  short_description: "Shape ambiguous ideas into decisions"
+  default_prompt: "Use $brainstorm to shape this idea before planning or implementation."
 policy:
   allow_implicit_invocation: false
 routing:
   triggers:
+    - brainstorm
+    - think through
+    - shape this idea
+    - product direction
     - grill me
     - clarify
     - ambiguous

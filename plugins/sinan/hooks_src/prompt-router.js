@@ -46,6 +46,30 @@ function routeHintForPrompt(prompt, platform = "codex") {
     });
   }
 
+  if (/\b(brainstorm|think through|shape this idea|product direction|ambiguous|acceptance criteria)\b/.test(normalized)) {
+    return baseRoute({
+      taskSize: "full",
+      intent: "clarify",
+      workflow: "clarify",
+      nativeMode: platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["brainstorm"],
+      hooks: ["bash-guard"],
+      reason: "Ambiguous work should be shaped before decisions or implementation.",
+    });
+  }
+
+  if (/\b(decision capture|capture decisions|glossary\.md|adr|architecture decision)\b/.test(normalized)) {
+    return baseRoute({
+      taskSize: "full",
+      intent: "clarify",
+      workflow: "clarify",
+      nativeMode: platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["decision-capture"],
+      hooks: ["bash-guard"],
+      reason: "Durable project memory should be confirmed before writing.",
+    });
+  }
+
   if (/\b(review|audit diff|pr feedback|code review)\b/.test(normalized)) {
     return baseRoute({
       taskSize: "full",
@@ -107,11 +131,11 @@ function routeHintForPrompt(prompt, platform = "codex") {
     return baseRoute({
       taskSize: "full",
       intent: "setup",
-      workflow: "project-scaffold",
+      workflow: "agent-scaffold",
       nativeMode: platform === "claude" ? "claude-plan" : "codex-plan",
-      skills: ["project-scaffold"],
+      skills: ["agent-scaffold"],
       hooks: ["bash-guard"],
-      reason: "Workspace setup should inspect and propose before writing.",
+      reason: "Agent scaffolding should inspect and propose before writing.",
     });
   }
 

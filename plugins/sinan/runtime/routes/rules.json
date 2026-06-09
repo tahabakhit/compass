@@ -88,6 +88,110 @@
       }
     },
     {
+      "id": "brainstorm-idea",
+      "priority": 85,
+      "match": {
+        "anyPromptIncludes": [
+          "brainstorm",
+          "think through",
+          "shape this idea",
+          "product direction",
+          "acceptance criteria"
+        ],
+        "intentHints": [
+          "clarify"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "clarify",
+        "workflow": "clarify",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "brainstorm"
+        ],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "small",
+        "reason": "Ambiguous work should be shaped before decisions or implementation."
+      }
+    },
+    {
+      "id": "decision-capture",
+      "priority": 84,
+      "match": {
+        "anyPromptIncludes": [
+          "decision capture",
+          "capture decisions",
+          "glossary.md",
+          "write an adr",
+          "architecture decision"
+        ],
+        "intentHints": [
+          "clarify"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "clarify",
+        "workflow": "clarify",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "decision-capture"
+        ],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "small",
+        "reason": "Durable project memory should be confirmed before writing."
+      }
+    },
+    {
+      "id": "agent-scaffold",
+      "priority": 83,
+      "match": {
+        "anyPromptIncludes": [
+          "agent scaffold",
+          "scaffold instructions",
+          "set up instructions",
+          "agents.md",
+          "claude.md",
+          "github labels",
+          "github workflows"
+        ],
+        "intentHints": [
+          "setup"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "setup",
+        "workflow": "agent-scaffold",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "agent-scaffold"
+        ],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "small",
+        "reason": "Agent scaffolding should inspect and propose before writing."
+      }
+    },
+    {
       "id": "cleanup-delete",
       "priority": 80,
       "match": {

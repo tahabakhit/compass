@@ -1,9 +1,10 @@
 {
-  "id": "project-scaffold",
-  "description": "Inspect and propose project instruction scaffolding.",
+  "id": "agent-scaffold",
+  "description": "Inspect and propose agent instruction scaffolding.",
   "triggers": [
     "setup workspace",
     "scaffold instructions",
+    "agent scaffold",
     "doctor instructions"
   ],
   "mode": {
@@ -21,6 +22,9 @@
       "id": "detect-project"
     },
     {
+      "id": "inspect-github-surfaces"
+    },
+    {
       "id": "propose-diff"
     },
     {
@@ -36,7 +40,8 @@
   "gates": [
     "proposal-shown-before-write",
     "manual-text-preserved",
-    "generated-markers-present"
+    "generated-markers-present",
+    "github-guidance-explicit"
   ],
   "budget": {
     "default_agents": 0,

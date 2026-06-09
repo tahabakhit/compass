@@ -1,0 +1,22 @@
+interface:
+  display_name: "Decision Capture"
+  short_description: "Write durable glossary and ADRs"
+  default_prompt: "Use $decision-capture to record the stable terms and decisions."
+policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - decision capture
+    - capture decisions
+    - capture durable terms
+    - glossary.md
+    - adr
+    - architecture decision
+  intents:
+    - clarify
+    - architecture
+    - setup
+  task_sizes:
+    - light
+    - full
+  allow_implicit_invocation: false
