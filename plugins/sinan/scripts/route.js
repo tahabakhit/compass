@@ -86,6 +86,7 @@ function defaultInput(prompt) {
       "architecture",
       "architecture-deepening",
       "scaffold",
+      "starter",
       "handoff",
       "compress",
     ],
@@ -98,6 +99,7 @@ function defaultInput(prompt) {
       "cleanup",
       "architecture-sweep",
       "scaffold",
+      "starter",
     ],
   };
 }
@@ -188,6 +190,20 @@ function fallbackRoute(input) {
     };
   }
 
+  if (/\b(architecture before implementation|plan the architecture|choose the architecture|system shape|module boundaries|data shape)\b/.test(prompt)) {
+    return {
+      taskSize: "full",
+      intent: "architecture",
+      workflow: "architecture-sweep",
+      nativeMode: input.platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["zoom-out", "architecture"],
+      agents: { count: 1, roles: ["review"] },
+      hooks: ["bash-guard"],
+      budget: "medium",
+      reason: "Architecture should choose boundaries before starter or implementation work.",
+    };
+  }
+
   if (/\b(setup|set up|scaffold|doctor)\b/.test(prompt)) {
     return {
       taskSize: "full",
@@ -199,6 +215,20 @@ function fallbackRoute(input) {
       hooks: ["bash-guard"],
       budget: "small",
       reason: "Agent scaffolding should inspect and propose before writing.",
+    };
+  }
+
+  if (/\b(starter|app starter|generate starter|initial app files|framework shell|application shell)\b/.test(prompt)) {
+    return {
+      taskSize: "full",
+      intent: "setup",
+      workflow: "starter",
+      nativeMode: input.platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["starter"],
+      agents: { count: 0, roles: [] },
+      hooks: ["bash-guard"],
+      budget: "medium",
+      reason: "Starter generation should follow confirmed product and architecture decisions.",
     };
   }
 

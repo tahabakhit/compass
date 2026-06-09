@@ -1,0 +1,52 @@
+{
+  "id": "starter",
+  "description": "Generate the smallest initial app or framework files after decisions exist.",
+  "triggers": [
+    "starter",
+    "app starter",
+    "initial app files",
+    "framework shell"
+  ],
+  "mode": {
+    "default": "medium"
+  },
+  "native": {
+    "codex": "plan_mode_required",
+    "claude": "plan_mode_required"
+  },
+  "phases": [
+    {
+      "id": "inspect-existing-files"
+    },
+    {
+      "id": "confirm-decisions"
+    },
+    {
+      "id": "propose-starter-shape"
+    },
+    {
+      "id": "write-if-approved"
+    },
+    {
+      "id": "verify-commands"
+    },
+    {
+      "id": "handoff-to-tdd"
+    }
+  ],
+  "gates": [
+    "decisions-confirmed",
+    "proposal-shown-before-write",
+    "generated-files-minimal",
+    "tests-or-run-command-verified"
+  ],
+  "budget": {
+    "default_agents": 0,
+    "max_agents": 1,
+    "max_minutes": 45
+  },
+  "resume": {
+    "state_dir": ".sinan/runs",
+    "persist": "summaries_only"
+  }
+}

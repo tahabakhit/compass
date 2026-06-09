@@ -70,6 +70,20 @@ function routeHintForPrompt(prompt, platform = "codex") {
     });
   }
 
+  if (/\b(architecture before implementation|plan the architecture|choose the architecture|system shape|module boundaries|data shape)\b/.test(normalized)) {
+    return baseRoute({
+      taskSize: "full",
+      intent: "architecture",
+      workflow: "architecture-sweep",
+      nativeMode: platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["zoom-out", "architecture"],
+      agents: { count: 1, roles: ["review"] },
+      hooks: ["bash-guard"],
+      budget: "medium",
+      reason: "Architecture should choose boundaries before starter or implementation work.",
+    });
+  }
+
   if (/\b(review|audit diff|pr feedback|code review)\b/.test(normalized)) {
     return baseRoute({
       taskSize: "full",
@@ -136,6 +150,19 @@ function routeHintForPrompt(prompt, platform = "codex") {
       skills: ["scaffold"],
       hooks: ["bash-guard"],
       reason: "Agent scaffolding should inspect and propose before writing.",
+    });
+  }
+
+  if (/\b(starter|app starter|generate starter|initial app files|framework shell|application shell)\b/.test(normalized)) {
+    return baseRoute({
+      taskSize: "full",
+      intent: "setup",
+      workflow: "starter",
+      nativeMode: platform === "claude" ? "claude-plan" : "codex-plan",
+      skills: ["starter"],
+      hooks: ["bash-guard"],
+      budget: "medium",
+      reason: "Starter generation should follow confirmed product and architecture decisions.",
     });
   }
 

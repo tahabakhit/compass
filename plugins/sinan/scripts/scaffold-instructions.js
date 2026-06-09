@@ -24,10 +24,11 @@ Use Sinan as the front door for ambiguous or multi-step work:
 1. Use bootstrap language only for empty-repo technical setup such as package manager, CI, lint, test, README, and .gitignore.
 2. Shape the idea with \`$brainstorm\` until users, constraints, workflows, and the first vertical slice are clear.
 3. Capture durable terms in \`GLOSSARY.md\` and durable architecture decisions in \`docs/adr/\` only after confirmation.
-4. Run \`$scaffold\` to create or refresh agent instructions after the repo direction is known.
-5. Use starter language for generating initial framework/app files after product and technical decisions exist.
-6. Plan the first slice with \`$task-router\`, \`$architecture\`, or the \`implement\` workflow as appropriate.
-7. Implement with \`$tdd\`, review with \`$review\`, deepen architecture with \`$architecture-deepening\`, and end resumable sessions with \`$handoff\`.
+4. Use \`$architecture\` before implementation to choose boundaries, modules, data shape, integrations, and the first vertical slice.
+5. Run \`$scaffold\` to create or refresh agent instructions after the repo direction is known.
+6. Use \`$starter\` for generating initial framework/app files after product and technical decisions exist.
+7. Plan the first slice with \`$task-router\`, \`$architecture\`, or the \`implement\` workflow as appropriate.
+8. Implement with \`$tdd\`, review with \`$review\`, deepen architecture with \`$architecture-deepening\`, and end resumable sessions with \`$handoff\`.
 
 For tiny command, read, rewrite, or translation tasks, answer directly without loading workflows, agents, or extra skills.
 

@@ -1,0 +1,22 @@
+interface:
+  display_name: "Starter"
+  short_description: "Generate initial app files"
+  default_prompt: "Use $starter to generate the initial app files for the first slice."
+policy:
+  allow_implicit_invocation: false
+routing:
+  triggers:
+    - starter
+    - app starter
+    - generate starter
+    - initial app files
+    - framework shell
+    - application shell
+    - first vertical slice
+  intents:
+    - setup
+    - implement
+  task_sizes:
+    - full
+    - workflow
+  allow_implicit_invocation: false

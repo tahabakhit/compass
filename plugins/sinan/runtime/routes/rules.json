@@ -88,6 +88,44 @@
       }
     },
     {
+      "id": "pre-implementation-architecture",
+      "priority": 86,
+      "match": {
+        "anyPromptIncludes": [
+          "architecture before implementation",
+          "plan the architecture",
+          "choose the architecture",
+          "system shape",
+          "module boundaries",
+          "data shape"
+        ],
+        "intentHints": [
+          "architecture"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "architecture",
+        "workflow": "architecture-sweep",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "zoom-out",
+          "architecture"
+        ],
+        "agents": {
+          "count": 1,
+          "roles": [
+            "review"
+          ]
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "medium",
+        "reason": "Architecture should choose boundaries before starter or implementation work."
+      }
+    },
+    {
       "id": "brainstorm-idea",
       "priority": 85,
       "match": {
@@ -189,6 +227,42 @@
         ],
         "budget": "small",
         "reason": "Agent scaffolding should inspect and propose before writing."
+      }
+    },
+    {
+      "id": "starter",
+      "priority": 82,
+      "match": {
+        "anyPromptIncludes": [
+          "starter",
+          "app starter",
+          "generate starter",
+          "initial app files",
+          "framework shell",
+          "application shell"
+        ],
+        "intentHints": [
+          "setup",
+          "implement"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "setup",
+        "workflow": "starter",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "starter"
+        ],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "medium",
+        "reason": "Starter generation should follow confirmed product and architecture decisions."
       }
     },
     {
