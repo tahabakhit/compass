@@ -16,6 +16,9 @@
   },
   "phases": [
     {
+      "id": "run-starter-plan"
+    },
+    {
       "id": "inspect-existing-files"
     },
     {

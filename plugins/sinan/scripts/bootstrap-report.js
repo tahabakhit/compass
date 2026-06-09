@@ -155,6 +155,42 @@ function recommendSteps(state, signals) {
   };
 }
 
+function commandForStep(step, target) {
+  const quotedTarget = JSON.stringify(target);
+  const commands = {
+    handoff: "Read the existing handoff before changing files.",
+    brainstorm: "Use $brainstorm to clarify users, constraints, non-goals, and first vertical slice.",
+    "decision-capture": "Use $decision-capture after terms or decisions stabilize.",
+    architecture: "Use $architecture to choose boundaries, modules, data shape, integrations, and first slice.",
+    scaffold: `node scripts/scaffold-instructions.js --target ${quotedTarget}`,
+    starter: `node scripts/starter-plan.js --target ${quotedTarget} --json`,
+    tdd: "Use $tdd for the next verified implementation slice.",
+  };
+  return commands[step] || `Use $${step}.`;
+}
+
+function reasonForStep(step, state, signals) {
+  if (step === "handoff") return "Prior handoff or continuation state exists; read it before proposing startup work.";
+  if (step === "brainstorm") return "No durable project memory was detected; clarify direction before writing decisions.";
+  if (step === "decision-capture") return "No GLOSSARY.md or ADR directory was detected; stable terms and decisions need a home.";
+  if (step === "architecture") return "No ADR directory was detected; choose boundaries before starter or implementation work.";
+  if (step === "scaffold") return "AGENTS.md and CLAUDE.md were not both detected; agent guidance should be created or refreshed.";
+  if (step === "starter") return "Repo is empty or foundation-only; starter files may be appropriate after decisions are confirmed.";
+  if (step === "tdd") return state === "resumed-from-handoff"
+    ? "Repo is resumed from prior work; continue with the next verified implementation slice after reading handoff."
+    : "Repo already has app or established structure; continue with a verified implementation slice.";
+  return signals.handoffs.found ? "Prior handoff exists; proceed conservatively." : "Recommended by bootstrap report.";
+}
+
+function buildPlan(state, signals, recommendations, target) {
+  return recommendations.nextSteps.map((step, index) => ({
+    order: index + 1,
+    step,
+    reason: reasonForStep(step, state, signals),
+    command: commandForStep(step, target),
+  }));
+}
+
 function buildReport(target) {
   const resolvedTarget = path.resolve(target);
   if (!fs.existsSync(resolvedTarget) || !fs.statSync(resolvedTarget).isDirectory()) {
@@ -193,11 +229,13 @@ function buildReport(target) {
   };
 
   const state = classifyState(signals);
+  const recommendations = recommendSteps(state, signals);
   return {
     target: resolvedTarget,
     state,
     signals,
-    recommendations: recommendSteps(state, signals),
+    recommendations,
+    plan: buildPlan(state, signals, recommendations, resolvedTarget),
   };
 }
 
@@ -209,6 +247,10 @@ function printText(report) {
   console.log(`package manager: ${report.signals.packageManager || "none"}`);
   console.log(`frameworks: ${report.signals.frameworks.length ? report.signals.frameworks.join(", ") : "none"}`);
   console.log(`next steps: ${report.recommendations.nextSteps.join(", ") || "none"}`);
+  if (report.plan.length > 0) {
+    console.log("plan:");
+    for (const item of report.plan) console.log(`  ${item.order}. ${item.step}: ${item.command}`);
+  }
   if (report.recommendations.skipped.length > 0) {
     console.log("skipped:");
     for (const item of report.recommendations.skipped) console.log(`  ${item.step}: ${item.reason}`);
@@ -233,6 +275,7 @@ if (require.main === module) {
 
 module.exports = {
   buildReport,
+  buildPlan,
   classifyState,
   recommendSteps,
 };
