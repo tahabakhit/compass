@@ -17,6 +17,9 @@
   },
   "phases": [
     {
+      "id": "run-bootstrap-report"
+    },
+    {
       "id": "inspect-repo-state"
     },
     {

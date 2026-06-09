@@ -10,11 +10,12 @@ Use this skill as the startup front door for a new, empty, partial, or resumed r
 ## Workflow
 
 1. Inspect the repo state before recommending work: git status, file tree, package manager, README, tests, CI, app files, agent files, glossary, ADRs, and GitHub surfaces.
-2. Look for prior context first: pasted handoff, `HANDOFF.md`, `handoff.md`, `.sinan/runs/`, `.planning/sinan`, recent commits, and continuation notes.
-3. Classify the repo as empty, foundation-only, app-started, established, or resumed-from-handoff.
-4. Recommend only the needed next steps: `$brainstorm`, `$decision-capture`, `$architecture`, `$scaffold`, `$starter`, or `$tdd`.
-5. Ask before writing. Do not generate app files unless the repo is empty/near-empty or the user explicitly requests starter files.
-6. Preserve existing decisions and handoff instructions unless evidence says they are stale.
+2. Run `node scripts/bootstrap-report.js --target <repo> --json` when available.
+3. Look for prior context first: pasted handoff, `HANDOFF.md`, `handoff.md`, `.sinan/runs/`, `.planning/sinan`, recent commits, and continuation notes.
+4. Classify the repo as empty, foundation-only, app-started, established, or resumed-from-handoff.
+5. Recommend only the needed next steps: `$brainstorm`, `$decision-capture`, `$architecture`, `$scaffold`, `$starter`, or `$tdd`.
+6. Ask before writing. Do not generate app files unless the repo is empty/near-empty or the user explicitly requests starter files.
+7. Preserve existing decisions and handoff instructions unless evidence says they are stale.
 
 ## Output
 
