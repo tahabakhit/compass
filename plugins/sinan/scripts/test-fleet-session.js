@@ -83,7 +83,7 @@ const updated = updateWorkQueue(sample, tasks);
 assert(updated.includes('## Continuation State'), 'update should preserve later sections');
 assert(updated.includes('| 6 | Package | package.json | 4 | complete | 2 | build | codex/package | validator pass |'));
 
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-fleet-session-'));
+const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-fleet-session-'));
 try {
   const emptyOutput = execFileSync(process.execPath, [
     path.join(__dirname, 'fleet-steward.js'),

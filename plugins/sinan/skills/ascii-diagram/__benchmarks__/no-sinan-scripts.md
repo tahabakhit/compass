@@ -1,5 +1,5 @@
 ---
-name: no-citadel-scripts
+name: no-sinan-scripts
 skill: ascii-diagram
 description: Grid engine not available — skill should fall back to inline Grid class
 tags: [fringe, missing-dependency, fallback]
@@ -17,7 +17,7 @@ assert-not-contains:
 
 ## What This Tests
 
-The `.citadel/scripts/grid.cjs` file is not present (project not initialized).
+The `.sinan/scripts/grid.cjs` file is not present (project not initialized).
 The skill must fall back to the inline Grid class template from the protocol
 and still produce a correct diagram.
 
@@ -26,7 +26,7 @@ or refuse, it uses the embedded fallback.
 
 ## Expected Behavior
 
-1. Skill cannot find `.citadel/scripts/grid.cjs`
+1. Skill cannot find `.sinan/scripts/grid.cjs`
 2. Falls back to the inline Grid class (copy-paste template from Step 2)
 3. Produces a valid diagram with "client" and "server" boxes
 4. Does NOT say "I cannot" or produce an error

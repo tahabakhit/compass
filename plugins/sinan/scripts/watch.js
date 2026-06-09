@@ -3,7 +3,7 @@
 /**
  * watch.js -- Poll-based file change scanner for the Sinan harness.
  *
- * Detects file modifications since last scan and scans for @citadel marker
+ * Detects file modifications since last scan and scans for @sinan marker
  * comments, outputting actionable results. Engine behind the /watch skill.
  *
  * Usage:
@@ -30,14 +30,14 @@ const INTAKE_DIR = path.join(PLANNING_DIR, 'intake');
 const VALID_ACTIONS = new Set(['review', 'test', 'fix', 'document', 'refactor', 'todo']);
 
 const MARKER_PATTERNS = [
-  // // @citadel: action description
-  /\/\/\s*@citadel:\s*(\w+)\s*(.*?)$/,
-  // # @citadel: action description
-  /^#\s*@citadel:\s*(\w+)\s*(.*?)$/,
-  // /* @citadel: action description */
-  /\/\*\s*@citadel:\s*(\w+)\s*(.*?)\s*\*\//,
-  // <!-- @citadel: action description -->
-  /<!--\s*@citadel:\s*(\w+)\s*(.*?)\s*-->/,
+  // // @sinan: action description
+  /\/\/\s*@sinan:\s*(\w+)\s*(.*?)$/,
+  // # @sinan: action description
+  /^#\s*@sinan:\s*(\w+)\s*(.*?)$/,
+  // /* @sinan: action description */
+  /\/\*\s*@sinan:\s*(\w+)\s*(.*?)\s*\*\//,
+  // <!-- @sinan: action description -->
+  /<!--\s*@sinan:\s*(\w+)\s*(.*?)\s*-->/,
 ];
 
 // -- CLI argument parser ------------------------------------------------------
@@ -287,7 +287,7 @@ function formatTextOutput(changedFiles, markers, categories, lastCommit, current
     lines.push('  Markers found:');
     for (const m of markers) {
       const desc = m.description ? ` ${m.description}` : '';
-      lines.push(`    ${m.file}:${m.line} -- @citadel: ${m.action}${desc}`);
+      lines.push(`    ${m.file}:${m.line} -- @sinan: ${m.action}${desc}`);
     }
   }
 

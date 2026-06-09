@@ -23,10 +23,10 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const health = require('./harness-health-util');
 
-const CITADEL_UI = process.env.CITADEL_UI === 'true';
+const SINAN_UI = process.env.SINAN_UI === 'true';
 
 function hookOutput(hookName, action, message, data = {}) {
-  if (CITADEL_UI) {
+  if (SINAN_UI) {
     process.stdout.write(JSON.stringify({
       hook: hookName,
       action,
@@ -165,7 +165,7 @@ function run() {
       'Fix these before finalizing your work.',
     ].join('\n');
 
-    if (CITADEL_UI) {
+    if (SINAN_UI) {
       hookOutput('quality-gate', 'warned', msg, { violations });
     } else {
       // Inject violations directly into Claude's context window via additionalContext.

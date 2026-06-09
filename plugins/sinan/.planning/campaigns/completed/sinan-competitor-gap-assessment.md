@@ -1,20 +1,20 @@
-# Campaign: Citadel Competitor Gap Assessment
+# Campaign: Sinan Competitor Gap Assessment
 
 Status: completed
 Direction: Research 20 high-overlap competitors, products, repos, services, and
-technique sources for Citadel; identify overlap/gaps; decide what belongs in
-Citadel; produce implementation plans ready for approval.
+technique sources for Sinan; identify overlap/gaps; decide what belongs in
+Sinan; produce implementation plans ready for approval.
 
 ## Phases
 
 | # | Status | Type | Phase | Done When |
 |---|--------|------|-------|-----------|
-| 1 | complete | build | Local Citadel Control Plane | `npm run dashboard` renders a read-only operator snapshot and `npm run test` passes |
+| 1 | complete | build | Local Sinan Control Plane | `npm run dashboard` renders a read-only operator snapshot and `npm run test` passes |
 | 2 | complete | build | Fleet DAG and Merge Steward | `node scripts/fleet-steward.js` reports ready/blocked/mergeable Fleet work and `npm run test` passes |
 | 3 | complete | build | Worktree Environment Readiness Profiles | `node scripts/worktree-readiness.js` records worktree readiness and Fleet/dashboard expose blockers |
 | 4 | complete | build | Signed Telemetry and Artifact Lineage | `node scripts/verify-telemetry-integrity.js` verifies hashed telemetry/artifact records and detects tampering |
 | 5 | complete | build | Memory Compiler and Semantic Blocks | `npm run memory:compile` writes five source-backed memory block types and `npm run memory:lint` passes |
-| 6 | complete | build | Phase Exit Evidence Contracts | `node scripts/evidence-validate.js --file .planning/campaigns/citadel-competitor-gap-assessment.md --target phase:6` passes and missing evidence creates repair tasks |
+| 6 | complete | build | Phase Exit Evidence Contracts | `node scripts/evidence-validate.js --file .planning/campaigns/sinan-competitor-gap-assessment.md --target phase:6` passes and missing evidence creates repair tasks |
 | 7 | complete | build | Sandbox Provider Contract | `npm run sandbox:matrix` reports provider capabilities and `node scripts/test-sandbox-provider.js` passes |
 | 8 | complete | build | Skill and Workflow Packaging Upgrade | `node scripts/test-skill-packaging.js` passes and `node scripts/skill-catalog.js --task-class quality` shows skills by task class/risk |
 | 9 | complete | docs | Thin Runtime Adapter Matrix | `npm run runtime:matrix` reports adapter levels/tradeoffs and `node scripts/test-runtime-matrix.js` passes |
@@ -24,11 +24,11 @@ Citadel; produce implementation plans ready for approval.
 
 Detailed local research artifacts:
 
-- `.planning/research/citadel-competitor-gap-assessment-2026-06-04/INDEX.md`
-- `.planning/research/citadel-competitor-gap-assessment-2026-06-04/selection-matrix.md`
-- `.planning/research/citadel-competitor-gap-assessment-2026-06-04/writeups.md`
-- `.planning/research/citadel-competitor-gap-assessment-2026-06-04/determinations.md`
-- `.planning/research/citadel-competitor-gap-assessment-2026-06-04/implementation-plans.md`
+- `.planning/research/sinan-competitor-gap-assessment-2026-06-04/INDEX.md`
+- `.planning/research/sinan-competitor-gap-assessment-2026-06-04/selection-matrix.md`
+- `.planning/research/sinan-competitor-gap-assessment-2026-06-04/writeups.md`
+- `.planning/research/sinan-competitor-gap-assessment-2026-06-04/determinations.md`
+- `.planning/research/sinan-competitor-gap-assessment-2026-06-04/implementation-plans.md`
 
 ## Selected References
 
@@ -41,7 +41,7 @@ Aider, LangGraph, Letta.
 
 Accepted for implementation planning:
 
-1. Local Citadel control-plane dashboard.
+1. Local Sinan control-plane dashboard.
 2. Dependency-aware Fleet DAG and merge steward.
 3. Worktree/sandbox environment readiness profiles.
 4. Signed append-only telemetry and artifact lineage.
@@ -61,18 +61,18 @@ Monitor or defer:
 
 Rejected:
 
-- Replacing Citadel with a general agent framework.
+- Replacing Sinan with a general agent framework.
 - Auto-merge without explicit evidence contracts.
 
 ## Implementation Queue
 
 Approval-ready plans are in:
 
-`.planning/research/citadel-competitor-gap-assessment-2026-06-04/implementation-plans.md`
+`.planning/research/sinan-competitor-gap-assessment-2026-06-04/implementation-plans.md`
 
 Recommended approval order:
 
-1. Local Citadel Control Plane.
+1. Local Sinan Control Plane.
 2. Fleet DAG and Merge Steward.
 3. Worktree Environment Readiness Profiles.
 4. Signed Telemetry and Artifact Lineage.
@@ -93,7 +93,7 @@ Recommended approval order:
 - Plan 3 implemented read-only worktree readiness profiles and reports; WorktreeCreate records readiness after setup without blocking creation.
 - Fleet steward now parks readiness-blocked tasks unless `--override-readiness` is explicit, and the dashboard summarizes readiness reports.
 - Plan 4 implemented telemetry integrity for new records while keeping old records readable as legacy.
-- Agent-run telemetry and Codex artifact evidence now include lineage IDs and `_hash`; optional HMAC uses `CITADEL_TELEMETRY_HMAC_KEY`.
+- Agent-run telemetry and Codex artifact evidence now include lineage IDs and `_hash`; optional HMAC uses `SINAN_TELEMETRY_HMAC_KEY`.
 - Plan 5 implemented deterministic semantic memory blocks in `.planning/memory/blocks/` with source linting and scoped loading for agents.
 - `/learn` can run memory compilation directly, and `/daemon` records safe consolidation passes without allowing memory failures to create overlapping ticks.
 - Plan 6 implemented optional `## Exit Evidence` contracts for campaigns and Fleet sessions, with validator output that blocks advancement or writes repair tasks for missing required evidence.
@@ -102,7 +102,7 @@ Recommended approval order:
 - Worktree creation and cleanup stay owned by native lifecycle hooks; provider v1 exposes capability matrix, attach, status, snapshot, and readiness.
 - Plan 8 added optional skill packaging metadata, metadata-aware linting, a local skill catalog, and a scaffold command that emits valid SKILL.md plus optional benchmark files.
 - Existing skills remain lint-clean without forced metadata migration; catalog inference fills the initial discovery gap.
-- Plan 9 added explicit runtime adapter levels so Citadel can describe what each runtime guarantees instead of implying hook parity everywhere.
+- Plan 9 added explicit runtime adapter levels so Sinan can describe what each runtime guarantees instead of implying hook parity everywhere.
 - Runtime matrix output is available as both human-readable CLI text and JSON for automation, and docs now list each runtime's tradeoffs.
 - Plan 10 moved `/map` behavior into a shared `core/map` module with hashes, routes, package scripts, verification commands, scoped slices, and stale detection.
 - Archon and Fleet now request generated map slices through `node scripts/map-index.js --slice`, keeping agent-injected orientation consistent.
@@ -156,7 +156,7 @@ Next action: run full verification and prepare approval-ready handoff.
 ## Completion Record
 
 - Completed At: 2026-06-05T15:33:15.520Z
-- PR: https://github.com/SethGammon/Citadel/pull/135
+- PR: https://github.com/SethGammon/Sinan/pull/135
 - Merge SHA: 4ff456f159b83f5dbe749d8c6ecd431578fef00c
 - Verification: npm run test plus campaign evidence validation
 - Note: Merged approved competitor-gap implementation queue.

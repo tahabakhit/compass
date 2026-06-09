@@ -62,7 +62,7 @@ function main() {
       branch: branchName,
     });
 
-    // Queue merge conflict check for this branch (processed by citadel:merge-review)
+    // Queue merge conflict check for this branch (processed by sinan:merge-review)
     if (branchName) {
       queueMergeCheck(branchName, worktreeName);
     }

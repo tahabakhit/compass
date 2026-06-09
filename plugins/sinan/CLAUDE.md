@@ -18,7 +18,7 @@ Claude Code to operate autonomously on any codebase. It provides:
 - Hooks live in `hooks_src/`. Installed per-project via `scripts/install-hooks.js`.
 - The `init-project` hook auto-scaffolds per-project state on session start:
   - `.planning/` — campaign state, fleet sessions, intake, telemetry
-  - `.citadel/scripts/` — utility scripts (telemetry, coordination, compression)
+  - `.sinan/scripts/` — utility scripts (telemetry, coordination, compression)
   - `.claude/agent-context/` — rules injected into sub-agents
 - Campaign state lives in `.planning/campaigns/` (per-project).
 - Fleet session state lives in `.planning/fleet/` (per-project).

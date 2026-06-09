@@ -25,7 +25,7 @@ function main() {
     fail('Generated openai.yaml is missing the expected display name');
   }
 
-  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-skill-proj-'));
+  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-skill-proj-'));
   const targetBase = path.join(tmpRoot, '.agents', 'skills');
   const result = projectSkillToCodex(skillRoot, targetBase, 'review');
 

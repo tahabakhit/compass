@@ -99,7 +99,7 @@ function summarizeDashboard(snapshot) {
     },
     problems: {
       actionable: snapshot.problemSummary?.actionable || 0,
-      safetyBlocks: snapshot.problemSummary?.safetyBlocks || 0,
+      hookFailures: snapshot.problemSummary?.hookFailures || 0,
       stale: snapshot.problemSummary?.stale || 0,
     },
     artifacts: {
@@ -347,7 +347,7 @@ function renderConsole(consoleState) {
     `  Campaigns: active=${campaigns.active}, package=${campaigns.needsReviewPackage}, complete=${campaigns.needsCompletion}, archive=${campaigns.needsArchive}`,
     `  Fleet: active=${fleet.active}, visible=${fleet.totalVisible}`,
     `  Stack: status=${stack.status}, prs=${stack.prCount}, blocked=${stack.blockedCount}`,
-    `  Problems: actionable=${problems.actionable}, safetyBlocks=${problems.safetyBlocks}, stale=${problems.stale}`,
+    `  Problems: actionable=${problems.actionable}, hookFailures=${problems.hookFailures}, stale=${problems.stale}`,
     '',
     'Artifacts',
     ...renderArtifact('Next report', consoleState.dashboard.artifacts.nextActionReport),

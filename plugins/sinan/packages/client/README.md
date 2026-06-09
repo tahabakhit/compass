@@ -1,10 +1,10 @@
-# `@citadel/client`
+# `@sinan/client`
 
-Public client surface for transporting Citadel events and metadata beyond the local harness.
+Public client surface for transporting Sinan events and metadata beyond the local harness.
 
 ## Purpose
 
-This package will own the normalized client-facing emission layer between local Citadel activity and optional remote sinks.
+This package will own the normalized client-facing emission layer between local Sinan activity and optional remote sinks.
 
 Initial scope:
 

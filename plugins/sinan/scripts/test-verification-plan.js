@@ -11,7 +11,7 @@ const { changedFilesFromGit, profileForFiles, selectVerificationProfile } = requ
 const { render } = require('./verification-plan');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-verification-plan-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-verification-plan-'));
   try {
     return run(dir);
   } finally {
@@ -19,8 +19,8 @@ function withTempProject(run) {
   }
 }
 
-assert.equal(profileForFiles(['hooks_src/protect-files.js'], { test: 'node test.js' }).id, 'hook-runtime');
-assert(profileForFiles(['hooks_src/protect-files.js'], { test: 'node test.js' }).commands.includes('node scripts/verify-hooks.js'));
+assert.equal(profileForFiles(['hooks_src/governance.js'], { test: 'node test.js' }).id, 'hook-runtime');
+assert(profileForFiles(['hooks_src/governance.js'], { test: 'node test.js' }).commands.includes('node scripts/verify-hooks.js'));
 assert.equal(profileForFiles(['skills/do/SKILL.md'], { test: 'node test.js' }).id, 'skill-surface');
 assert.equal(profileForFiles(['docs/index.html'], { test: 'node test.js' }).id, 'demo-experience');
 assert.equal(profileForFiles(['scripts/dashboard.js'], { test: 'node test.js' }).id, 'operator-loop');

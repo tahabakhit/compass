@@ -5,51 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js protect-files",
-            "statusMessage": "Sinan: protect-files",
-            "timeout": 5
-          }
-        ],
-        "matcher": "Edit"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js protect-files",
-            "statusMessage": "Sinan: protect-files",
-            "timeout": 5
-          }
-        ],
-        "matcher": "Write"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js protect-files",
-            "statusMessage": "Sinan: protect-files",
-            "timeout": 5
-          }
-        ],
-        "matcher": "Read"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js external-action-gate",
-            "statusMessage": "Sinan: external-action-gate",
-            "timeout": 5
-          }
-        ],
-        "matcher": "Bash"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js governance",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js governance",
             "statusMessage": "Sinan: governance",
             "timeout": 3
           }
@@ -60,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js governance",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js governance",
             "statusMessage": "Sinan: governance",
             "timeout": 3
           }
@@ -71,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js governance",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js governance",
             "statusMessage": "Sinan: governance",
             "timeout": 3
           }
@@ -82,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js governance",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js governance",
             "statusMessage": "Sinan: governance",
             "timeout": 3
           }
@@ -95,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js post-edit",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js post-edit",
             "statusMessage": "Sinan: post-edit",
             "timeout": 30
           }
@@ -105,7 +61,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js organize-enforce",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js organize-enforce",
             "statusMessage": "Sinan: organize-enforce",
             "timeout": 5
           }
@@ -116,7 +72,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js organize-enforce",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js organize-enforce",
             "statusMessage": "Sinan: organize-enforce",
             "timeout": 5
           }
@@ -127,7 +83,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js complexity-check",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js complexity-check",
             "statusMessage": "Sinan: complexity-check",
             "timeout": 5
           }
@@ -138,7 +94,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js complexity-check",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js complexity-check",
             "statusMessage": "Sinan: complexity-check",
             "timeout": 5
           }
@@ -149,7 +105,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js circuit-breaker",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js circuit-breaker",
             "statusMessage": "Sinan: circuit-breaker",
             "timeout": 5
           }
@@ -160,7 +116,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js cost-tracker",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js cost-tracker",
             "statusMessage": "Sinan: cost-tracker",
             "timeout": 5
           }
@@ -172,7 +128,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js pre-compact",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js pre-compact",
             "statusMessage": "Sinan: pre-compact",
             "timeout": 15
           }
@@ -184,7 +140,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js post-compact",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js post-compact",
             "statusMessage": "Sinan: post-compact",
             "timeout": 10
           }
@@ -196,7 +152,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js quality-gate",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js quality-gate",
             "statusMessage": "Sinan: quality-gate",
             "timeout": 10
           }
@@ -206,7 +162,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js session-end",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js session-end",
             "statusMessage": "Sinan: session-end",
             "timeout": 10
           }
@@ -218,7 +174,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js init-project",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js init-project",
             "statusMessage": "Sinan: init-project",
             "timeout": 10
           }
@@ -228,7 +184,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js restore-compact",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js restore-compact",
             "statusMessage": "Sinan: restore-compact",
             "timeout": 5
           }
@@ -239,7 +195,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js intake-scanner",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js intake-scanner",
             "statusMessage": "Sinan: intake-scanner",
             "timeout": 5
           }
@@ -251,7 +207,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js subagent-start",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js subagent-start",
             "statusMessage": "Sinan: subagent-start",
             "timeout": 5
           }
@@ -263,7 +219,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js subagent-stop",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js subagent-stop",
             "statusMessage": "Sinan: subagent-stop",
             "timeout": 5
           }
@@ -275,7 +231,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CITADEL_ROOT}/codex-adapter.js permission-request",
+            "command": "node ${SINAN_ROOT}/codex-adapter.js permission-request",
             "statusMessage": "Sinan: permission-request",
             "timeout": 3
           }

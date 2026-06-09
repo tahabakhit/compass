@@ -10,7 +10,7 @@ const path = require('path');
 const { classifyHookProblem, collectDashboard, readOperatorArtifacts, renderDashboard, relativeTime } = require('./dashboard');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-dashboard-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-dashboard-'));
   try {
     return run(dir);
   } finally {
@@ -34,53 +34,25 @@ assert.equal(relativeTime('2026-06-03T12:00:00.000Z', new Date('2026-06-04T12:00
 {
   const classified = classifyHookProblem({
     timestamp: '2026-06-04T11:59:00.000Z',
-    hook: 'protect-files',
+    hook: 'quality-gate',
     action: 'blocked',
-    detail: 'Read .env (.env secrets)',
+    detail: 'missing verification evidence',
   }, new Date('2026-06-04T12:00:00.000Z'));
-  assert.equal(classified.category, 'safety-block');
-  assert.equal(classified.actionable, false);
-  assert.equal(classified.severity, 'info');
+  assert.equal(classified.category, 'attention');
+  assert.equal(classified.actionable, true);
+  assert.equal(classified.severity, 'medium');
 }
 
 {
   const classified = classifyHookProblem({
     timestamp: '2026-06-04T11:59:00.000Z',
-    hook: 'protect-files',
+    hook: 'governance',
     action: 'parse-fail',
     detail: 'Could not parse stdin JSON',
   }, new Date('2026-06-04T12:00:00.000Z'));
   assert.equal(classified.category, 'hook-failure');
   assert.equal(classified.actionable, true);
   assert.equal(classified.severity, 'high');
-}
-
-{
-  const classified = classifyHookProblem({
-    timestamp: '2026-06-04T11:59:05.000Z',
-    hook: 'external-action-gate',
-    action: 'consent-block',
-    detail: 'git push: git push -u origin codex/branch',
-  }, new Date('2026-06-04T12:00:00.000Z'), {
-    auditEntries: [
-      { timestamp: '2026-06-04T11:59:00.000Z', event: 'tool-call', target: 'git push origin codex/branch' },
-    ],
-  });
-  assert.equal(classified.category, 'resolved-approval');
-  assert.equal(classified.actionable, false);
-  assert.equal(classified.severity, 'info');
-}
-
-{
-  const classified = classifyHookProblem({
-    timestamp: '2026-06-04T11:30:00.000Z',
-    hook: 'external-action-gate',
-    action: 'consent-block',
-    detail: 'git push: git push origin codex/branch',
-  }, new Date('2026-06-04T12:00:00.000Z'));
-  assert.equal(classified.category, 'stale-approval');
-  assert.equal(classified.actionable, false);
-  assert.equal(classified.severity, 'low');
 }
 
 withTempProject((projectRoot) => {
@@ -435,54 +407,20 @@ withTempProject((projectRoot) => {
 
 withTempProject((projectRoot) => {
   appendJsonl(path.join(projectRoot, '.planning', 'telemetry', 'hook-errors.jsonl'), [
-    { timestamp: '2026-06-04T11:59:00.000Z', hook: 'protect-files', action: 'blocked', detail: 'Read .env (.env secrets)' },
-    { timestamp: '2026-06-04T11:58:00.000Z', hook: 'external-action-gate', action: 'blocked', detail: 'gh release create: gh release create v1.0.0' },
+    { timestamp: '2026-06-04T11:59:00.000Z', hook: 'governance', action: 'error', detail: 'audit write failed' },
     { timestamp: '2026-06-02T11:58:00.000Z', hook: 'quality-gate', action: 'blocked', detail: 'old quality gate block' },
   ]);
 
   const snapshot = collectDashboard({ projectRoot, now: '2026-06-04T12:00:00.000Z' });
   const output = renderDashboard(snapshot);
 
-  assert.equal(snapshot.problemSummary.actionable, 0);
-  assert.equal(snapshot.problemSummary.safetyBlocks, 2);
-  assert.equal(snapshot.problemSummary.stale, 1);
-  assert.equal(snapshot.nextAction.label, 'No urgent Sinan action detected');
-  assert(output.includes('Actionable: 0 | Safety blocks: 2 | Resolved approvals: 0 | Stale: 1'));
-  assert(output.includes('info | safety-block | protect-files'));
-  assert(output.includes('low | stale | quality-gate'));
-});
-
-withTempProject((projectRoot) => {
-  appendJsonl(path.join(projectRoot, '.planning', 'telemetry', 'hook-errors.jsonl'), [
-    { timestamp: '2026-06-04T11:59:00.000Z', hook: 'external-action-gate', action: 'consent-block', detail: 'git push: git push origin codex/branch' },
-  ]);
-  appendJsonl(path.join(projectRoot, '.planning', 'telemetry', 'audit.jsonl'), [
-    { timestamp: '2026-06-04T11:59:30.000Z', event: 'tool-call', target: 'git push origin codex/branch' },
-  ]);
-
-  const snapshot = collectDashboard({ projectRoot, now: '2026-06-04T12:00:00.000Z' });
-  const output = renderDashboard(snapshot);
-
-  assert.equal(snapshot.problemSummary.actionable, 0);
-  assert.equal(snapshot.problemSummary.resolvedApprovals, 1);
-  assert.equal(snapshot.nextAction.label, 'No urgent Sinan action detected');
-  assert(output.includes('info | resolved-approval | external-action-gate'));
-});
-
-withTempProject((projectRoot) => {
-  appendJsonl(path.join(projectRoot, '.planning', 'telemetry', 'hook-errors.jsonl'), [
-    { timestamp: '2026-06-04T11:59:00.000Z', hook: 'external-action-gate', action: 'first-encounter', detail: 'git push: git push origin branch' },
-  ]);
-
-  const snapshot = collectDashboard({ projectRoot, now: '2026-06-04T12:00:00.000Z' });
-  const output = renderDashboard(snapshot);
-
   assert.equal(snapshot.problemSummary.actionable, 1);
-  assert.equal(snapshot.problemSummary.approvalNeeded, 1);
+  assert.equal(snapshot.problemSummary.hookFailures, 1);
+  assert.equal(snapshot.problemSummary.stale, 1);
   assert.equal(snapshot.nextAction.label, 'Review recent hook problems');
-  assert.equal(snapshot.nextAction.command, '/telemetry');
-  assert(output.includes('medium | approval-needed | external-action-gate'));
-  assert(output.includes('1 actionable hook problem(s) are recorded'));
+  assert(output.includes('Actionable: 1 | Hook failures: 1 | Stale: 1'));
+  assert(output.includes('high | hook-failure | governance'));
+  assert(output.includes('low | stale | quality-gate'));
 });
 
 withTempProject((projectRoot) => {

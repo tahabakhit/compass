@@ -29,15 +29,15 @@ const path          = require('path');
 const os            = require('os');
 const { spawnSync, execFileSync } = require('child_process');
 
-const CITADEL_ROOT  = path.resolve(__dirname, '..');
-const HOOKS_SRC     = path.join(CITADEL_ROOT, 'hooks_src');
+const SINAN_ROOT  = path.resolve(__dirname, '..');
+const HOOKS_SRC     = path.join(SINAN_ROOT, 'hooks_src');
 const VERBOSE       = process.argv.includes('--verbose');
 const WRITE_REPORT  = process.argv.includes('--report');
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
 
 function sandbox() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-verify-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-verify-'));
   fs.mkdirSync(path.join(dir, '.claude'), { recursive: true });
   return dir;
 }
@@ -124,7 +124,7 @@ console.log('─'.repeat(40));
 let installDir = sandbox();
 
 test('install-hooks.js exits 0', () => {
-  const r = spawnSync('node', [path.join(CITADEL_ROOT, 'scripts', 'install-hooks.js'), installDir, '--hook-profile', 'latest'], {
+  const r = spawnSync('node', [path.join(SINAN_ROOT, 'scripts', 'install-hooks.js'), installDir, '--hook-profile', 'latest'], {
     encoding: 'utf8', timeout: 10000,
   });
   if (r.status !== 0) return `exit ${r.status}: ${r.stderr.slice(0, 200)}`;
@@ -215,11 +215,11 @@ test('.planning/ directory tree created', () => {
   if (missing.length) return `missing dirs: ${missing.join(', ')}`;
 });
 
-test('.citadel/scripts/ populated with delegates', () => {
-  const scripts = path.join(initDir, '.citadel', 'scripts');
-  if (!fs.existsSync(scripts)) return '.citadel/scripts/ not created';
+test('.sinan/scripts/ populated with delegates', () => {
+  const scripts = path.join(initDir, '.sinan', 'scripts');
+  if (!fs.existsSync(scripts)) return '.sinan/scripts/ not created';
   const files = fs.readdirSync(scripts);
-  if (files.length === 0) return '.citadel/scripts/ is empty';
+  if (files.length === 0) return '.sinan/scripts/ is empty';
   // Each file should be a thin delegate (reads plugin-root.txt, not a verbatim copy)
   const delegateMarker = 'plugin-root.txt';
   const nonDelegate = files.filter(f => {
@@ -230,10 +230,10 @@ test('.citadel/scripts/ populated with delegates', () => {
   if (nonDelegate.length > 0) return `non-delegate scripts found: ${nonDelegate.join(', ')}`;
 });
 
-test('.citadel/plugin-root.txt written', () => {
-  if (!fileExists(initDir, '.citadel/plugin-root.txt'))
+test('.sinan/plugin-root.txt written', () => {
+  if (!fileExists(initDir, '.sinan/plugin-root.txt'))
     return 'plugin-root.txt not created';
-  const content = fs.readFileSync(path.join(initDir, '.citadel/plugin-root.txt'), 'utf8').trim();
+  const content = fs.readFileSync(path.join(initDir, '.sinan/plugin-root.txt'), 'utf8').trim();
   if (!content) return 'plugin-root.txt is empty';
 });
 
@@ -256,45 +256,6 @@ console.log('─'.repeat(40));
 
 // We reuse initDir (already has .planning/ structure) for all runtime tests.
 const rDir = initDir;
-
-// ── protect-files.js ──
-
-test('protect-files: blocks edit to .claude/harness.json (exit 2)', () => {
-  const payload = {
-    tool_name: 'Edit',
-    tool_input: { file_path: path.join(rDir, '.claude', 'harness.json') },
-  };
-  const r = fireHook('protect-files.js', payload, rDir);
-  if (r.exitCode !== 2) return `expected exit 2, got ${r.exitCode}`;
-  if (!r.stdout.includes('[protect-files]')) return 'no block message in stdout';
-});
-
-test('protect-files: allows edit to normal file (exit 0)', () => {
-  const payload = {
-    tool_name: 'Edit',
-    tool_input: { file_path: path.join(rDir, 'src', 'index.ts') },
-  };
-  const r = fireHook('protect-files.js', payload, rDir);
-  if (r.exitCode !== 0) return `expected exit 0, got ${r.exitCode}: ${r.stdout}`;
-});
-
-test('protect-files: blocks Read on .env file (exit 2)', () => {
-  const payload = {
-    tool_name: 'Read',
-    tool_input: { file_path: path.join(rDir, '.env') },
-  };
-  const r = fireHook('protect-files.js', payload, rDir);
-  if (r.exitCode !== 2) return `expected exit 2, got ${r.exitCode}`;
-});
-
-test('protect-files: allows Read on non-env file (exit 0)', () => {
-  const payload = {
-    tool_name: 'Read',
-    tool_input: { file_path: path.join(rDir, 'README.md') },
-  };
-  const r = fireHook('protect-files.js', payload, rDir);
-  if (r.exitCode !== 0) return `expected exit 0, got ${r.exitCode}`;
-});
 
 // ── governance.js ──
 
@@ -539,10 +500,10 @@ test('permission-request: writes audit entry', () => {
   if (after <= before) return 'audit.jsonl not updated';
 });
 
-test('permission-request: auto-approves citadel script (stdout has allow decision)', () => {
+test('permission-request: auto-approves sinan script (stdout has allow decision)', () => {
   const payload = {
     tool_name: 'Bash',
-    tool_input: { command: 'node .citadel/scripts/telemetry-log.cjs --event test' },
+    tool_input: { command: 'node .sinan/scripts/telemetry-log.cjs --event test' },
   };
   const r = fireHook('permission-request.js', payload, rDir);
   if (r.exitCode !== 0) return `exit ${r.exitCode}`;
@@ -782,57 +743,10 @@ test('elicitation: no auto-response (empty stdout)', () => {
   if (r.stdout.trim()) return `expected empty stdout, got: ${r.stdout.slice(0, 100)}`;
 });
 
-// ── protect-files: campaign scope enforcement ──
-
-test('protect-files: warns (not blocks) on out-of-scope edit', () => {
-  // Create a campaign with declared scope
-  const campaignsDir = path.join(rDir, '.planning', 'campaigns');
-  fs.writeFileSync(path.join(campaignsDir, 'test-scope.md'), [
-    '# Campaign: Test Scope',
-    'Status: active',
-    '',
-    '## Claimed Scope',
-    '- src/',
-  ].join('\n'));
-
-  const payload = {
-    tool_name: 'Edit',
-    tool_input: { file_path: path.join(rDir, 'docs', 'README.md') },
-  };
-  const r = fireHook('protect-files.js', payload, rDir);
-  // Advisory warning — exits 0 but writes a message
-  if (r.exitCode !== 0) return `expected exit 0 (advisory), got ${r.exitCode}`;
-  if (!r.stdout.includes('outside the claimed scope'))
-    return 'expected scope warning in stdout';
-  fs.rmSync(path.join(campaignsDir, 'test-scope.md'));
-});
-
-test('protect-files: hard-blocks on Restricted Files edit', () => {
-  const campaignsDir = path.join(rDir, '.planning', 'campaigns');
-  fs.writeFileSync(path.join(campaignsDir, 'test-restricted.md'), [
-    '# Campaign: Test Restricted',
-    'Status: active',
-    '',
-    '## Claimed Scope',
-    '- src/',
-    '',
-    '## Restricted Files',
-    '- .env.production',
-  ].join('\n'));
-
-  const payload = {
-    tool_name: 'Edit',
-    tool_input: { file_path: path.join(rDir, '.env.production') },
-  };
-  const r = fireHook('protect-files.js', payload, rDir);
-  if (r.exitCode !== 2) return `expected exit 2 (block), got ${r.exitCode}`;
-  fs.rmSync(path.join(campaignsDir, 'test-restricted.md'));
-});
-
 // ── Audit integrity (harness-health-util) ──
 
 test('audit integrity: writeAuditLog produces _hash field', () => {
-  const health = require(path.join(CITADEL_ROOT, 'hooks_src', 'harness-health-util'));
+  const health = require(path.join(SINAN_ROOT, 'hooks_src', 'harness-health-util'));
   health.writeAuditLog('test-event', { detail: 'verify-hooks test' });
   const auditFile = path.join(rDir, '.planning', 'telemetry', 'audit.jsonl');
   if (!fs.existsSync(auditFile)) return 'audit.jsonl not created';
@@ -844,7 +758,7 @@ test('audit integrity: writeAuditLog produces _hash field', () => {
 });
 
 test('audit integrity: verifyAuditIntegrity detects clean records', () => {
-  const health = require(path.join(CITADEL_ROOT, 'hooks_src', 'harness-health-util'));
+  const health = require(path.join(SINAN_ROOT, 'hooks_src', 'harness-health-util'));
   const auditFile = path.join(rDir, '.planning', 'telemetry', 'audit.jsonl');
   const result = health.verifyAuditIntegrity(auditFile);
   if (result.tampered.length > 0) return `${result.tampered.length} records flagged as tampered (should be 0)`;
@@ -852,7 +766,7 @@ test('audit integrity: verifyAuditIntegrity detects clean records', () => {
 });
 
 test('audit integrity: verifyAuditIntegrity detects tampered record', () => {
-  const health = require(path.join(CITADEL_ROOT, 'hooks_src', 'harness-health-util'));
+  const health = require(path.join(SINAN_ROOT, 'hooks_src', 'harness-health-util'));
   const tamperedFile = path.join(rDir, '.planning', 'telemetry', 'audit-tampered-test.jsonl');
   // Write a record, then corrupt its hash
   const base = { schema: 1, event: 'test', timestamp: new Date().toISOString(), project: 'test' };
@@ -864,7 +778,7 @@ test('audit integrity: verifyAuditIntegrity detects tampered record', () => {
 });
 
 test('audit integrity: logTiming produces _hash field', () => {
-  const health = require(path.join(CITADEL_ROOT, 'hooks_src', 'harness-health-util'));
+  const health = require(path.join(SINAN_ROOT, 'hooks_src', 'harness-health-util'));
   health.logTiming('verify-hooks-test', 0, { test: true });
   const timingFile = path.join(rDir, '.planning', 'telemetry', 'hook-timing.jsonl');
   if (!fs.existsSync(timingFile)) return 'hook-timing.jsonl not created';
@@ -875,7 +789,7 @@ test('audit integrity: logTiming produces _hash field', () => {
 });
 
 test('audit integrity: hashRecord is deterministic', () => {
-  const health = require(path.join(CITADEL_ROOT, 'hooks_src', 'harness-health-util'));
+  const health = require(path.join(SINAN_ROOT, 'hooks_src', 'harness-health-util'));
   const record = { b: 2, a: 1, c: { z: 26, y: 25 } };
   const h1 = health.hashRecord(record);
   const h2 = health.hashRecord(record);
@@ -923,7 +837,7 @@ console.log('\n' + '='.repeat(40));
 console.log(`Results: ${passed} passed, ${failed} failed`);
 
 if (WRITE_REPORT) {
-  const dir = path.join(CITADEL_ROOT, '.planning', 'verification', 'hook-install');
+  const dir = path.join(SINAN_ROOT, '.planning', 'verification', 'hook-install');
   fs.mkdirSync(dir, { recursive: true });
   const date = new Date().toISOString();
   const lines = [

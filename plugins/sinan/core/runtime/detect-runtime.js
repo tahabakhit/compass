@@ -12,7 +12,7 @@ const VALID_RUNTIMES = listRuntimeIds();
 function detectRuntime(projectRoot) {
   const root = projectRoot || process.env.CLAUDE_PROJECT_DIR || process.cwd();
 
-  const envRuntime = process.env.CITADEL_RUNTIME;
+  const envRuntime = process.env.SINAN_RUNTIME;
   if (envRuntime && VALID_RUNTIMES.includes(envRuntime)) {
     return { runtime: envRuntime, method: 'env' };
   }

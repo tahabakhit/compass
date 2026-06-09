@@ -20,14 +20,14 @@
 const path = require('path');
 const { installClaudeHooks } = require('../runtimes/claude-code/generators/install-hooks');
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
+const SINAN_ROOT = path.resolve(__dirname, '..');
 
 function parseArgs(argv) {
   const args = argv.slice(2);
   const options = {
     projectRoot: process.env.CLAUDE_PROJECT_DIR || process.cwd(),
-    hookProfile: process.env.CITADEL_CLAUDE_HOOK_PROFILE || 'auto',
-    claudeVersion: process.env.CITADEL_CLAUDE_VERSION || null,
+    hookProfile: process.env.SINAN_CLAUDE_HOOK_PROFILE || 'auto',
+    claudeVersion: process.env.SINAN_CLAUDE_VERSION || null,
   };
 
   for (let index = 0; index < args.length; index++) {
@@ -65,13 +65,13 @@ function main() {
   try {
     const options = parseArgs(process.argv);
     const result = installClaudeHooks({
-      citadelRoot: CITADEL_ROOT,
+      sinanRoot: SINAN_ROOT,
       projectRoot: options.projectRoot,
       hookProfile: options.hookProfile,
       claudeVersion: options.claudeVersion,
     });
     console.log(`Sinan hooks installed to ${result.settingsPath}`);
-    console.log(`  ${result.hookCount} Sinan hooks resolved (${result.citadelRoot})`);
+    console.log(`  ${result.hookCount} Sinan hooks resolved (${result.sinanRoot})`);
     if (result.preservedCount > 0) {
       console.log(`  ${result.preservedCount} existing user hooks preserved`);
     }

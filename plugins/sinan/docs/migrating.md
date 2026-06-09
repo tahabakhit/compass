@@ -31,15 +31,8 @@ Keep `.claude/harness.json` and `.planning/` — they contain your project state
 ## 3. Install the plugin
 
 ```bash
-git clone https://github.com/SethGammon/sinan.git ~/sinan
-cd /path/to/your-project
-node ~/sinan/scripts/claude-install.js --install --scope local
-```
-
-Manual Claude Code equivalent:
-```
-/plugin marketplace add /path/to/sinan
-/plugin install sinan@sinan-local --scope local
+claude plugin marketplace add https://github.com/tahabakhit/ming.git --scope local
+claude plugin install sinan@ming --scope local
 ```
 
 ## 4. Re-run the hook installer
@@ -55,6 +48,6 @@ The install script handles this automatically.
 
 ## 5. Start a new session
 
-The `init-project` hook auto-scaffolds `.citadel/scripts/` and verifies your
+The `init-project` hook auto-scaffolds `.sinan/scripts/` and verifies your
 `.planning/` directory on session start. Run `/do setup` to regenerate `harness.json`
 if needed.

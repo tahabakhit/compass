@@ -33,7 +33,7 @@ Defined in `core/contracts/runtime.js` and printable with
 
 | Capability | Claude Code | Codex | OpenAI | Notes |
 |---|---|---|---|---|
-| `guidance` | Full | Full | Full | CLAUDE.md / AGENTS.md projected from `.citadel/project.md` |
+| `guidance` | Full | Full | Full | CLAUDE.md / AGENTS.md projected from `.sinan/project.md` |
 | `skills` | Full | Full | Partial | Codex supports repo/user/admin/system/plugin skills; OpenAI uses Responses API reusable skills |
 | `agents` | Full | Full | Partial | Codex supports `.codex/agents/*.toml` and native subagents; OpenAI uses Responses API agent loop |
 | `hooks` | Full | Partial | Partial | Codex supports native lifecycle hooks, but Sinan still needs an adapter for hook contract parity |
@@ -88,7 +88,7 @@ When projecting agents to Codex `.toml` format or OpenAI Responses API:
 
 | Sinan Model | Codex Model | OpenAI Model |
 |---|---|---|
-| `opus` | `gpt-5.4` | `gpt-5.4` (configurable via `CITADEL_OPENAI_MODEL`) |
+| `opus` | `gpt-5.4` | `gpt-5.4` (configurable via `SINAN_OPENAI_MODEL`) |
 | `sonnet` | `gpt-5.4-mini` | `gpt-5.4-mini` |
 | `haiku` | `gpt-5.4-mini` | `gpt-5.4-mini` |
 
@@ -97,7 +97,7 @@ via environment variables (see `packages/runtime-openai/README.md`).
 
 ## Guidance Projection
 
-Both runtimes receive projected guidance from the canonical `.citadel/project.md`:
+Both runtimes receive projected guidance from the canonical `.sinan/project.md`:
 
 - **Claude Code**: `CLAUDE.md` via `core/project/render-claude-guidance.js`
 - **Codex**: `AGENTS.md` via `core/project/render-codex-guidance.js`

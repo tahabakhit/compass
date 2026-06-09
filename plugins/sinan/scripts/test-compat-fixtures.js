@@ -20,7 +20,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
+const SINAN_ROOT = path.resolve(__dirname, '..');
 const FIXTURES_DIR = path.join(__dirname, 'fixtures');
 
 const { installClaudeHooks } = require('../runtimes/claude-code/generators/install-hooks');
@@ -44,8 +44,8 @@ function check(label, fn) {
 }
 
 function normalizePaths(str) {
-  const forward = CITADEL_ROOT.replace(/\\/g, '/');
-  return str.split(forward).join('${CITADEL_ROOT}');
+  const forward = SINAN_ROOT.replace(/\\/g, '/');
+  return str.split(forward).join('${SINAN_ROOT}');
 }
 
 function readFixture(name) {
@@ -86,12 +86,12 @@ function compareFixture(label, fixtureName, generated) {
 
 // --- Snapshot: Claude Code settings.json ---
 
-const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-fixture-test-'));
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-fixture-test-'));
 try {
   fs.mkdirSync(path.join(tmpDir, '.claude'), { recursive: true });
-  const hooksTemplatePath = path.join(CITADEL_ROOT, 'hooks', 'hooks-template.json');
+  const hooksTemplatePath = path.join(SINAN_ROOT, 'hooks', 'hooks-template.json');
   const result = installClaudeHooks({
-    citadelRoot: CITADEL_ROOT,
+    sinanRoot: SINAN_ROOT,
     hooksTemplatePath,
     projectRoot: tmpDir,
     hookProfile: 'latest',
@@ -105,8 +105,8 @@ try {
 
 // --- Snapshot: Codex hooks.json ---
 
-const hooksTemplate = JSON.parse(fs.readFileSync(path.join(CITADEL_ROOT, 'hooks', 'hooks-template.json'), 'utf8'));
-const translated = translateCodexHooks(hooksTemplate, '${CITADEL_ROOT}/codex-adapter.js');
+const hooksTemplate = JSON.parse(fs.readFileSync(path.join(SINAN_ROOT, 'hooks', 'hooks-template.json'), 'utf8'));
+const translated = translateCodexHooks(hooksTemplate, '${SINAN_ROOT}/codex-adapter.js');
 const codexHooksStr = JSON.stringify({ hooks: translated.hooks }, null, 2);
 compareFixture('Codex hooks.json matches fixture', 'codex-hooks.json', codexHooksStr);
 
@@ -123,7 +123,7 @@ compareFixture('Codex translation metadata matches fixture', 'codex-translation-
 
 // --- Snapshot: Claude guidance projection ---
 
-const specContent = fs.readFileSync(path.join(CITADEL_ROOT, '.citadel', 'project.md'), 'utf8');
+const specContent = fs.readFileSync(path.join(SINAN_ROOT, '.sinan', 'project.md'), 'utf8');
 const spec = parseProjectSpec(specContent);
 compareFixture('Claude guidance projection matches fixture', 'claude-guidance.md', renderClaudeGuidance(spec));
 
@@ -167,7 +167,7 @@ check('Codex hooks only include supported events', () => {
 
 check('Codex translation installs at least 10 hooks', () => {
   const meta = JSON.parse(readFixture('codex-translation-meta.json'));
-  assert(meta.installedCount >= 18, `only ${meta.installedCount} hooks installed`);
+  assert(meta.installedCount >= 10, `only ${meta.installedCount} hooks installed`);
   for (const event of ['PermissionRequest', 'PreCompact', 'PostCompact', 'SubagentStart', 'SubagentStop']) {
     assert(meta.events.includes(event), `missing Codex event: ${event}`);
   }

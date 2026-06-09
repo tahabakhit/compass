@@ -9,7 +9,7 @@ const path = require('path');
 const { writeDiscovery, readAllDiscoveries, parseArgs } = require('../core/fleet/discovery-writer');
 
 // --- writeDiscovery ---
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-dw-'));
+const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-dw-'));
 try {
   const { file, record } = writeDiscovery(tempRoot, {
     session: 'fleet-auth',
@@ -57,7 +57,7 @@ try {
 }
 
 // --- readAllDiscoveries with no dir ---
-const tempEmpty = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-dw-empty-'));
+const tempEmpty = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-dw-empty-'));
 try {
   const records = readAllDiscoveries(tempEmpty);
   assert.deepEqual(records, [], 'empty project should return []');

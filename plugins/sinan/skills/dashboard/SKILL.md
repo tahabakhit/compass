@@ -97,8 +97,6 @@ exist, treat it as empty. Never crash on missing state.
 
 **Hook Value Data (for HOOKS VALUE section):**
 - Read `.planning/telemetry/hook-errors.jsonl` (if it exists, last 200 lines)
-  - Count entries where `hook` = "protect-files" (blocked file access)
-  - Count entries where `hook` = "external-action-gate" (gated external actions)
   - Count entries where `hook` = "quality-gate" (quality violations)
 - Read `.planning/telemetry/hook-timing.jsonl` (if it exists, last 200 lines)
   - Count entries where `hook` = "circuit-breaker" and `metric` = "trips"
@@ -108,20 +106,10 @@ exist, treat it as empty. Never crash on missing state.
 
 **Hook Problem Taxonomy:**
 - Read last 100 entries from `.planning/telemetry/hook-errors.jsonl`.
-- Classify `protect-files` blocks and hard `external-action-gate` blocks as
-  `safety-block` with `info` severity; they prove protection fired and do not
-  create a repair action by themselves.
 - Classify `error` and `parse-fail` actions as `hook-failure` with `high`
   severity; these are actionable.
 - Classify `blocked-restricted` as `restricted-scope-block` with `high`
   severity; this is actionable.
-- Classify `first-encounter` and `consent-block` from `external-action-gate` as
-  `approval-needed` with `medium` severity; this is actionable.
-- If an `external-action-gate` approval entry has a later matching
-  `tool-call` entry in `audit.jsonl`, classify it as `resolved-approval` with
-  `info` severity; it should not create a repair action. Treat `git push -u`
-  and `git push` as equivalent for the same branch, and allow a small
-  near-simultaneous timestamp skew between hook and tool-call entries.
 - If an unresolved external approval entry is older than 15 minutes, classify
   it as `stale-approval` with `low` severity; it should not create a current
   repair action.
@@ -198,7 +186,7 @@ RECENT ACTIVITY (last 10 events)
 
 HOOK ACTIVITY (last 10 hook fires)
   {relative time} | {hook name} | {duration_ms}ms | {outcome: pass/block/warn}
-  (no hook timing recorded yet — set CITADEL_DEBUG=true in settings.json for verbose output)
+  (no hook timing recorded yet — set SINAN_DEBUG=true in settings.json for verbose output)
 
 PROBLEMS
   Actionable: {N} | Safety blocks: {N} | Resolved approvals: {N} | Stale: {N}

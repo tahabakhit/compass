@@ -29,19 +29,19 @@ const path          = require('path');
 const os            = require('os');
 const { spawnSync } = require('child_process');
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
-const HOOKS_SRC    = path.join(CITADEL_ROOT, 'hooks_src');
+const SINAN_ROOT = path.resolve(__dirname, '..');
+const HOOKS_SRC    = path.join(SINAN_ROOT, 'hooks_src');
 const VERBOSE      = process.argv.includes('--verbose');
 const WRITE_REPORT = process.argv.includes('--report');
 
 // ── Sandbox ────────────────────────────────────────────────────────────────────
 
 function makeSandbox() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-integ-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-integ-'));
   fs.mkdirSync(path.join(dir, '.claude'), { recursive: true });
 
   // Install hooks into sandbox
-  const install = spawnSync('node', [path.join(CITADEL_ROOT, 'scripts', 'install-hooks.js'), dir], {
+  const install = spawnSync('node', [path.join(SINAN_ROOT, 'scripts', 'install-hooks.js'), dir], {
     encoding: 'utf8', timeout: 10000,
   });
   if (install.status !== 0) throw new Error(`install-hooks failed: ${install.stderr}`);
@@ -275,88 +275,10 @@ sequence('Edit allowed file: hook-timing.jsonl grows after PostToolUse', (sb) =>
   if (after <= before) return 'hook-timing.jsonl did not grow — post-edit hook did not fire';
 }, sandbox);
 
-console.log('\n── Protected file enforcement ──');
-
-sequence('Edit .claude/harness.json: blocked by protect-files (exit 2)', (sb) => {
-  const filePath = path.join(sb, '.claude', 'harness.json');
-  const auditBefore = countJsonlLines(sb, '.planning/telemetry/audit.jsonl');
-  const pre = preToolUse(sb, 'Edit', { file_path: filePath });
-  if (!pre.blocked) return 'expected block, got allowed';
-  if (!pre.blockMessage.includes('[protect-files]')) return `expected [protect-files] in message, got: ${pre.blockMessage}`;
-  // Verify tool was never executed (file unchanged or not created as full write)
-  const auditAfter = countJsonlLines(sb, '.planning/telemetry/audit.jsonl');
-  // Governance also runs — but protect-files fires first and blocks, so governance may or may not run
-  // depending on hook order. The key assertion is that protect-files blocked.
-}, sandbox);
-
-sequence('Read .env: blocked by protect-files', (sb) => {
-  const filePath = path.join(sb, '.env');
-  fs.writeFileSync(filePath, 'SECRET=abc123');
-  const pre = preToolUse(sb, 'Read', { file_path: filePath });
-  if (!pre.blocked) return 'expected .env read to be blocked';
-  if (!pre.blockMessage.includes('[protect-files]')) return `expected [protect-files] message, got: ${pre.blockMessage}`;
-  fs.rmSync(filePath);
-}, sandbox);
-
-sequence('Edit .env.local: blocked by protect-files', (sb) => {
-  const filePath = path.join(sb, '.env.local');
-  const pre = preToolUse(sb, 'Read', { file_path: filePath });
-  if (!pre.blocked) return 'expected .env.local read to be blocked';
-}, sandbox);
-
 sequence('Edit normal file in .claude/: not blocked', (sb) => {
-  // .claude/settings.json is not in protectedFiles — only harness.json
   const filePath = path.join(sb, '.claude', 'notes.md');
   const pre = preToolUse(sb, 'Edit', { file_path: filePath });
   if (pre.blocked) return `unexpected block: ${pre.blockMessage}`;
-}, sandbox);
-
-console.log('\n── Campaign scope enforcement ──');
-
-sequence('Edit out-of-scope file: warns but does not block', (sb) => {
-  const campaignDir = path.join(sb, '.planning', 'campaigns');
-  fs.mkdirSync(campaignDir, { recursive: true });
-  const campaignFile = path.join(campaignDir, 'scope-test.md');
-  fs.writeFileSync(campaignFile, [
-    '# Campaign: Scope Test',
-    'Status: active',
-    '',
-    '## Claimed Scope',
-    '- src/',
-  ].join('\n'));
-
-  const filePath = path.join(sb, 'docs', 'README.md');
-  // Fire protect-files directly to check stdout (preToolUse only returns blocked/not)
-  const r = spawnSync('node', [path.join(HOOKS_SRC, 'protect-files.js')], {
-    input: JSON.stringify({ tool_name: 'Edit', tool_input: { file_path: filePath } }),
-    cwd: sb,
-    env: { ...process.env, CLAUDE_PROJECT_DIR: sb, CLAUDE_PLUGIN_DATA: path.join(sb, '.claude') },
-    encoding: 'utf8', timeout: 10000,
-  });
-  fs.rmSync(campaignFile);
-  if (r.status !== 0) return `expected exit 0 (advisory), got ${r.status}`;
-  if (!r.stdout.includes('outside the claimed scope')) return `expected scope warning, got: ${r.stdout.slice(0, 200)}`;
-}, sandbox);
-
-sequence('Edit restricted file: hard-blocked by protect-files', (sb) => {
-  const campaignDir = path.join(sb, '.planning', 'campaigns');
-  const campaignFile = path.join(campaignDir, 'restricted-test.md');
-  fs.writeFileSync(campaignFile, [
-    '# Campaign: Restricted Test',
-    'Status: active',
-    '',
-    '## Claimed Scope',
-    '- src/',
-    '',
-    '## Restricted Files',
-    '- .env.production',
-  ].join('\n'));
-
-  const filePath = path.join(sb, '.env.production');
-  const pre = preToolUse(sb, 'Edit', { file_path: filePath });
-  fs.rmSync(campaignFile);
-  if (!pre.blocked) return 'expected restricted file to be blocked';
-  if (!pre.blockMessage.includes('RESTRICTED')) return `expected RESTRICTED in message, got: ${pre.blockMessage}`;
 }, sandbox);
 
 console.log('\n── Bash flow ──');
@@ -488,53 +410,24 @@ sequence('Campaign archive: move to completed/ directory', (sb) => {
   if (fm.status !== 'completed') return `expected archived frontmatter status === 'completed', got: ${fm.status}`;
 }, sandbox);
 
-sequence('protect-files glob: src/** blocks recursive match, non-matching path allowed', (sb) => {
-  // Write a harness.json with src/** as a protected pattern
-  const harnessPath = path.join(sb, '.claude', 'harness.json');
-  const config = { protectedFiles: ['.claude/harness.json', 'src/**'] };
-  fs.writeFileSync(harnessPath, JSON.stringify(config, null, 2));
-
-  // Create the deeply nested file so its directory exists
-  const deepFile = path.join(sb, 'src', 'deeply', 'nested', 'file.ts');
-  fs.mkdirSync(path.dirname(deepFile), { recursive: true });
-  fs.writeFileSync(deepFile, '');
-
-  // src/deeply/nested/file.ts should be blocked
-  const pre1 = preToolUse(sb, 'Edit', { file_path: deepFile });
-  if (!pre1.blocked) return `expected src/deeply/nested/file.ts to be blocked by src/**`;
-
-  // other/file.ts should NOT be blocked
-  const otherFile = path.join(sb, 'other', 'file.ts');
-  fs.mkdirSync(path.dirname(otherFile), { recursive: true });
-  fs.writeFileSync(otherFile, '');
-  const pre2 = preToolUse(sb, 'Edit', { file_path: otherFile });
-
-  // Restore original harness.json (it is protected by default)
-  fs.writeFileSync(harnessPath, JSON.stringify({ protectedFiles: ['.claude/harness.json'] }, null, 2));
-  fs.rmSync(deepFile);
-  fs.rmSync(otherFile);
-
-  if (pre2.blocked) return `expected other/file.ts NOT to be blocked, but got: ${pre2.blockMessage}`;
-}, sandbox);
-
-sequence('init-project version gate: .citadel/version.txt exists after sandbox init', (sb) => {
-  const versionFile = path.join(sb, '.citadel', 'version.txt');
+sequence('init-project version gate: .sinan/version.txt exists after sandbox init', (sb) => {
+  const versionFile = path.join(sb, '.sinan', 'version.txt');
   if (!fs.existsSync(versionFile)) {
     // Graceful skip: version gating is feature-flagged by whether package.json version is present
     // in the plugin. This is an edge case in CI where the harness has no package.json.
-    const pluginPkg = path.join(CITADEL_ROOT, 'package.json');
+    const pluginPkg = path.join(SINAN_ROOT, 'package.json');
     if (!fs.existsSync(pluginPkg)) {
       // Skip gracefully
       return undefined;
     }
-    return '.citadel/version.txt not found — version gating may not be active';
+    return '.sinan/version.txt not found — version gating may not be active';
   }
   const version = fs.readFileSync(versionFile, 'utf8').trim();
-  if (!version) return '.citadel/version.txt exists but is empty';
+  if (!version) return '.sinan/version.txt exists but is empty';
 }, sandbox);
 
 sequence('telemetry-schema: validateAgentRunEvent accepts valid entry and rejects invalid event type', (sb) => {
-  const schema = require(path.join(CITADEL_ROOT, 'scripts', 'telemetry-schema.js'));
+  const schema = require(path.join(SINAN_ROOT, 'scripts', 'telemetry-schema.js'));
 
   // Valid entry
   const valid = {
@@ -573,7 +466,7 @@ if (failed > 0) {
 }
 
 if (WRITE_REPORT) {
-  const dir = path.join(CITADEL_ROOT, '.planning', 'verification', 'integration');
+  const dir = path.join(SINAN_ROOT, '.planning', 'verification', 'integration');
   fs.mkdirSync(dir, { recursive: true });
   const lines = [
     `# Integration Test Results`,

@@ -13,9 +13,9 @@
  *   - Telemetry: all permission requests logged regardless of outcome
  *
  * Known-safe patterns (auto-approve):
- *   - Bash: node .citadel/scripts/*.js (telemetry delegates)
+ *   - Bash: node .sinan/scripts/*.js (telemetry delegates)
  *   - Write/Edit: .planning/**  (campaign and fleet state)
- *   - Write/Edit: .citadel/**   (harness scaffolding)
+ *   - Write/Edit: .sinan/**   (harness scaffolding)
  *
  * Exit codes:
  *   0 = always (decision communicated via JSON stdout, not exit code)
@@ -30,13 +30,13 @@ const PROJECT_ROOT = health.PROJECT_ROOT;
 
 // Patterns that are always safe to auto-approve
 const SAFE_BASH_PATTERNS = [
-  /^node\s+\.citadel\/scripts\//,
-  /^node\s+"[^"]*\.citadel[/\\]scripts[/\\]/,
+  /^node\s+\.sinan\/scripts\//,
+  /^node\s+"[^"]*\.sinan[/\\]scripts[/\\]/,
 ];
 
 const SAFE_FILE_PREFIXES = [
   path.join(PROJECT_ROOT, '.planning').replace(/\\/g, '/'),
-  path.join(PROJECT_ROOT, '.citadel').replace(/\\/g, '/'),
+  path.join(PROJECT_ROOT, '.sinan').replace(/\\/g, '/'),
 ];
 
 function isSafeBashCommand(command) {
@@ -71,13 +71,13 @@ function main() {
       const command = toolInput.command || '';
       if (isSafeBashCommand(command)) {
         decision = 'allow';
-        reason = 'known-safe-citadel-script';
+        reason = 'known-safe-sinan-script';
       }
     } else if (toolName === 'Write' || toolName === 'Edit') {
       const filePath = toolInput.file_path || toolInput.path || '';
       if (isSafeFilePath(filePath)) {
         decision = 'allow';
-        reason = 'known-safe-citadel-state-write';
+        reason = 'known-safe-sinan-state-write';
       }
     }
 

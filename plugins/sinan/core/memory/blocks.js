@@ -92,7 +92,7 @@ function block(id, type, scope, sources, body, confidence = 'medium', options = 
     id,
     type,
     scope,
-    owner: options.owner || 'citadel',
+    owner: options.owner || 'sinan',
     confidence,
     last_verified: today(options),
     sources,
@@ -101,7 +101,7 @@ function block(id, type, scope, sources, body, confidence = 'medium', options = 
 }
 
 function buildBlocks(projectRoot, options = {}) {
-  const campaignPath = '.planning/campaigns/citadel-competitor-gap-assessment.md';
+  const campaignPath = '.planning/campaigns/sinan-competitor-gap-assessment.md';
   const campaignText = readText(projectRoot, campaignPath);
   const patternText = readText(projectRoot, '.planning/research/patterns.md');
   const insightText = readText(projectRoot, '.planning/research/external-insights-brief.md');

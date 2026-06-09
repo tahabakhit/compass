@@ -18,7 +18,7 @@ function write(filePath, content) {
 }
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-pr-ready-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-pr-ready-'));
   try {
     return run(dir);
   } finally {
@@ -56,7 +56,7 @@ withTempProject((projectRoot) => {
     pr: 'https://github.com/acme/repo/pull/12',
     runVerification: true,
     verification: 'npm run test',
-    changedFiles: ['hooks_src/protect-files.js'],
+    changedFiles: ['hooks_src/governance.js'],
     now: '2026-06-05T00:00:00.000Z',
   });
 

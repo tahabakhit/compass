@@ -25,7 +25,7 @@ Operational variants and bulky edge-case detail should live in [progressive disc
 /improve {target} --axis={name}  # Force-attack a specific axis (skips scoring)
 /improve {target} --score-only   # Score and report, no attack
 /improve {target} --continue     # Resume from campaign state (used by daemon)
-/improve citadel             # Targets Sinan itself
+/improve sinan             # Targets Sinan itself
 ```
 
 `target` is a slug that maps to `.planning/rubrics/{target}.md`.

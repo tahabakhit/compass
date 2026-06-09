@@ -14,7 +14,7 @@ const { archiveCampaign, completeCampaign, updateCampaignStatus } = require('../
 const { extractCompletionOutcome } = require('../core/campaigns/outcomes');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-campaign-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-campaign-'));
   try {
     run(dir);
   } finally {

@@ -30,7 +30,7 @@ try {
 }
 
 const ACTIONABLE_STATUSES = new Set(['needs-review', 'pending']);
-const CITADEL_UI = process.env.CITADEL_UI === 'true';
+const SINAN_UI = process.env.SINAN_UI === 'true';
 
 function parseArgs(argv) {
   const args = {
@@ -58,7 +58,7 @@ function usage() {
 }
 
 function hookOutput(hookName, action, message, data = {}) {
-  if (CITADEL_UI) {
+  if (SINAN_UI) {
     process.stdout.write(JSON.stringify({
       hook: hookName,
       action,

@@ -1,30 +1,27 @@
 # Quickstart
 
-From `git clone` to your first working `/do` command.
+From plugin install to your first working `/do` command.
 
 ## TL;DR
 
-Easiest path: open your target project in your agent and paste the install prompt from [INSTALL.md](INSTALL.md).
+Easiest path: open your target project in your agent and paste the install
+prompt from [INSTALL.md](INSTALL.md).
 
 Manual path:
 
-1. Clone Sinan once:
+1. Add the Ming marketplace.
 
    ```bash
-   git clone https://github.com/SethGammon/sinan.git ~/sinan
-   ```
-
-2. From the project you want Sinan to manage, run the matching installer:
-
-   ```bash
-   node ~/sinan/scripts/install.js --runtime codex --add-marketplace
+   claude plugin marketplace add https://github.com/tahabakhit/ming.git --scope local
    ```
 
    ```bash
-   node ~/sinan/scripts/install.js --runtime claude --install --scope local
+   codex plugin marketplace add https://github.com/tahabakhit/ming.git --ref main
    ```
 
-3. Start a fresh Codex or Claude Code thread, enable **Sinan** if the runtime asks, then run:
+2. Install or enable **Sinan** from your runtime's plugin UI.
+
+3. Start a fresh Codex or Claude Code thread, then run:
 
    ```text
    /do setup --express
@@ -32,279 +29,55 @@ Manual path:
    /do review src/main.ts
    ```
 
-Both runtimes converge on the same harness commands once the runtime-specific install step is done. `/do next` is the fastest check that Sinan sees the project state and can explain the next action, approval boundary, and verification profile.
-
----
+Both runtimes converge on the same harness commands once Sinan is enabled.
+`/do next` is the fastest check that Sinan sees the project state and can
+explain the next action and verification profile.
 
 ## Prerequisites
 
 - **Claude Code** or **OpenAI Codex** -- the runtime Sinan extends
-- **[Node.js 18+](https://nodejs.org/)** -- required for hooks and scripts
+- **Node.js 18+** -- required for hooks and scripts
 
-Authentication depends on the runtime you use. Sinan layers on top of the runtime you already have configured.
+Authentication depends on the runtime you use. Sinan layers on top of the
+runtime you already have configured.
 
-## 1. Clone Sinan
-
-```bash
-git clone https://github.com/SethGammon/sinan.git ~/sinan
-```
-
-That's it. No build step, no `npm install`. Sinan runs directly on Node.js.
-
-## 2. Choose Your Runtime Path
-
-### Claude Code
-
-From your target project root, run the bootstrap installer:
+## Claude Code
 
 ```bash
-node ~/sinan/scripts/claude-install.js --install --scope local
-claude
+claude plugin marketplace add https://github.com/tahabakhit/ming.git --scope local
+claude plugin install sinan@ming --scope local
 ```
 
-This validates the Claude marketplace, adds Sinan from the local clone,
-installs **Sinan** into local scope, and writes resolved hook paths to
-the target project. Local scope is gitignored and affects only you in this repo.
+Start a fresh Claude Code session in the target project and run:
 
-Alternative manual install from inside Claude Code:
-
-```
-/plugin marketplace add ~/sinan
-/plugin install sinan@sinan-local --scope local
+```text
+/do setup --express
 ```
 
-For a one-session trial without registering the marketplace:
+## OpenAI Codex
 
 ```bash
-claude --plugin-dir ~/sinan
+codex plugin marketplace add https://github.com/tahabakhit/ming.git --ref main
 ```
 
-For the full Claude-specific flow, see [docs/CLAUDE_INSTALLATION_GUIDE.md](docs/CLAUDE_INSTALLATION_GUIDE.md).
+Then use `/plugins` or the Codex app plugin UI to install **Sinan**. Start a
+fresh Codex session in the target project and run:
 
-### Codex
+```text
+/do setup --express
+```
 
-From your target project root, run the bootstrap installer:
+## Development Checkout
+
+If you are developing Sinan itself, run the local installer from the plugin
+checkout:
 
 ```bash
-node ~/sinan/scripts/codex-install.js --add-marketplace
-codex
+node scripts/install.js --runtime codex --add-marketplace
+node scripts/install.js --runtime claude --install --scope local
 ```
 
-This single command refreshes Sinan's Codex plugin package, writes the local
-plugin marketplace entry, generates the target project's Codex fallback
-artifacts, runs the readiness verifier, and on Windows checks the Codex shell
-and sandbox settings. It creates Codex-facing files such as `AGENTS.md`,
-`.codex/config.toml`, `.codex-plugin/plugin.json`, plugin-bundled
-`hooks/hooks.json`, projected agents, projected skills, and Sinan MCP wiring.
+For runtime-specific details, see:
 
-The `--add-marketplace` flag also runs Codex CLI marketplace registration when
-the CLI is installed. Omit it when you only want to prepare files and follow the
-printed Codex app steps.
-
-Then install or enable Sinan from Codex:
-
-- App: open **Plugins**, choose **Sinan Local Plugins**, select **Add to Codex** for **Sinan**, then start a new thread.
-- CLI: run `/plugins`, install or enable **Sinan**, then start a new thread.
-
-`scripts/install-hooks-codex.js` remains available for legacy per-project
-`.codex/hooks.json` installs, but plugin-bundled hooks are the preferred Codex
-path.
-
-For the full Codex-specific flow, see [docs/CODEX_INSTALLATION_GUIDE.md](docs/CODEX_INSTALLATION_GUIDE.md).
-
-## 3. Run setup
-
-Open your project in Claude Code or Codex and run:
-
-```
-/do setup
-```
-
-### Choose your mode
-
-Setup opens with a mode selection — pick based on how much time you have:
-
-```
-  [1] Recommended  — auto-detect your stack, install hooks, live demo  (~3 min)
-  [2] Full Tour    — everything in Recommended + guided skill walkthrough (~8 min)
-  [3] Express      — zero questions, auto-detect, hooks installed, done  (~30 sec)
-```
-
-**Recommended** is the default. It walks you through stack confirmation, runs a
-live demo on your actual code, and ends with a reference card showing every
-command and what's now protecting your session.
-
-**Full Tour** adds a guided walkthrough of all five skill families after the demo.
-Good for your first time or when onboarding a teammate.
-
-**Express** skips every question. Detects your stack, installs hooks, registers
-skills, and exits in under 30 seconds. Good for quick starts on familiar stacks.
-
-You can also run `/do setup --express` to skip mode selection entirely.
-
-### What setup does
-
-In all modes, setup:
-
-1. **Installs or refreshes runtime hooks first** -- before any questions. On Claude Code
-   this writes resolved absolute hook paths into `.claude/settings.json`. On Codex,
-   the runtime-specific compatibility files and translated hooks are expected to already
-   exist and setup continues from there.
-
-2. **Detects your stack** -- language, framework, package manager, test framework.
-   Reads `tsconfig.json`, `package.json`, lock files. No questions if detection succeeds.
-
-3. **Generates runtime project config** -- for example `.claude/harness.json` in the
-   Claude path, along with the project-level Sinan state used by the harness.
-
-4. **Scaffolds `CLAUDE.md` and `AGENTS.md`** -- creates them if missing, appends a
-   Sinan section if they exist. Never overwrites existing content.
-
-5. **Optional integrations** -- GitHub triage workflow + MCP server config, if you want them.
-
-6. **Runs a live demo** -- on a recently changed file in your repo (Recommended + Full Tour).
-
-> **Why does the runtime-specific install still matter?**
-> Claude Code and Codex load Sinan differently. Claude relies on the plugin path
-> and hook installation into `.claude/settings.json`. Codex can load Sinan as
-> a plugin with bundled skills/hooks/MCP and can also use generated project
-> artifacts like `AGENTS.md`, `.codex/config.toml`, and projected agents.
-> After moving Sinan to a new location, refresh the runtime-specific install step
-> and then re-run `/do setup`.
-
-### Try a command after setup
-
-```
-/do review src/main.ts              # 5-pass code review
-/do generate tests for utils        # Tests that actually run
-/do why is the login slow           # Root cause analysis
-/do refactor the auth module        # Safe multi-file refactoring
-```
-
-Or describe what you want in plain English -- the `/do` router picks the right tool:
-
-```
-/do fix the login bug
-/do what's wrong with the API
-/do build a caching layer
-```
-
-## 4. Scale up when ready
-
-```
-/marshal audit the codebase         # Multi-step, single session
-/archon build the payment system    # Multi-session campaign
-/fleet overhaul all three services  # Parallel agents, shared discovery
-/improve sinan --n=5              # Autonomous quality loops
-```
-
-Or let `/do` escalate automatically -- it routes to orchestrators when the task requires it.
-
-Create custom skills to capture patterns you keep repeating:
-```
-/create-skill
-```
-
----
-
-## Troubleshooting
-
-**Hook not firing / "command not found" errors:**
-Re-run the runtime-specific install step, then re-run `/do setup`. For Claude Code,
-that usually means re-running `claude-install.js --install --scope local`. For Codex,
-that usually means re-running `codex-install.js --add-marketplace`.
-
-Alternatively, run directly from your project directory:
-```bash
-node /path/to/sinan/scripts/install-hooks.js
-```
-
-For Codex:
-```bash
-node /path/to/sinan/scripts/codex-install.js --add-marketplace
-```
-
-For Claude Code:
-```bash
-node /path/to/sinan/scripts/claude-install.js --install --scope local
-```
-
-**"[protect-files] Blocked" message:**
-Sinan prevented an edit to a protected file. The message names the specific file and
-the pattern that triggered the block. To allow the edit, remove the pattern from
-`protectedFiles` in `.claude/harness.json`.
-
-**"[Circuit Breaker] tool has failed N times" message:**
-A tool failed repeatedly. This is Sinan suggesting you try a different approach, not
-an error in Sinan itself. The message names the specific tool and shows the last error.
-Read the suggestions and switch strategy.
-
-**Campaign file in broken state:**
-If a campaign file in `.planning/campaigns/` has corrupted YAML frontmatter or invalid
-status, delete the file and restart the campaign. Campaign logs in `.planning/improvement-logs/`
-and `.planning/telemetry/` are preserved independently.
-
-**"/do setup" fails or produces empty harness.json:**
-Ensure you are running from your project root (not the Sinan plugin directory).
-Setup needs to detect your project's language and framework from files like
-`package.json`, `tsconfig.json`, or `Cargo.toml`.
-
-**Daemon won't start / "No active campaign" error:**
-The daemon attaches to an active campaign. Check `.planning/campaigns/` for a file
-with `Status: active`. If none exists, start work first with `/improve`, `/archon`,
-or `/fleet`, then attach the daemon.
-
-**Daemon is paused (level-up-pending):**
-An improve loop hit distribution saturation and needs human approval for the next
-quality level. Review the proposals at `.planning/rubrics/{target}-proposals.md`,
-edit the rubric with approved changes, and set the campaign status back to `active`.
-The daemon's watchdog will detect the change and resume automatically.
-
----
-
-## What's Next
-
-- Add your project's conventions to `CLAUDE.md` -- the more specific, the better
-- Add your project's conventions to `AGENTS.md` if you use Codex
-- Run `/do --list` to see all 45 installed skills
-- Drop a task in `.planning/intake/` and run `/autopilot` for hands-off execution
-- [docs/CLAUDE_INSTALLATION_GUIDE.md](docs/CLAUDE_INSTALLATION_GUIDE.md) -- Claude-specific install flow
-- [docs/CODEX_INSTALLATION_GUIDE.md](docs/CODEX_INSTALLATION_GUIDE.md) -- Codex-specific install flow
-- [docs/SKILLS.md](docs/SKILLS.md) -- full skills reference
-- [docs/CAMPAIGNS.md](docs/CAMPAIGNS.md) -- multi-session campaign docs
-- [docs/migrating.md](docs/migrating.md) -- migrating from copy-based install
-
----
-
-## What the plugin scaffolds per-project
-
-On first session start, the `init-project` hook creates:
-
-```
-your-project/
-  .planning/              # Campaign state, fleet sessions, intake, telemetry
-    _templates/           # Campaign and fleet templates (copied from plugin)
-    campaigns/            # Active + completed campaigns
-    fleet/                # Fleet session state + discovery briefs
-    coordination/         # Multi-instance scope claims
-    intake/               # Work items pending processing
-    telemetry/            # Agent run + hook timing logs (JSONL, stays local)
-  .citadel/
-    scripts/              # Utility scripts synced from plugin each session
-    plugin-root.txt       # Pointer to plugin install location
-  .claude/
-    harness.json          # Project config (generated by /do setup)
-    agent-context/        # Rules injected into sub-agents
-```
-
-## Telemetry
-
-The harness logs agent events, hook timing, and discovery compression to
-`.planning/telemetry/` in JSONL format. Logs never leave your machine.
-
-## Relationship to Superpowers
-
-[Superpowers](https://github.com/obra/superpowers) teaches good methodology --
-brainstorm before coding, write tests first, review before shipping. Sinan gives
-it the infrastructure to execute that methodology at scale: campaign persistence,
-fleet coordination, lifecycle hooks, and telemetry. They are complementary.
+- [docs/CLAUDE_INSTALLATION_GUIDE.md](docs/CLAUDE_INSTALLATION_GUIDE.md)
+- [docs/CODEX_INSTALLATION_GUIDE.md](docs/CODEX_INSTALLATION_GUIDE.md)

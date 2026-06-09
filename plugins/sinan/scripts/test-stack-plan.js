@@ -20,7 +20,7 @@ function write(filePath, content) {
 }
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-stack-plan-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-stack-plan-'));
   try {
     return run(dir);
   } finally {
@@ -61,7 +61,7 @@ withTempProject((projectRoot) => {
   write(reportPath, readinessReport({
     branch: 'codex/top',
     head: 'c333333',
-    pr: 'https://github.com/SethGammon/sinan/pull/3',
+    pr: 'https://github.com/example/sinan/pull/3',
   }));
 
   const report = parseReadinessReport(projectRoot, reportPath);
@@ -75,19 +75,19 @@ withTempProject((projectRoot) => {
   write(path.join(projectRoot, '.planning', 'pr-readiness', 'top.md'), readinessReport({
     branch: 'codex/top',
     head: 'c333333',
-    pr: 'https://github.com/SethGammon/sinan/pull/3',
+    pr: 'https://github.com/example/sinan/pull/3',
     generated: '2026-06-05T12:03:00.000Z',
   }));
   write(path.join(projectRoot, '.planning', 'pr-readiness', 'base.md'), readinessReport({
     branch: 'codex/base',
     head: 'a111111',
-    pr: 'https://github.com/SethGammon/sinan/pull/1',
+    pr: 'https://github.com/example/sinan/pull/1',
     generated: '2026-06-05T12:01:00.000Z',
   }));
   write(path.join(projectRoot, '.planning', 'pr-readiness', 'middle.md'), readinessReport({
     branch: 'codex/middle',
     head: 'b222222',
-    pr: 'https://github.com/SethGammon/sinan/pull/2',
+    pr: 'https://github.com/example/sinan/pull/2',
     generated: '2026-06-05T12:02:00.000Z',
   }));
 
@@ -107,8 +107,8 @@ withTempProject((projectRoot) => {
   assert.equal(stack.nextAction.canRunNow, false);
   assert.equal(stack.postApprovalRunbook.length, 5);
   assert.equal(stack.postApprovalRunbook[0].step, 'Reconfirm stack state');
-  assert.equal(stack.postApprovalRunbook[1].step, 'Land 1: https://github.com/SethGammon/sinan/pull/1');
-  assert.equal(stack.postApprovalRunbook[3].step, 'Land 3: https://github.com/SethGammon/sinan/pull/3');
+  assert.equal(stack.postApprovalRunbook[1].step, 'Land 1: https://github.com/example/sinan/pull/1');
+  assert.equal(stack.postApprovalRunbook[3].step, 'Land 3: https://github.com/example/sinan/pull/3');
   assert.equal(stack.postApprovalRunbook[4].step, 'Verify landed main');
   assert(stack.approvalCapsule);
   assert.equal(stack.approvalCapsule.boundary, 'stack-approval');
@@ -128,7 +128,7 @@ withTempProject((projectRoot) => {
   write(path.join(projectRoot, '.planning', 'pr-readiness', 'blocked.md'), readinessReport({
     branch: 'codex/blocked',
     head: 'd444444',
-    pr: 'https://github.com/SethGammon/sinan/pull/4',
+    pr: 'https://github.com/example/sinan/pull/4',
     status: 'blocked',
     verification: 'fail',
   }));
@@ -144,7 +144,7 @@ withTempProject((projectRoot) => {
   write(path.join(projectRoot, '.planning', 'pr-readiness', 'stale.md'), readinessReport({
     branch: 'codex/stale',
     head: 'f666666',
-    pr: 'https://github.com/SethGammon/sinan/pull/6',
+    pr: 'https://github.com/example/sinan/pull/6',
   }));
 
   const stack = assessStack(projectRoot, {
@@ -171,7 +171,7 @@ withTempProject((projectRoot) => {
   write(path.join(projectRoot, '.planning', 'pr-readiness', 'ready.md'), readinessReport({
     branch: 'codex/ready',
     head: 'e555555',
-    pr: 'https://github.com/SethGammon/sinan/pull/5',
+    pr: 'https://github.com/example/sinan/pull/5',
   }));
 
   const stack = assessStack(projectRoot, { writeReport: false });

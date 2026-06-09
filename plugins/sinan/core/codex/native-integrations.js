@@ -459,7 +459,7 @@ function createFleetExecutionPlan(options = {}) {
     waveSize: Number(options.waveSize || 3),
     nativeAgentDir: path.join('.codex', 'agents'),
     nativeWorktreeSurface: 'Codex app worktrees when available; Sinan worktrees as CLI fallback.',
-    citadelValueLayer: ['campaign state', 'discovery relay', 'scope claims', 'merge-review'],
+    sinanValueLayer: ['campaign state', 'discovery relay', 'scope claims', 'merge-review'],
     prompt: 'Use projected .codex/agents for specialized subagents. Preserve Sinan .planning state and discovery relay across waves.',
     createdAt: nowIso(options),
   };
@@ -800,7 +800,7 @@ function checkCodexReadiness(options = {}) {
     const mcpPath = manifest.mcpServers ? path.resolve(projectRoot, manifest.mcpServers) : null;
     add('plugin-description', !/claude/i.test(manifest.description || '') && /codex/i.test(`${manifest.description || ''} ${manifest.interface?.shortDescription || ''}`), manifest.description, 'Prevents Codex users from seeing stale Claude-specific packaging.');
     add('plugin-skills-path', skillsPath && fs.existsSync(skillsPath), skillsPath || 'missing', 'Skills are loaded from a real plugin path.');
-    add('plugin-hooks-path', fs.existsSync(hooksPath), hooksPath, 'Lifecycle safety hooks are bundled beside the plugin manifest.');
+    add('plugin-hooks-path', fs.existsSync(hooksPath), hooksPath, 'Lifecycle hooks are bundled beside the plugin manifest.');
     add('plugin-mcp-path', mcpPath && fs.existsSync(mcpPath), mcpPath || 'missing', 'Codex can load Sinan state through MCP.');
   }
 
@@ -808,7 +808,7 @@ function checkCodexReadiness(options = {}) {
   const config = readTextIfExists(configPath);
   add('codex-config', Boolean(config), configPath, 'Project installs have Codex feature flags and MCP wiring.');
   add('feature-hooks', /\bhooks\s*=\s*true\b/.test(config) && !/\bcodex_hooks\s*=\s*true\b/.test(config), 'canonical hooks feature', 'Uses the current hooks feature key and rejects deprecated output.');
-  add('mcp-citadel-state', /\[mcp_servers\.citadel-state\]/.test(config), 'citadel-state MCP config', 'Codex can query planning and verification state directly.');
+  add('mcp-sinan-state', /\[mcp_servers\.sinan-state\]/.test(config), 'sinan-state MCP config', 'Codex can query planning and verification state directly.');
 
   const agentsDir = path.join(projectRoot, '.codex', 'agents');
   const agentCount = fs.existsSync(agentsDir)

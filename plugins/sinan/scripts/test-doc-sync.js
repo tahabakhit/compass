@@ -27,7 +27,7 @@ function readJsonl(filePath) {
 }
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-doc-sync-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-doc-sync-'));
   try {
     run(dir);
   } finally {

@@ -8,13 +8,13 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
+const SINAN_ROOT = path.resolve(__dirname, '..');
 
 function tempProject(prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
 }
 
-function runJson(args, cwd = CITADEL_ROOT) {
+function runJson(args, cwd = SINAN_ROOT) {
   const output = execFileSync(process.execPath, args, {
     cwd,
     encoding: 'utf8',
@@ -25,12 +25,12 @@ function runJson(args, cwd = CITADEL_ROOT) {
 }
 
 function testUnharnessRefusesPluginRoot() {
-  const planningPath = path.join(CITADEL_ROOT, '.planning');
+  const planningPath = path.join(SINAN_ROOT, '.planning');
   const result = spawnSync(process.execPath, [
-    path.join(CITADEL_ROOT, 'scripts', 'unharness.js'),
-    CITADEL_ROOT,
+    path.join(SINAN_ROOT, 'scripts', 'unharness.js'),
+    SINAN_ROOT,
   ], {
-    cwd: CITADEL_ROOT,
+    cwd: SINAN_ROOT,
     encoding: 'utf8',
     timeout: 30000,
   });
@@ -45,22 +45,22 @@ function write(filePath, content) {
 }
 
 function testUnharnessRemovesProjectHarness() {
-  const tmp = tempProject('citadel-unharness-');
+  const tmp = tempProject('sinan-unharness-');
   try {
     write(path.join(tmp, '.planning', 'research', 'note.md'), '# Note\n');
-    write(path.join(tmp, '.citadel', 'plugin-root.txt'), CITADEL_ROOT);
+    write(path.join(tmp, '.sinan', 'plugin-root.txt'), SINAN_ROOT);
     write(path.join(tmp, '.claude', 'agent-context', 'README.md'), 'agent context\n');
     write(path.join(tmp, '.claude', 'settings.json'), JSON.stringify({
       hooks: {
         PreToolUse: [
-          { command: `node ${path.join(CITADEL_ROOT, 'hooks_src', 'protect-files.js')}` },
+          { command: `node ${path.join(SINAN_ROOT, 'hooks_src', 'governance.js')}` },
           { command: 'node user-hook.js' },
         ],
       },
     }, null, 2));
 
     const result = spawnSync(process.execPath, [
-      path.join(CITADEL_ROOT, 'scripts', 'unharness.js'),
+      path.join(SINAN_ROOT, 'scripts', 'unharness.js'),
       tmp,
     ], {
       cwd: tmp,
@@ -70,23 +70,23 @@ function testUnharnessRemovesProjectHarness() {
 
     assert.equal(result.status, 0, result.stderr || result.stdout);
     assert(!fs.existsSync(path.join(tmp, '.planning')), '.planning should be removed');
-    assert(!fs.existsSync(path.join(tmp, '.citadel')), '.citadel should be removed');
-    assert(fs.existsSync(path.join(tmp, 'docs', 'citadel', 'research.md')), 'research archive should be written');
+    assert(!fs.existsSync(path.join(tmp, '.sinan')), '.sinan should be removed');
+    assert(fs.existsSync(path.join(tmp, 'docs', 'sinan', 'research.md')), 'research archive should be written');
 
     const settings = JSON.parse(fs.readFileSync(path.join(tmp, '.claude', 'settings.json'), 'utf8'));
     const settingsText = JSON.stringify(settings);
     assert(settingsText.includes('node user-hook.js'), 'user hook should be preserved');
-    assert(!settingsText.includes('protect-files.js'), 'Sinan hook should be removed');
+    assert(!settingsText.includes('governance.js'), 'Sinan hook should be removed');
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
   }
 }
 
 function testClaudeDryRun() {
-  const tmp = tempProject('citadel-claude-install-');
+  const tmp = tempProject('sinan-claude-install-');
   try {
     const report = runJson([
-      path.join(CITADEL_ROOT, 'scripts', 'claude-install.js'),
+      path.join(SINAN_ROOT, 'scripts', 'claude-install.js'),
       '--project-root',
       tmp,
       '--install',
@@ -112,7 +112,7 @@ function testUnifiedDispatcherDryRun() {
   const tmp = tempProject('sinan-install-');
   try {
     const codex = runJson([
-      path.join(CITADEL_ROOT, 'scripts', 'install.js'),
+      path.join(SINAN_ROOT, 'scripts', 'install.js'),
       '--runtime',
       'codex',
       '--project-root',
@@ -125,7 +125,7 @@ function testUnifiedDispatcherDryRun() {
     assert(codex.pass, JSON.stringify(codex, null, 2));
 
     const claude = runJson([
-      path.join(CITADEL_ROOT, 'scripts', 'install.js'),
+      path.join(SINAN_ROOT, 'scripts', 'install.js'),
       '--runtime',
       'claude',
       '--project-root',
@@ -142,8 +142,8 @@ function testUnifiedDispatcherDryRun() {
 }
 
 function testClaudeMarketplaceManifest() {
-  const marketplacePath = path.join(CITADEL_ROOT, '.claude-plugin', 'marketplace.json');
-  const pluginPath = path.join(CITADEL_ROOT, '.claude-plugin', 'plugin.json');
+  const marketplacePath = path.join(SINAN_ROOT, '.claude-plugin', 'marketplace.json');
+  const pluginPath = path.join(SINAN_ROOT, '.claude-plugin', 'plugin.json');
   const marketplace = JSON.parse(fs.readFileSync(marketplacePath, 'utf8'));
   const plugin = JSON.parse(fs.readFileSync(pluginPath, 'utf8'));
   assert.equal(marketplace.plugins[0].version, plugin.version, 'Claude marketplace version should match plugin.json');

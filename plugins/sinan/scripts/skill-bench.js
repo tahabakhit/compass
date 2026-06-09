@@ -507,7 +507,7 @@ const STATES = {
     try {
       execSync('git init', { cwd: tmpDir, stdio: 'pipe' });
       execSync('git remote add origin https://github.com/example/test-repo.git', { cwd: tmpDir, stdio: 'pipe' });
-      execSync('git config user.email "bench@citadel.test"', { cwd: tmpDir, stdio: 'pipe' });
+      execSync('git config user.email "bench@sinan.test"', { cwd: tmpDir, stdio: 'pipe' });
       execSync('git config user.name "Bench"', { cwd: tmpDir, stdio: 'pipe' });
     } catch { /* ignore git init errors in restricted envs */ }
     fs.writeFileSync(path.join(tmpDir, 'CLAUDE.md'), [
@@ -523,7 +523,7 @@ const STATES = {
  * If VERIFY_HOOKS is set, also installs Sinan hooks and inits .planning/.
  */
 function setupProjectState(state) {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-bench-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-bench-'));
 
   if (STATES[state]) {
     STATES[state](tmpDir);
@@ -669,7 +669,7 @@ function executeCodexScenario(scenario, codexCmd, tmpDir) {
         encoding: 'utf8',
         env: {
           ...process.env,
-          CITADEL_RUNTIME: 'codex',
+          SINAN_RUNTIME: 'codex',
         },
         maxBuffer: 10 * 1024 * 1024,
       }

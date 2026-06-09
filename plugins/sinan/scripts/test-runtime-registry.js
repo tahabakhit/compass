@@ -31,14 +31,14 @@ function main() {
   if (claude.capabilities.hooks.support !== 'full') fail('Claude runtime hooks capability mismatch');
   if (codex.capabilities.hooks.support === 'full') fail('Codex runtime hooks support should not be full');
 
-  const origEnv = process.env.CITADEL_RUNTIME;
-  process.env.CITADEL_RUNTIME = 'codex';
+  const origEnv = process.env.SINAN_RUNTIME;
+  process.env.SINAN_RUNTIME = 'codex';
   const detected = detectRuntime('/nonexistent');
   if (detected.runtime !== 'codex' || detected.method !== 'env') {
     fail(`Runtime detection env override mismatch: ${detected.runtime}/${detected.method}`);
   }
-  if (origEnv !== undefined) process.env.CITADEL_RUNTIME = origEnv;
-  else delete process.env.CITADEL_RUNTIME;
+  if (origEnv !== undefined) process.env.SINAN_RUNTIME = origEnv;
+  else delete process.env.SINAN_RUNTIME;
 
   console.log('Runtime registry tests pass.');
 }

@@ -13,7 +13,7 @@ const MAX_SIZE = 32 * 1024; // 32 KiB
 
 async function run() {
   const errors = [];
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-size-test-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-size-test-'));
 
   try {
     // Test 1: File under limit should be unchanged

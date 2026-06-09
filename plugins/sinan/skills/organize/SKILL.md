@@ -54,7 +54,7 @@ Every scan runs all three passes. A user running `/organize` gets the full pictu
 #### Pass 1: Architectural Compliance
 
 1. Use the **Glob tool** with pattern `**/` to discover directories. Filter out:
-   `node_modules`, `.git`, `.planning`, `.citadel`, `.claude`, `dist`, `build`,
+   `node_modules`, `.git`, `.planning`, `.sinan`, `.claude`, `dist`, `build`,
    `__pycache__`, `.next`, `target`, `.venv`, `venv`.
    Cap at 200 directories. If too large, scan only top 3 levels.
 2. Read `package.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`, or equivalent for stack
@@ -94,7 +94,7 @@ If no manifest exists, score is based on how consistently the detected conventio
      `QUICKSTART*`, `CODE_OF_CONDUCT*`, `SECURITY*`
    - CI/lock: `*.lock`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`,
      `Gemfile.lock`, `.github/`, `.husky/`
-   - Plugin/harness: `.claude/`, `.planning/`, `.citadel/`, `hooks/`, `hooks_src/`,
+   - Plugin/harness: `.claude/`, `.planning/`, `.sinan/`, `hooks/`, `hooks_src/`,
      `skills/`, `agents/`, `scripts/`
    - Any file listed in `.gitignore`
 

@@ -27,7 +27,7 @@ function parseArgs(argv) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const result = bootstrapProjectGuidance({
-    citadelRoot: path.resolve(__dirname, '..'),
+    sinanRoot: path.resolve(__dirname, '..'),
     ...args,
   });
 

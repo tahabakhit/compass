@@ -15,7 +15,7 @@ LLM-compiled knowledge bases for any AI agent. Parallel multi-agent research, co
 
 ---
 
-[Install](#install) · [Quick Start](#quick-start) · [Commands](#commands) · [How It Works](#how-it-works) · [Research Modes](#research-modes) · [Thesis Research](#thesis-driven-research) · [Query Depths](#query-depths) · [Linking](#linking-works-everywhere) · [Obsidian](#obsidian-integration) · [Architecture](#claude-first-multi-runtime) · [Nono Sandbox](#nono-sandbox-permissions) · [Upgrade](#upgrade) · [Changelog](#changelog) · [Credits](#credits)
+[Install](#install) · [Quick Start](#quick-start) · [Commands](#commands) · [How It Works](#how-it-works) · [Research Modes](#research-modes) · [Thesis Research](#thesis-driven-research) · [Query Depths](#query-depths) · [Linking](#linking-works-everywhere) · [Obsidian](#obsidian-integration) · [Architecture](#claude-first-multi-runtime) · [Upgrade](#upgrade) · [Changelog](#changelog) · [Credits](#credits)
 
 ---
 
@@ -90,7 +90,6 @@ Troubleshooting:
 - After installing the marketplace, open `/plugins` in Codex and enable "LLM Wiki" — first install requires the interactive enable step.
 - `@wiki` is the canonical explicit entry point in Codex. Natural-language wiki requests can still auto-activate the skill.
 - Restart Codex after changing config if an existing session does not pick up the new plugin state.
-- If you run Codex under a sandbox wrapper like `nono`, see [Nono Sandbox Permissions](#nono-sandbox-permissions) — Codex needs r+w to `$HOME/.codex` for plugin install.
 
 **OpenCode** (instruction file):
 
@@ -178,103 +177,10 @@ Drift is caught by `./tests/test-codex-sync.sh` and `./tests/test-opencode-sync.
 
 Practical rule: design workflows first for Claude commands and behavior, but keep the underlying knowledge model and references runtime-neutral. Runtime wrappers adapt invocation and metadata, not wiki logic.
 
-## Nono Sandbox Permissions
-
-If you run any AI coding agent inside a [nono](https://github.com/always-further/nono) sandbox, the wiki needs filesystem access beyond the default profile.
-
-### Claude Code / OpenCode
-
-```json
-{
-  "extends": "claude-code",
-  "policy": {
-    "add_allow_read": [
-      "$HOME/.config/llm-wiki"
-    ],
-    "add_allow_readwrite": [
-      "$HOME/Library/Mobile Documents/com~apple~CloudDocs/wiki"
-    ]
-  }
-}
-```
-
-Replace `"extends": "claude-code"` with `"opencode"` for OpenCode.
-
-### Codex
-
-Codex needs r+w to its own `$HOME/.codex` directory for plugin install, marketplace cache, state, and skill registration:
-
-```json
-{
-  "extends": "codex",
-  "policy": {
-    "add_allow_read": [
-      "$HOME/.config/llm-wiki"
-    ],
-    "add_allow_readwrite": [
-      "$HOME/.codex",
-      "$HOME/Library/Mobile Documents/com~apple~CloudDocs/wiki"
-    ]
-  }
-}
-```
-
-### Path reference
-
-| Path | Access | Purpose |
-|------|--------|---------|
-| `$HOME/.config/llm-wiki` | read | Hub path config — checked first during resolution (v0.4.2+) |
-| Wiki data dir | readwrite | The wiki itself — use the actual path, not `$HOME/wiki` (see below) |
-| `$HOME/.codex` | readwrite | Codex only — plugin cache, skills, state, marketplace temp files |
-
-### Hub resolution and `~/wiki`
-
-Hub resolution checks `~/.config/llm-wiki/config.json` first and only falls back to `~/wiki` when no config exists. If your wiki lives on iCloud or any non-default path, set the config and you don't need `$HOME/wiki` in the sandbox at all:
-
-```bash
-# Set once — agents will resolve from config, never touch ~/wiki
-/wiki config hub-path "~/Library/Mobile Documents/com~apple~CloudDocs/wiki"
-```
-
-Use a portable `hub_path` with `~` for iCloud-shared hubs. Older configs may
-contain `resolved_path`; llm-wiki treats it as a fallback cache because an
-absolute `/Users/<name>/...` path from one Mac will not be valid on another.
-The shared `wikis.json` should likewise store hub topic paths as
-`topics/<slug>`, not absolute user-home paths.
-
-If you prefer `~/wiki` as a symlink to iCloud, nono's Seatbelt follows symlinks — the target path must be allowed, not the symlink itself.
-
-### Diagnosing access issues
-
-Without the right permissions, Seatbelt or macOS privacy controls can block file
-access. A useful diagnostic pattern is: `stat` succeeds for the iCloud wiki path,
-but reading `wikis.json` or listing `topics/` fails with `Operation not
-permitted`. That means the configured `hub_path` is correct; grant Full Disk
-Access or iCloud Drive access to the exact app launching the agent, restart it,
-and do not switch to a machine-local `resolved_path` or `~/wiki` fallback. Use
-`nono why` to diagnose sandbox rules:
-
-```bash
-nono why --path ~/.config/llm-wiki --op read
-nono why --path ~/Library/Mobile\ Documents/com~apple~CloudDocs/wiki --op readwrite
-```
-
-**OpenCode** also needs the `external_directory` permission in `opencode.json` (see [Install](#install)) — nono and OpenCode have independent sandboxes that both need the same paths allowed.
-
 ## Upgrade
-
-Agents and sandboxed sessions should use GitHub CLI web login with HTTPS git
-transport, not SSH. This avoids SSH host-key prompts and `known_hosts` writes
-inside nono:
-
-```bash
-gh auth login --web --git-protocol https
-gh auth setup-git
-```
 
 **Claude Code** — if `claude plugin update` pulls the latest correctly:
 ```bash
-git -C ~/.claude/plugins/marketplaces/llm-wiki remote set-url origin https://github.com/tahabakhit/llm-wiki.git
 claude plugin update wiki@llm-wiki
 # Restart Claude Code to apply
 ```

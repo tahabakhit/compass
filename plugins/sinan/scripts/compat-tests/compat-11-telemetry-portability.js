@@ -14,8 +14,8 @@ async function run() {
   // Check telemetry-log.cjs doesn't hardcode a runtime
   const telemetryScript = path.join(__dirname, '..', 'telemetry-log.cjs');
   if (!fs.existsSync(telemetryScript)) {
-    // Check in .citadel/scripts/ location
-    const altPath = path.join(__dirname, '..', '..', '.citadel', 'scripts', 'telemetry-log.cjs');
+    // Check in .sinan/scripts/ location
+    const altPath = path.join(__dirname, '..', '..', '.sinan', 'scripts', 'telemetry-log.cjs');
     if (!fs.existsSync(altPath)) {
       return { pass: true, message: 'Telemetry script not found (may not exist in this context)' };
     }

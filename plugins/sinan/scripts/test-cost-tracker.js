@@ -17,7 +17,7 @@ const path          = require('path');
 const os            = require('os');
 const { spawnSync } = require('child_process');
 
-const CITADEL_ROOT  = path.resolve(__dirname, '..');
+const SINAN_ROOT  = path.resolve(__dirname, '..');
 let passed = 0, failed = 0;
 
 function pass(name) { console.log(`  PASS  ${name}`); passed++; }
@@ -35,7 +35,7 @@ function projectSlug(projectDir) {
 }
 
 function makeSandbox() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-cost-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-cost-'));
   const slug = projectSlug(path.join(dir, 'project'));
   fs.mkdirSync(path.join(dir, 'home', '.claude', 'projects', slug), { recursive: true });
   fs.mkdirSync(path.join(dir, 'project', '.claude'), { recursive: true });
@@ -99,7 +99,7 @@ function runCostTracker(sandbox, sessionId, stateOverride) {
   // On Windows, HOME may not be set; use USERPROFILE
   const homeKey = process.platform === 'win32' ? 'USERPROFILE' : 'HOME';
 
-  const result = spawnSync('node', [path.join(CITADEL_ROOT, 'hooks_src', 'cost-tracker.js')], {
+  const result = spawnSync('node', [path.join(SINAN_ROOT, 'hooks_src', 'cost-tracker.js')], {
     input: JSON.stringify({ tool_name: 'Edit', tool_input: {} }),
     cwd: path.join(sandbox, 'project'),
     env: {

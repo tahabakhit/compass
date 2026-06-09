@@ -22,7 +22,7 @@ assert.equal(isPidAlive(null), false, 'null pid should return false');
 assert.equal(isPidAlive(999999999), false, 'nonexistent pid should return false');
 
 // --- PID file round-trip ---
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-watcher-'));
+const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-watcher-'));
 try {
   // No PID file yet
   assert.equal(readWatcherPid(tempRoot), null, 'no pid file → null');

@@ -21,7 +21,7 @@ function write(filePath, text) {
 }
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-memory-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-memory-'));
   try {
     run(dir);
   } finally {
@@ -31,7 +31,7 @@ function withTempProject(run) {
 
 withTempProject((projectRoot) => {
   write(path.join(projectRoot, 'AGENTS.md'), [
-    '# Codex Harness',
+    '# Sinan Agent Instructions',
     'Always run tests after modifying hooks or skills.',
     'After completing any task, output a HANDOFF block.',
   ].join('\n'));
@@ -50,7 +50,7 @@ withTempProject((projectRoot) => {
   ].join('\n'));
   write(path.join(projectRoot, '.planning', 'research', 'external-insights-brief.md'), 'A wiki is a compiler.\n');
   write(path.join(projectRoot, '.planning', 'telemetry', 'hook-errors.jsonl'), '{"hook":"test"}\n');
-  write(path.join(projectRoot, '.planning', 'campaigns', 'citadel-competitor-gap-assessment.md'), [
+  write(path.join(projectRoot, '.planning', 'campaigns', 'sinan-competitor-gap-assessment.md'), [
     '# Campaign',
     'Status: active',
     '## Decision Log',

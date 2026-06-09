@@ -186,7 +186,7 @@ triage summary table, label taxonomy, and auto-fix PR handoff.
 **Disclosure:** "Triaging GitHub issues and PRs. Read-only — no changes made without showing you first."
 **Reversibility:** green — investigation is read-only; any GitHub actions (labels, comments, PRs) shown to user for approval before posting
 **Trust gates:**
-- Any: view triage report; all external actions require explicit approval
+- Any: view triage report and decide the next operator action
 
 ## Quality Gates
 

@@ -11,7 +11,7 @@ user-invocable: true
 ---
 # /watch -- File Sentinel
 
-Use when the user wants automatic reactions to file changes or marker comments (`@citadel:`).
+Use when the user wants automatic reactions to file changes or marker comments (`@sinan:`).
 Do NOT use for one-off file inspection or tasks that need human judgment per file.
 
 ## Orientation
@@ -173,10 +173,10 @@ Search changed files for:
 
 | Pattern | Languages |
 |---|---|
-| `// @citadel: {action} {description}` | JS, TS, Go, Rust, C, Java |
-| `# @citadel: {action} {description}` | Python, Shell, YAML, Ruby |
-| `/* @citadel: {action} {description} */` | CSS, multi-line C-style |
-| `<!-- @citadel: {action} {description} -->` | HTML, Markdown |
+| `// @sinan: {action} {description}` | JS, TS, Go, Rust, C, Java |
+| `# @sinan: {action} {description}` | Python, Shell, YAML, Ruby |
+| `/* @sinan: {action} {description} */` | CSS, multi-line C-style |
+| `<!-- @sinan: {action} {description} -->` | HTML, Markdown |
 
 **Action-to-skill mapping:**
 

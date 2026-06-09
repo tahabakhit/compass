@@ -7,12 +7,12 @@ const path = require('path');
 const { projectSkillToCodex } = require('../../../core/skills/project-skill');
 
 function projectCodexSkills(options = {}) {
-  const citadelRoot = options.citadelRoot || path.resolve(__dirname, '..', '..', '..');
+  const sinanRoot = options.sinanRoot || path.resolve(__dirname, '..', '..', '..');
   const projectRoot = options.projectRoot || process.cwd();
   const skillName = options.skillName || null;
   const dryRun = options.dryRun === true;
 
-  const sourceBase = path.join(citadelRoot, 'skills');
+  const sourceBase = path.join(sinanRoot, 'skills');
   const targetBase = path.join(projectRoot, '.agents', 'skills');
   const skillNames = skillName
     ? [skillName]

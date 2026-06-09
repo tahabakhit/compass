@@ -24,14 +24,14 @@ const path = require('path');
 const os = require('os');
 const { spawnSync } = require('child_process');
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
-const HOOK_SCRIPT = path.join(CITADEL_ROOT, 'hooks_src', 'organize-enforce.js');
+const SINAN_ROOT = path.resolve(__dirname, '..');
+const HOOK_SCRIPT = path.join(SINAN_ROOT, 'hooks_src', 'organize-enforce.js');
 const VERBOSE = process.argv.includes('--verbose');
 
 // ── Utilities ────────────────────────────────────────────────────────────────
 
 function sandbox() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-org-test-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-org-test-'));
   fs.mkdirSync(path.join(dir, '.claude'), { recursive: true });
   fs.mkdirSync(path.join(dir, '.planning', 'telemetry'), { recursive: true });
   return dir;

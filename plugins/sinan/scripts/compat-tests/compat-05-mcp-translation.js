@@ -12,7 +12,7 @@ const { execSync } = require('child_process');
 
 async function run() {
   const errors = [];
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-mcp-test-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-mcp-test-'));
 
   try {
     fs.mkdirSync(path.join(tmpDir, '.claude'), { recursive: true });

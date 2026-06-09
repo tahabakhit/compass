@@ -18,7 +18,7 @@ const {
 } = require('../core/telemetry/integrity');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-integrity-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-integrity-'));
   try {
     run(dir);
   } finally {
@@ -101,7 +101,7 @@ withTempProject((projectRoot) => {
     '--json',
   ], {
     encoding: 'utf8',
-    env: { ...process.env, CITADEL_TELEMETRY_HMAC_KEY: 'secret' },
+    env: { ...process.env, SINAN_TELEMETRY_HMAC_KEY: 'secret' },
   });
   assert.equal(JSON.parse(cliJson).pass, true, 'CLI verifier should pass untampered signed records');
 
@@ -122,7 +122,7 @@ withTempProject((projectRoot) => {
       '--json',
     ], {
       encoding: 'utf8',
-      env: { ...process.env, CITADEL_TELEMETRY_HMAC_KEY: 'secret' },
+      env: { ...process.env, SINAN_TELEMETRY_HMAC_KEY: 'secret' },
     });
   } catch (error) {
     failed = true;

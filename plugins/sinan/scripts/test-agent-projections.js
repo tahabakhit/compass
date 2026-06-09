@@ -28,7 +28,7 @@ function main() {
     fail('Generated TOML is missing the expected model mapping');
   }
 
-  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-agent-proj-'));
+  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-agent-proj-'));
   const targetBase = path.join(tmpRoot, '.codex', 'agents');
   const result = projectAgentToCodex(agentPath, targetBase);
 

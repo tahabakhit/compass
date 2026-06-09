@@ -593,8 +593,6 @@ function readHookValue(projectRoot) {
       audit.filter((entry) => /circuit[-_]breaker/i.test(String(entry.event || entry.hook || ''))).length,
     qualityGateViolations: errors.filter((entry) => entry.hook === 'quality-gate').length +
       timings.filter((entry) => entry.hook === 'quality-gate' && entry.metric === 'violations').length,
-    protectFileBlocks: errors.filter((entry) => entry.hook === 'protect-files').length,
-    externalGateActions: errors.filter((entry) => entry.hook === 'external-action-gate').length,
     hookFiresToday: timings.filter((entry) => String(eventTimestamp(entry) || '').startsWith(today)).length,
   };
 }
@@ -696,34 +694,6 @@ function classifyHookProblem(entry, now = new Date(), context = {}) {
     category = 'restricted-scope-block';
     severity = 'high';
     actionable = true;
-  } else if (
-    hook === 'external-action-gate' &&
-    (actionName === 'first-encounter' || actionName === 'consent-block') &&
-    hasLaterMatchingToolCall(entry, context.auditEntries || [])
-  ) {
-    category = 'resolved-approval';
-    severity = 'info';
-    actionable = false;
-  } else if (
-    hook === 'external-action-gate' &&
-    (actionName === 'first-encounter' || actionName === 'consent-block') &&
-    timestamp &&
-    ageMs > 15 * 60 * 1000
-  ) {
-    category = 'stale-approval';
-    severity = 'low';
-    actionable = false;
-  } else if (hook === 'external-action-gate' && (actionName === 'first-encounter' || actionName === 'consent-block')) {
-    category = 'approval-needed';
-    severity = 'medium';
-    actionable = true;
-  } else if (
-    hook === 'protect-files' ||
-    (hook === 'external-action-gate' && actionName === 'blocked')
-  ) {
-    category = 'safety-block';
-    severity = 'info';
-    actionable = false;
   }
 
   return {
@@ -742,20 +712,14 @@ function summarizeProblemTaxonomy(problems) {
   const summary = {
     total: problems.length,
     actionable: 0,
-    safetyBlocks: 0,
     stale: 0,
     hookFailures: 0,
-    approvalNeeded: 0,
-    resolvedApprovals: 0,
   };
 
   for (const problem of problems) {
     if (problem.actionable) summary.actionable++;
-    if (problem.category === 'safety-block') summary.safetyBlocks++;
-    if (problem.category === 'stale' || problem.category === 'stale-approval') summary.stale++;
+    if (problem.category === 'stale') summary.stale++;
     if (problem.category === 'hook-failure') summary.hookFailures++;
-    if (problem.category === 'approval-needed') summary.approvalNeeded++;
-    if (problem.category === 'resolved-approval') summary.resolvedApprovals++;
   }
 
   return summary;
@@ -1228,8 +1192,6 @@ function renderDashboard(snapshot) {
   lines.push('HOOKS VALUE');
   lines.push(`  Circuit breaker: ${snapshot.hookValue.circuitBreakerTrips} trips`);
   lines.push(`  Quality gate:    ${snapshot.hookValue.qualityGateViolations} violations`);
-  lines.push(`  Protect-files:   ${snapshot.hookValue.protectFileBlocks} blocks`);
-  lines.push(`  External gate:   ${snapshot.hookValue.externalGateActions} actions gated`);
   lines.push(`  Total hook fires today: ${snapshot.hookValue.hookFiresToday}`);
   lines.push('  (raw facts only -- no inflated savings claims)');
 
@@ -1246,7 +1208,7 @@ function renderDashboard(snapshot) {
   lines.push('');
   lines.push('PROBLEMS');
   if (snapshot.problemSummary) {
-    lines.push(`  Actionable: ${snapshot.problemSummary.actionable} | Safety blocks: ${snapshot.problemSummary.safetyBlocks} | Resolved approvals: ${snapshot.problemSummary.resolvedApprovals} | Stale: ${snapshot.problemSummary.stale}`);
+    lines.push(`  Actionable: ${snapshot.problemSummary.actionable} | Hook failures: ${snapshot.problemSummary.hookFailures} | Stale: ${snapshot.problemSummary.stale}`);
   }
   if (snapshot.problems.length === 0) {
     lines.push('  (none recorded)');
@@ -1269,7 +1231,7 @@ function renderDashboard(snapshot) {
   lines.push('');
   lines.push('HOOK ACTIVITY');
   if (snapshot.hookActivity.length === 0) {
-    lines.push('  (no hook timing recorded yet - set CITADEL_DEBUG=true for verbose output)');
+    lines.push('  (no hook timing recorded yet - set SINAN_DEBUG=true for verbose output)');
   } else {
     for (const entry of snapshot.hookActivity) {
       const duration = entry.durationMs === null ? 'n/a' : `${entry.durationMs}ms`;

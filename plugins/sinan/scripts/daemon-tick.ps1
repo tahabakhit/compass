@@ -5,17 +5,17 @@
 # the daemon stops itself (campaign complete, budget hit, level-up pending).
 #
 # Usage:
-#   powershell -ExecutionPolicy Bypass -File C:\Users\gammo\Desktop\Sinan\scripts\daemon-tick.ps1
+#   powershell -ExecutionPolicy Bypass -File path\to\sinan\scripts\daemon-tick.ps1
 #
 # To stop manually: close the window or Ctrl+C.
 
 $env:CLAUDE_NON_INTERACTIVE = "1"
-$citadel = "C:\Users\gammo\Desktop\Sinan"
-$logFile = "$citadel\.planning\daemon-runs.log"
+$sinan = Split-Path -Parent $PSScriptRoot
+$logFile = "$sinan\.planning\daemon-runs.log"
 
 while ($true) {
     # Check if daemon is still running
-    $daemonPath = "$citadel\.planning\daemon.json"
+    $daemonPath = "$sinan\.planning\daemon.json"
     if (-not (Test-Path $daemonPath)) {
         Write-Host "No daemon.json found. Exiting."
         break
@@ -29,7 +29,7 @@ while ($true) {
 
     # Run one session
     Write-Host "$(Get-Date) - Starting session $($daemon.sessionCount + 1)"
-    claude --plugin-dir $citadel --dangerously-skip-permissions -p "/do continue" 2>&1 | Tee-Object -Append $logFile
+    claude --plugin-dir $sinan --dangerously-skip-permissions -p "/do continue" 2>&1 | Tee-Object -Append $logFile
 
     # Cooldown before next session
     Write-Host "$(Get-Date) - Session complete. Cooling down 60s..."

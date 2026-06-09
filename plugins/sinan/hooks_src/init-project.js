@@ -41,7 +41,7 @@ function shouldSyncScripts() {
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
     const pluginVersion = pkg.version || '0.0.0';
 
-    const versionFile = path.join(PROJECT_ROOT, '.citadel', 'version.txt');
+    const versionFile = path.join(PROJECT_ROOT, '.sinan', 'version.txt');
     if (!fs.existsSync(versionFile)) return true;
 
     const installedVersion = fs.readFileSync(versionFile, 'utf8').trim();
@@ -56,7 +56,7 @@ function writeVersionFile(pluginRoot, projectRoot) {
     const pkgPath = path.join(pluginRoot, 'package.json');
     if (!fs.existsSync(pkgPath)) return;
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-    fs.writeFileSync(path.join(projectRoot, '.citadel', 'version.txt'), pkg.version || '0.0.0');
+    fs.writeFileSync(path.join(projectRoot, '.sinan', 'version.txt'), pkg.version || '0.0.0');
   } catch { /* non-fatal */ }
 }
 
@@ -128,7 +128,7 @@ function main() {
 
     // 1b. Sweep stale coordination claims from crashed sessions
     try {
-      const coordScript = path.join(PROJECT_ROOT, '.citadel', 'scripts', 'coordination.js');
+      const coordScript = path.join(PROJECT_ROOT, '.sinan', 'scripts', 'coordination.js');
       const sweepScript = path.join(PLUGIN_ROOT, 'scripts', 'coordination.js');
       const script = fs.existsSync(coordScript) ? coordScript : sweepScript;
       if (fs.existsSync(script)) {
@@ -154,7 +154,7 @@ function main() {
       fs.copyFileSync(pluginIntakeTemplate, intakeTemplate);
     }
 
-    // 4. Sync utility scripts to .citadel/scripts/ (version-gated to avoid unnecessary I/O)
+    // 4. Sync utility scripts to .sinan/scripts/ (version-gated to avoid unnecessary I/O)
     //
     // Scripts are generated as thin delegates rather than copied verbatim.
     // Copied scripts import from ../core/ and ../runtimes/ which only exist
@@ -163,7 +163,7 @@ function main() {
     // Sinan install, so imports always resolve correctly.
     if (shouldSyncScripts()) {
       const pluginScripts = path.join(PLUGIN_ROOT, 'scripts');
-      const projectScripts = path.join(PROJECT_ROOT, '.citadel', 'scripts');
+      const projectScripts = path.join(PROJECT_ROOT, '.sinan', 'scripts');
       if (fs.existsSync(pluginScripts)) {
         ensureDir(projectScripts);
         for (const file of fs.readdirSync(pluginScripts)) {
@@ -188,11 +188,11 @@ function main() {
       copyDirRecursive(pluginAgentContext, agentContext);
     }
 
-    // 6. Write .citadel-root marker (plugin path for reference)
-    const citadelDir = path.join(PROJECT_ROOT, '.citadel');
-    ensureDir(citadelDir);
+    // 6. Write .sinan-root marker (plugin path for reference)
+    const sinanDir = path.join(PROJECT_ROOT, '.sinan');
+    ensureDir(sinanDir);
     fs.writeFileSync(
-      path.join(citadelDir, 'plugin-root.txt'),
+      path.join(sinanDir, 'plugin-root.txt'),
       PLUGIN_ROOT
     );
 
@@ -209,7 +209,7 @@ function main() {
 }
 
 function refreshContextSnapshot() {
-  if (process.env.CITADEL_CONTEXT_SNAPSHOT === '0') return;
+  if (process.env.SINAN_CONTEXT_SNAPSHOT === '0') return;
   try {
     const snapshotScript = path.join(PLUGIN_ROOT, 'scripts', 'context-snapshot.js');
     if (!fs.existsSync(snapshotScript)) return;

@@ -1,10 +1,10 @@
-# `@citadel/runtime-claude-code`
+# `@sinan/runtime-claude-code`
 
 Public runtime adapter surface for Claude Code integration.
 
 ## Purpose
 
-This package will expose the stable runtime-facing pieces needed to install, configure, and describe Citadel's Claude Code integration without reaching into repo internals.
+This package will expose the stable runtime-facing pieces needed to install, configure, and describe Sinan's Claude Code integration without reaching into repo internals.
 
 Initial scope:
 

@@ -14,10 +14,10 @@ const {
 } = require('../../../core/hooks/install');
 const { selectSupportedClaudeHookEvents } = require('./hook-support');
 
-function resolveClaudeHooks(citadelRoot, hooksTemplatePath) {
+function resolveClaudeHooks(sinanRoot, hooksTemplatePath) {
   const raw = fs.readFileSync(hooksTemplatePath, 'utf8');
-  const citadelPath = citadelRoot.replace(/\\/g, '/');
-  const resolved = raw.replace(/\$\{CLAUDE_PLUGIN_ROOT\}/g, citadelPath);
+  const sinanPath = sinanRoot.replace(/\\/g, '/');
+  const resolved = raw.replace(/\$\{CLAUDE_PLUGIN_ROOT\}/g, sinanPath);
   const cleaned = resolved.replace(/node\s+'([^']+)'/g, 'node "$1"');
   const hooks = JSON.parse(cleaned);
 
@@ -33,8 +33,8 @@ function resolveClaudeHooks(citadelRoot, hooksTemplatePath) {
 }
 
 function installClaudeHooks(options = {}) {
-  const citadelRoot = options.citadelRoot || path.resolve(__dirname, '../../..', '..');
-  const hooksTemplatePath = options.hooksTemplatePath || path.join(citadelRoot, 'hooks', 'hooks-template.json');
+  const sinanRoot = options.sinanRoot || path.resolve(__dirname, '../../..', '..');
+  const hooksTemplatePath = options.hooksTemplatePath || path.join(sinanRoot, 'hooks', 'hooks-template.json');
   const projectRoot = options.projectRoot || process.env.CLAUDE_PROJECT_DIR || process.cwd();
   const settingsPath = path.join(projectRoot, '.claude', 'settings.json');
 
@@ -44,7 +44,7 @@ function installClaudeHooks(options = {}) {
 
   ensureDir(path.join(projectRoot, '.claude'));
 
-  const resolved = resolveClaudeHooks(citadelRoot, hooksTemplatePath);
+  const resolved = resolveClaudeHooks(sinanRoot, hooksTemplatePath);
   const compatibility = selectSupportedClaudeHookEvents({
     templateEvents: Object.keys(resolved.hooks || {}),
     hookProfile: options.hookProfile,
@@ -80,7 +80,7 @@ function installClaudeHooks(options = {}) {
     settingsPath,
     hookCount: countGeneratedEntries(generated.hooks || {}),
     preservedCount: countPreservedHooks(mergedHooks, 'hooks_src/'),
-    citadelRoot,
+    sinanRoot,
     compatibility,
   };
 }

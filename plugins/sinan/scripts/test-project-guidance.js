@@ -15,7 +15,7 @@ function fail(message) {
 }
 
 function main() {
-  const templatePath = path.join(__dirname, '..', '.citadel', 'project.template.md');
+  const templatePath = path.join(__dirname, '..', '.sinan', 'project.template.md');
   const template = fs.readFileSync(templatePath, 'utf8');
   const spec = parseProjectSpec(template);
   const errors = validateProjectSpec(spec);
@@ -44,10 +44,10 @@ function main() {
     fail('Codex runtime guidance target must point to AGENTS.md');
   }
 
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-project-guidance-'));
-  const tempCitadel = path.join(tempRoot, '.citadel');
-  fs.mkdirSync(tempCitadel, { recursive: true });
-  fs.writeFileSync(path.join(tempCitadel, 'project.md'), template, 'utf8');
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-project-guidance-'));
+  const tempSinan = path.join(tempRoot, '.sinan');
+  fs.mkdirSync(tempSinan, { recursive: true });
+  fs.writeFileSync(path.join(tempSinan, 'project.md'), template, 'utf8');
   fs.rmSync(tempRoot, { recursive: true, force: true });
 
   console.log('Project guidance tests pass.');

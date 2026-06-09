@@ -14,21 +14,21 @@ async function run() {
   const errors = [];
 
   // Test 1: Env var override works
-  const origEnv = process.env.CITADEL_RUNTIME;
-  process.env.CITADEL_RUNTIME = 'codex';
+  const origEnv = process.env.SINAN_RUNTIME;
+  process.env.SINAN_RUNTIME = 'codex';
   const r1 = detectRuntime('/nonexistent');
   if (r1.runtime !== 'codex' || r1.method !== 'env') {
     errors.push(`Env override: expected codex/env, got ${r1.runtime}/${r1.method}`);
   }
 
-  process.env.CITADEL_RUNTIME = 'claude-code';
+  process.env.SINAN_RUNTIME = 'claude-code';
   const r2 = detectRuntime('/nonexistent');
   if (r2.runtime !== 'claude-code' || r2.method !== 'env') {
     errors.push(`Env override: expected claude-code/env, got ${r2.runtime}/${r2.method}`);
   }
 
   // Invalid env value should be ignored
-  process.env.CITADEL_RUNTIME = 'invalid-value';
+  process.env.SINAN_RUNTIME = 'invalid-value';
   const r3 = detectRuntime('/nonexistent');
   if (r3.method === 'env') {
     errors.push(`Invalid env value should be ignored, got method: env`);
@@ -36,13 +36,13 @@ async function run() {
 
   // Restore
   if (origEnv !== undefined) {
-    process.env.CITADEL_RUNTIME = origEnv;
+    process.env.SINAN_RUNTIME = origEnv;
   } else {
-    delete process.env.CITADEL_RUNTIME;
+    delete process.env.SINAN_RUNTIME;
   }
 
   // Test 2: Directory marker detection
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-test-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-test-'));
 
   // No markers -> unknown
   const r4 = detectRuntime(tmpDir);
@@ -53,8 +53,8 @@ async function run() {
 
   // .claude/ only -> claude-code (or process-tree)
   fs.mkdirSync(path.join(tmpDir, '.claude'));
-  const origRuntime = process.env.CITADEL_RUNTIME;
-  delete process.env.CITADEL_RUNTIME;
+  const origRuntime = process.env.SINAN_RUNTIME;
+  delete process.env.SINAN_RUNTIME;
   const r5 = detectRuntime(tmpDir);
   if (r5.runtime !== 'claude-code' && r5.method !== 'process-tree') {
     errors.push(`Claude marker: expected claude-code, got ${r5.runtime} (${r5.method})`);
@@ -71,7 +71,7 @@ async function run() {
   // Cleanup
   fs.rmdirSync(path.join(tmpDir, '.codex'));
   fs.rmdirSync(tmpDir);
-  if (origRuntime !== undefined) process.env.CITADEL_RUNTIME = origRuntime;
+  if (origRuntime !== undefined) process.env.SINAN_RUNTIME = origRuntime;
 
   if (errors.length > 0) {
     return { pass: false, message: errors.join('; ') };

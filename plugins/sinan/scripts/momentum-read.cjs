@@ -8,7 +8,7 @@
  * To update momentum, use momentum-synthesize.cjs after session completion.
  *
  * Usage:
- *   node .citadel/scripts/momentum-read.cjs
+ *   node .sinan/scripts/momentum-read.cjs
  *
  * Exits 0 with output when momentum exists.
  * Exits 0 with no output when momentum.json is missing or empty.

@@ -17,21 +17,28 @@ assert.equal(typeof codexRuntime.projectCodexSkills, 'function', 'Codex runtime 
 assert.equal(typeof codexRuntime.projectCodexAgents, 'function', 'Codex runtime should expose agent projection');
 
 const adapterPath = path.join(__dirname, '..', 'hooks_src', 'codex-adapter.js');
+const hooksDir = path.join(__dirname, '..', 'hooks_src');
+const exitHook = path.join(hooksDir, 'test-fixture-exit.js');
+fs.writeFileSync(exitHook, "process.stdout.write('adapter fixture output'); process.exit(7);\n");
 const payload = {
   hook_event_name: 'PreToolUse',
   tool_name: 'Read',
   tool_input: { file_path: '.env' },
 };
-const result = spawnSync(process.execPath, [adapterPath, 'protect-files'], {
-  cwd: path.join(__dirname, '..'),
-  input: JSON.stringify(payload),
-  encoding: 'utf8',
-});
+try {
+  const result = spawnSync(process.execPath, [adapterPath, 'test-fixture-exit'], {
+    cwd: path.join(__dirname, '..'),
+    input: JSON.stringify(payload),
+    encoding: 'utf8',
+  });
 
-assert.equal(result.status, 2, 'Codex adapter should propagate hook exit status');
-assert(result.stdout.includes('.env'), 'Codex adapter should surface underlying hook output');
+  assert.equal(result.status, 7, 'Codex adapter should propagate hook exit status');
+  assert(result.stdout.includes('adapter fixture output'), 'Codex adapter should surface underlying hook output');
+} finally {
+  fs.rmSync(exitHook, { force: true });
+}
 
-const tmpProject = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-codex-runtime-'));
+const tmpProject = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-codex-runtime-'));
 try {
   const skills = codexRuntime.projectCodexSkills({ projectRoot: tmpProject, skillName: 'review', dryRun: true });
   const agents = codexRuntime.projectCodexAgents({ projectRoot: tmpProject, agentName: 'archon', dryRun: true });
@@ -44,7 +51,6 @@ try {
 // Codex Stop hook contract: plain text stdout from inner hooks must be
 // redirected to stderr (Codex rejects non-JSON stdout for Stop). JSON passes
 // through unchanged. Non-Stop events keep their plain-text stdout.
-const hooksDir = path.join(__dirname, '..', 'hooks_src');
 const plainHook = path.join(hooksDir, 'test-fixture-plain-stop.js');
 const jsonHook = path.join(hooksDir, 'test-fixture-json-stop.js');
 fs.writeFileSync(plainHook, "process.stdout.write('plain text from hook');\n");

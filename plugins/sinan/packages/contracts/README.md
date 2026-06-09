@@ -1,6 +1,6 @@
-# `@citadel/contracts`
+# `@sinan/contracts`
 
-Public contract surface for Citadel runtimes, clients, and future hosted products.
+Public contract surface for Sinan runtimes, clients, and future hosted products.
 
 ## Purpose
 

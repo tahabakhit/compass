@@ -14,8 +14,8 @@
  * at session start to inject prior context into Wave 1 agents.
  *
  * Usage:
- *   node .citadel/scripts/momentum-synthesize.cjs
- *   node .citadel/scripts/momentum-synthesize.cjs --print   # also print formatted context block
+ *   node .sinan/scripts/momentum-synthesize.cjs
+ *   node .sinan/scripts/momentum-synthesize.cjs --print   # also print formatted context block
  */
 
 'use strict';

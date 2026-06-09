@@ -26,7 +26,7 @@ Sinan should be organized into three layers:
 
 - `skills/` — canonical skill definitions
 - `agents/` — canonical agent role definitions
-- `.citadel/project.*` — canonical project guidance spec
+- `.sinan/project.*` — canonical project guidance spec
 - `core/` — canonical runtime-independent logic
 
 Generated runtime projections:

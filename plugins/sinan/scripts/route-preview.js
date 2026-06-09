@@ -133,7 +133,7 @@ const SKILLS = [
   skill('/houseclean', ['houseclean', 'disk space', 'free space', 'orphaned worktrees'], 'Maintenance'),
   skill('/daemon', ['daemon', 'continuous', 'overnight', '24/7'], 'Automation'),
   skill('/map', ['map', 'index codebase', 'structural index'], 'Codebase'),
-  skill('/watch', ['watch files', 'marker comments', '@citadel'], 'Automation'),
+  skill('/watch', ['watch files', 'marker comments', '@sinan'], 'Automation'),
   skill('/infra-audit', ['infra', 'infrastructure', 'docker-compose'], 'Infrastructure'),
   skill('/workspace', ['workspace', 'multi-repo', 'cross-repo', 'multiple repos'], 'Workspace'),
   skill('/prd', ['prd', 'requirements', 'spec', 'plan an app'], 'Planning'),

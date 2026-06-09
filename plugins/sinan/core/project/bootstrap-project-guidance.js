@@ -39,7 +39,7 @@ function ensureProjectSpec(options = {}) {
 
   if (created) {
     ensureDirectory(specDir);
-    const templatePath = options.templatePath || path.join(options.citadelRoot, '.citadel', 'project.template.md');
+    const templatePath = options.templatePath || path.join(options.sinanRoot, '.sinan', 'project.template.md');
     const template = fs.readFileSync(templatePath, 'utf8');
     const projectName = options.projectName || defaultProjectName(projectRoot);
     const projectSummary = options.projectSummary || defaultProjectSummary(projectName);

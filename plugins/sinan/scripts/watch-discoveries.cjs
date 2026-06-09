@@ -13,7 +13,7 @@
  * Exits automatically after 2 hours of idle (no new discoveries written).
  *
  * Usage (usually called indirectly via momentum-watch-start.cjs):
- *   node .citadel/scripts/watch-discoveries.cjs
+ *   node .sinan/scripts/watch-discoveries.cjs
  *
  * PID file: .planning/discoveries/.watcher.pid
  */

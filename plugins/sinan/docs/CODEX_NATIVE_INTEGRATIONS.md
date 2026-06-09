@@ -29,7 +29,7 @@ Improvement: future routing decisions stop underusing Codex's native surfaces.
 
 ## 4. Bidirectional MCP
 
-`.mcp.json` bundles `citadel-state`, and `scripts/codex-compat.js` emits a native `[mcp_servers.citadel-state]` config for project installs. `mcp-servers/citadel-state/index.js` exposes status, workflow prompts, and a `citadel://status` resource.
+`.mcp.json` bundles `sinan-state`, and `scripts/codex-compat.js` emits a native `[mcp_servers.sinan-state]` config for project installs. `mcp-servers/sinan-state/index.js` exposes status, workflow prompts, and a `sinan://status` resource.
 
 Improvement: Codex can query Sinan state as structured MCP data instead of scraping terminal output or rereading all planning files.
 

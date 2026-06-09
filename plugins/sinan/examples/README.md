@@ -1,6 +1,6 @@
 # Examples
 
-This directory contains worked examples showing how the Citadel harness operates in practice. Each example is a real (or realistic) artifact produced by the system, annotated so you can understand the structure and conventions.
+This directory contains worked examples showing how the Sinan harness operates in practice. Each example is a real (or realistic) artifact produced by the system, annotated so you can understand the structure and conventions.
 
 ## What's Here
 

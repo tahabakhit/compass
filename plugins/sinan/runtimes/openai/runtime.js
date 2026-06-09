@@ -13,10 +13,10 @@ module.exports = Object.freeze({
     workspace: { support: 'full', notes: 'Shell tool and hosted container workspace available via Responses API.' },
     worktrees: { support: 'none', notes: 'OpenAI runtimes do not provide native git worktree support.' },
     approvals: { support: 'partial', notes: 'Approval flow requires adapter-level policy handling.' },
-    history: { support: 'partial', notes: 'Responses API provides conversation state; campaign state remains Citadel-owned.' },
-    telemetry: { support: 'partial', notes: 'Citadel telemetry is external to runtime-native logging.' },
+    history: { support: 'partial', notes: 'Responses API provides conversation state; campaign state remains Sinan-owned.' },
+    telemetry: { support: 'partial', notes: 'Sinan telemetry is external to runtime-native logging.' },
     mcp: { support: 'partial', notes: 'Responses API has built-in tool support; MCP bridge possible but not native.' },
-    surfaces: { support: 'partial', notes: 'Reusable agent skills in Responses API map to Citadel skill surface.' },
+    surfaces: { support: 'partial', notes: 'Reusable agent skills in Responses API map to Sinan skill surface.' },
   },
   degradations: [
     'reduced-hook-lifecycle',

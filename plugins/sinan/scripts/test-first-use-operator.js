@@ -10,7 +10,7 @@ const { collectDashboard, renderDashboard } = require('./dashboard');
 const { buildConsole, renderConsole } = require('./operator-console');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-first-use-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-first-use-'));
   try {
     return run(dir);
   } finally {

@@ -53,7 +53,7 @@ function slug(value) {
 }
 
 function resolveSigningKey(options = {}) {
-  return options.hmacKey || process.env.CITADEL_TELEMETRY_HMAC_KEY || null;
+  return options.hmacKey || process.env.SINAN_TELEMETRY_HMAC_KEY || null;
 }
 
 function signRecord(record, options = {}) {
@@ -68,7 +68,7 @@ function signRecord(record, options = {}) {
     _signature: signature,
     _signature_v: SIGNATURE_VERSION,
     _signature_alg: HMAC_ALGORITHM,
-    _signature_key_id: options.hmacKeyId || process.env.CITADEL_TELEMETRY_HMAC_KEY_ID || 'local',
+    _signature_key_id: options.hmacKeyId || process.env.SINAN_TELEMETRY_HMAC_KEY_ID || 'local',
   };
 }
 

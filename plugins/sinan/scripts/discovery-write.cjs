@@ -8,7 +8,7 @@
  * cross-session context signal.
  *
  * Usage:
- *   node .citadel/scripts/discovery-write.cjs \
+ *   node .sinan/scripts/discovery-write.cjs \
  *     --session "fleet-auth-refactor" \
  *     --agent "api-auth-builder" \
  *     --wave 1 \

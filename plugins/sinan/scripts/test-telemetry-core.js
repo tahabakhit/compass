@@ -18,7 +18,7 @@ const {
 } = require('../core/telemetry/report');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-telemetry-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-telemetry-'));
   try {
     return run(dir);
   } finally {

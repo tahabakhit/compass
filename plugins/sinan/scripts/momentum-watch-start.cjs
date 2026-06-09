@@ -8,7 +8,7 @@
  * from parallel sessions — only one watcher runs per project.
  *
  * Usage:
- *   node .citadel/scripts/momentum-watch-start.cjs
+ *   node .sinan/scripts/momentum-watch-start.cjs
  *
  * Exit codes:
  *   0 — watcher started or already running

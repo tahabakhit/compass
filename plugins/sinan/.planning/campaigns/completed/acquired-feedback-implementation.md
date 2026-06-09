@@ -3,7 +3,7 @@ slug: acquired-feedback-implementation
 status: completed
 phase_count: 5
 current_phase: 1
-source: https://github.com/SethGammon/Citadel/discussions/96
+source: https://github.com/SethGammon/Sinan/discussions/96
 ---
 
 # Campaign: Acquired Feedback Implementation
@@ -18,7 +18,7 @@ Status: completed
 
 | # | Status | Type | Phase | Done When |
 |---|--------|------|-------|-----------|
-| 1 | complete | build | Infrastructure (path-helpers, CITADEL_DEBUG, issue-monitor fix) | `node scripts/test-all.js` passes |
+| 1 | complete | build | Infrastructure (path-helpers, SINAN_DEBUG, issue-monitor fix) | `node scripts/test-all.js` passes |
 | 2 | complete | build | Campaign phase status parsing | parse-campaign + update-campaign unit tested |
 | 3 | complete | build | Fleet UX + persistent confirm settings | skill-lint fleet + do pass |
 | 4 | complete | build | Dashboard hook activity view | skill-lint dashboard passes |
@@ -46,7 +46,7 @@ Status: completed
 ## Decision Log
 
 - Using existing `fleetSpawn` consent category from harness-health-util for Fleet 1/2/3 preference (already has always-ask/session-allow/auto-allow machinery)
-- CITADEL_DEBUG follows exact CITADEL_UI env var pattern — read once at module top, used in new debugLog() in harness-health-util
+- SINAN_DEBUG follows exact SINAN_UI env var pattern — read once at module top, used in new debugLog() in harness-health-util
 - toUniversal() in path-helpers is for storage/comparison ONLY, not for Node fs APIs
 - parsePhaseTable added to parse-campaign.js, updatePhaseStatus added to update-campaign.js
 

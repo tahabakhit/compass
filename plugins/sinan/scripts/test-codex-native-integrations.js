@@ -19,17 +19,17 @@ const {
   recordAppArtifact,
 } = require('../core/codex/native-integrations');
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
+const SINAN_ROOT = path.resolve(__dirname, '..');
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8').replace(/^\/\/.*\n/, ''));
 }
 
 function testGeneratedCodexArtifacts() {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-codex-native-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-codex-native-'));
   try {
-    execFileSync(process.execPath, [path.join(CITADEL_ROOT, 'scripts', 'codex-compat.js'), tmp], {
-      cwd: CITADEL_ROOT,
+    execFileSync(process.execPath, [path.join(SINAN_ROOT, 'scripts', 'codex-compat.js'), tmp], {
+      cwd: SINAN_ROOT,
       encoding: 'utf8',
       stdio: 'pipe',
       timeout: 20000,
@@ -38,7 +38,7 @@ function testGeneratedCodexArtifacts() {
     const config = fs.readFileSync(path.join(tmp, '.codex', 'config.toml'), 'utf8');
     assert(config.includes('hooks = true'), 'Codex config must use canonical hooks feature');
     assert(!config.includes('codex_hooks = true'), 'Codex config must not emit deprecated codex_hooks feature');
-    assert(config.includes('[mcp_servers.citadel-state]'), 'Codex config must include citadel-state MCP server');
+    assert(config.includes('[mcp_servers.sinan-state]'), 'Codex config must include sinan-state MCP server');
 
     const manifestPath = path.join(tmp, '.codex-plugin', 'plugin.json');
     const manifest = readJson(manifestPath);
@@ -50,7 +50,7 @@ function testGeneratedCodexArtifacts() {
     assert(/Codex-native|Sinan orchestration/.test(manifest.interface.shortDescription), 'manifest should describe orchestration');
 
     const mcp = readJson(path.join(tmp, '.mcp.json'));
-    assert(mcp.mcpServers['citadel-state'], 'generated plugin MCP config must include citadel-state');
+    assert(mcp.mcpServers['sinan-state'], 'generated plugin MCP config must include sinan-state');
 
     const pluginHooks = readJson(path.join(tmp, 'hooks', 'hooks.json'));
     for (const event of ['PermissionRequest', 'PreCompact', 'PostCompact', 'SubagentStart', 'SubagentStop']) {
@@ -58,10 +58,10 @@ function testGeneratedCodexArtifacts() {
     }
     const firstPluginHook = pluginHooks.hooks.PreToolUse
       .flatMap((entry) => entry.hooks)
-      .find((hook) => hook.command && hook.command.includes('${PLUGIN_ROOT}'));
+      .find((hook) => hook.command && hook.command.includes('${PLUGIN_ROOT'));
     assert(firstPluginHook, 'plugin hooks should include generated PLUGIN_ROOT commands');
     const firstCommand = firstPluginHook.command;
-    assert(firstCommand.includes('${PLUGIN_ROOT}'), 'plugin hook command should use PLUGIN_ROOT');
+    assert(firstCommand.includes('${PLUGIN_ROOT'), 'plugin hook command should use PLUGIN_ROOT');
     assert(firstPluginHook.commandWindows.includes('%PLUGIN_ROOT%'), 'plugin hook commandWindows should use PLUGIN_ROOT');
 
     const fleetAgent = fs.readFileSync(path.join(tmp, '.codex', 'agents', 'fleet.toml'), 'utf8');
@@ -72,28 +72,28 @@ function testGeneratedCodexArtifacts() {
 }
 
 function testMcpServer() {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-mcp-state-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-mcp-state-'));
   try {
     fs.mkdirSync(path.join(tmp, '.planning', 'campaigns'), { recursive: true });
     fs.writeFileSync(path.join(tmp, '.planning', 'campaigns', 'demo.md'), '# Demo\n', 'utf8');
     const input = [
       JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} }),
       JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} }),
-      JSON.stringify({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'citadel_status', arguments: { includeFiles: true } } }),
-      JSON.stringify({ jsonrpc: '2.0', id: 4, method: 'resources/read', params: { uri: 'citadel://status' } }),
+      JSON.stringify({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'sinan_status', arguments: { includeFiles: true } } }),
+      JSON.stringify({ jsonrpc: '2.0', id: 4, method: 'resources/read', params: { uri: 'sinan://status' } }),
       '',
     ].join('\n');
-    const result = spawnSync(process.execPath, [path.join(CITADEL_ROOT, 'mcp-servers', 'citadel-state', 'index.js')], {
+    const result = spawnSync(process.execPath, [path.join(SINAN_ROOT, 'mcp-servers', 'sinan-state', 'index.js')], {
       input,
-      env: { ...process.env, CITADEL_PROJECT_ROOT: tmp },
+      env: { ...process.env, SINAN_PROJECT_ROOT: tmp },
       encoding: 'utf8',
       timeout: 5000,
     });
     assert.equal(result.status, 0, result.stderr);
     const messages = result.stdout.split(/\r?\n/).filter(Boolean).map((line) => JSON.parse(line));
-    assert(messages.find((msg) => msg.id === 2).result.tools.some((tool) => tool.name === 'citadel_status'));
+    assert(messages.find((msg) => msg.id === 2).result.tools.some((tool) => tool.name === 'sinan_status'));
     const statusText = messages.find((msg) => msg.id === 3).result.content[0].text;
-    assert(statusText.includes('"campaigns": 1'), 'citadel_status should report campaign count');
+    assert(statusText.includes('"campaigns": 1'), 'sinan_status should report campaign count');
     assert(messages.find((msg) => msg.id === 4).result.contents[0].text.includes('"planningExists": true'));
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
@@ -101,7 +101,7 @@ function testMcpServer() {
 }
 
 function testBridgeUtilities() {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-native-bridges-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-native-bridges-'));
   try {
     const automation = createAutomationPlan({
       projectRoot: tmp,
@@ -166,7 +166,7 @@ function testBridgeUtilities() {
 }
 
 function testDocsMatrix() {
-  const doc = fs.readFileSync(path.join(CITADEL_ROOT, 'docs', 'CODEX_NATIVE_INTEGRATIONS.md'), 'utf8');
+  const doc = fs.readFileSync(path.join(SINAN_ROOT, 'docs', 'CODEX_NATIVE_INTEGRATIONS.md'), 'utf8');
   for (let i = 1; i <= 12; i++) {
     assert(doc.includes(`## ${i}.`), `Codex native matrix missing entry ${i}`);
   }

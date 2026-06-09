@@ -7,7 +7,7 @@
     "skills",
     "hooks"
   ],
-  "owner": "citadel",
+  "owner": "sinan",
   "confidence": "high",
   "last_verified": "2026-06-04",
   "sources": [
@@ -24,5 +24,5 @@
       "reason": "skill authoring and handoff contract"
     }
   ],
-  "body": "- Treat this repository as the Citadel harness; skills, agents, hooks, and state files are first-class product surfaces.\n- Keep changes scoped to harness conventions: skills in `skills/`, agents in `agents/`, hooks in `hooks_src/`, and campaign state in `.planning/`.\n- Every completed task must leave a compact HANDOFF and enough verification evidence for another session to resume."
+  "body": "- Treat this repository as the Sinan harness; skills, agents, hooks, and state files are first-class product surfaces.\n- Keep changes scoped to harness conventions: skills in `skills/`, agents in `agents/`, hooks in `hooks_src/`, and campaign state in `.planning/`.\n- Every completed task must leave a compact HANDOFF and enough verification evidence for another session to resume."
 }

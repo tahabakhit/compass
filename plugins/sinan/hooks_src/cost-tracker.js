@@ -45,7 +45,7 @@ const DEFAULT_THRESHOLDS = [5, 15, 30, 50, 75, 100, 150, 200, 300, 500];
 // Phase length warning threshold (minutes). Research: failure rate 4x-increases beyond 35 min.
 const PHASE_WARN_MINUTES = 35;
 
-const CITADEL_UI = process.env.CITADEL_UI === 'true';
+const SINAN_UI = process.env.SINAN_UI === 'true';
 
 // ── State management ─────────────────────────────────────────────────────────
 
@@ -325,7 +325,7 @@ function run() {
 
   const output = messages.join('\n');
 
-  if (CITADEL_UI) {
+  if (SINAN_UI) {
     process.stdout.write(JSON.stringify({
       hook: 'cost-tracker',
       action: crossedNewThreshold ? 'threshold' : (budgetAlert ? 'budget-alert' : 'phase-length'),

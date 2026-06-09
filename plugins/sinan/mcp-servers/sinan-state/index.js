@@ -5,12 +5,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const PROJECT_ROOT = path.resolve(process.env.CITADEL_PROJECT_ROOT || process.cwd());
+const PROJECT_ROOT = path.resolve(process.env.SINAN_PROJECT_ROOT || process.cwd());
 
 const TOOL_DEFS = [
   {
-    name: 'citadel_status',
-    description: 'Summarize Citadel planning, campaign, fleet, telemetry, and artifact state for the current project.',
+    name: 'sinan_status',
+    description: 'Summarize Sinan planning, campaign, fleet, telemetry, and artifact state for the current project.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -19,8 +19,8 @@ const TOOL_DEFS = [
     },
   },
   {
-    name: 'citadel_workflow_prompt',
-    description: 'Return a ready-to-run prompt for a Citadel workflow while preserving project state expectations.',
+    name: 'sinan_workflow_prompt',
+    description: 'Return a ready-to-run prompt for a Sinan workflow while preserving project state expectations.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -79,13 +79,13 @@ function status(includeFiles = false) {
 function workflowPrompt(workflow, target) {
   const suffix = target ? ` Target: ${target}.` : '';
   const prompts = {
-    triage: `Use Citadel triage on this GitHub item. Investigate code and PR context, decide what belongs, make safe edits when needed, and draft an appreciative direct response.${suffix}`,
-    'pr-watch': `Use Citadel pr-watch for this PR. Read CI logs, fix only verified failures, rerun focused checks, and record progress in .planning/.${suffix}`,
-    daemon: `Continue the active Citadel daemon. Read .planning/daemon.json, enforce budget/status gates, continue the campaign, and append a run summary.${suffix}`,
-    schedule: `Create or inspect a Citadel schedule. Prefer Codex app automations for durable recurring work and record the plan in .planning/codex-automations/.${suffix}`,
-    qa: `Run Citadel QA. Use the in-app browser or Playwright, save screenshots and reports, and record artifact paths with scripts/codex-app-artifacts.js.${suffix}`,
+    triage: `Use Sinan triage on this GitHub item. Investigate code and PR context, decide what belongs, make focused edits when needed, and draft a direct response.${suffix}`,
+    'pr-watch': `Use Sinan pr-watch for this PR. Read CI logs, fix only verified failures, rerun focused checks, and record progress in .planning/.${suffix}`,
+    daemon: `Continue the active Sinan daemon. Read .planning/daemon.json, enforce budget/status gates, continue the campaign, and append a run summary.${suffix}`,
+    schedule: `Create or inspect a Sinan schedule. Prefer Codex app automations for durable recurring work and record the plan in .planning/codex-automations/.${suffix}`,
+    qa: `Run Sinan QA. Use the in-app browser or Playwright, save screenshots and reports, and record artifact paths with scripts/codex-app-artifacts.js.${suffix}`,
   };
-  return prompts[workflow] || `Use Citadel /${workflow} with durable .planning state and verification evidence.${suffix}`;
+  return prompts[workflow] || `Use Sinan /${workflow} with durable .planning state and verification evidence.${suffix}`;
 }
 
 function respond(id, result) {
@@ -103,8 +103,8 @@ function handleRequest(req) {
     respond(id, {
       protocolVersion: '2024-11-05',
       capabilities: { tools: {}, resources: {} },
-      serverInfo: { name: 'citadel-state', version: '1.0.0' },
-      instructions: 'Use citadel_status before long-running Citadel workflows, then preserve .planning state when invoking Citadel skills.',
+      serverInfo: { name: 'sinan-state', version: '1.0.0' },
+      instructions: 'Use sinan_status before long-running Sinan workflows, then preserve .planning state when invoking Sinan skills.',
     });
     return;
   }
@@ -118,11 +118,11 @@ function handleRequest(req) {
 
   if (method === 'tools/call') {
     const { name, arguments: args = {} } = params || {};
-    if (name === 'citadel_status') {
+    if (name === 'sinan_status') {
       respond(id, { content: [{ type: 'text', text: JSON.stringify(status(Boolean(args.includeFiles)), null, 2) }] });
       return;
     }
-    if (name === 'citadel_workflow_prompt') {
+    if (name === 'sinan_workflow_prompt') {
       respond(id, { content: [{ type: 'text', text: workflowPrompt(args.workflow, args.target) }] });
       return;
     }
@@ -133,15 +133,15 @@ function handleRequest(req) {
   if (method === 'resources/list') {
     respond(id, {
       resources: [
-        { uri: 'citadel://status', name: 'Citadel Status', mimeType: 'application/json' },
+        { uri: 'sinan://status', name: 'Sinan Status', mimeType: 'application/json' },
       ],
     });
     return;
   }
 
-  if (method === 'resources/read' && params && params.uri === 'citadel://status') {
+  if (method === 'resources/read' && params && params.uri === 'sinan://status') {
     respond(id, {
-      contents: [{ uri: 'citadel://status', mimeType: 'application/json', text: JSON.stringify(status(true), null, 2) }],
+      contents: [{ uri: 'sinan://status', mimeType: 'application/json', text: JSON.stringify(status(true), null, 2) }],
     });
     return;
   }

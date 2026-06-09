@@ -16,10 +16,10 @@ const TELEMETRY_DIR = path.join(PROJECT_ROOT, '.planning', 'telemetry');
 const HOOK_TIMING_FILE = path.join(TELEMETRY_DIR, 'hook-timing.jsonl');
 const AUDIT_LOG_FILE = path.join(TELEMETRY_DIR, 'audit.jsonl');
 
-// Debug mode — set CITADEL_DEBUG=true in .claude/settings.json env to enable.
+// Debug mode — set SINAN_DEBUG=true in .claude/settings.json env to enable.
 // Prints a one-line summary to stderr each time a hook fires or completes.
-// Follows the same opt-in pattern as CITADEL_UI.
-const CITADEL_DEBUG = process.env.CITADEL_DEBUG === 'true';
+// Follows the same opt-in pattern as SINAN_UI.
+const SINAN_DEBUG = process.env.SINAN_DEBUG === 'true';
 
 // ── Audit integrity ─────────────────────────────────────────────────────────
 
@@ -97,7 +97,7 @@ function verifyAuditIntegrity(file) {
 }
 
 /**
- * Emit a debug line to stderr when CITADEL_DEBUG=true.
+ * Emit a debug line to stderr when SINAN_DEBUG=true.
  * Uses stderr (not stdout) so it doesn't interfere with hook exit codes or
  * structured JSON output on stdout.
  *
@@ -106,9 +106,9 @@ function verifyAuditIntegrity(file) {
  * @param {string} [detail] - Optional one-line context (file path, rule name, etc.)
  */
 function debugLog(hook, event, detail = '') {
-  if (!CITADEL_DEBUG) return;
+  if (!SINAN_DEBUG) return;
   const suffix = detail ? ` — ${detail}` : '';
-  process.stderr.write(`[citadel:hook] ${hook} ${event}${suffix}\n`);
+  process.stderr.write(`[sinan:hook] ${hook} ${event}${suffix}\n`);
 }
 
 /**
@@ -193,7 +193,7 @@ function readConfig() {
     features: { intakeScanner: true, telemetry: true },
     telemetry: {
       // Master switch. Setting false disables session summaries and cost alerts
-      // but NEVER disables safety hooks (protect-files, circuit-breaker, etc.).
+      // but NEVER disables lifecycle hooks such as circuit-breaker.
       enabled: true,
       // "auto"   — show [session] summary line at session end (default)
       // "always" — same as auto (reserved for future verbose mode)
@@ -432,7 +432,7 @@ function validateCommand(command) { return _validateInput(command, 'command', CM
 
 function securityWarning(hook, message) {
   const msg = `[SECURITY] ${hook}: ${message}\n`;
-  if (process.env.CITADEL_UI === 'true') {
+  if (process.env.SINAN_UI === 'true') {
     process.stdout.write(JSON.stringify({
       hook,
       action: 'security-warning',
@@ -654,5 +654,5 @@ module.exports = {
   PROJECT_ROOT,
   TELEMETRY_DIR,
   PLUGIN_DATA_DIR,
-  CITADEL_DEBUG,
+  SINAN_DEBUG,
 };

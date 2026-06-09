@@ -15,7 +15,7 @@ const {
 } = require('../core/evidence/contracts');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-evidence-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-evidence-'));
   try {
     run(dir);
   } finally {

@@ -16,10 +16,8 @@ const assert = require('assert');
 
 const { parseCampaignContent, parseFrontmatter } = require('../core/campaigns/parse-campaign');
 const { validateAgentRunEvent, validateSessionCostEvent, validateHookTimingEvent } = require('../core/telemetry/schema');
-const { readExternalActionPolicy, detectExternalAction } = require('../core/policy/external-actions');
 const { parseProjectSpec, validateProjectSpec } = require('../core/project/load-project-spec');
 const { createEnvelope, normalizeToolName, normalizePathFields } = require('../core/hooks/normalize-event');
-const { escapeRegExp } = require('../core/policy/external-actions');
 
 let passed = 0;
 let failed = 0;
@@ -176,93 +174,12 @@ check('Session cost event with real token fields validates', () => {
 check('Hook timing event validates correctly', () => {
   const event = {
     timestamp: '2026-03-15T10:30:05Z',
-    hook: 'protect-files',
+    hook: 'governance',
     event: 'timing',
     duration_ms: 12,
   };
   const result = validateHookTimingEvent(event);
   assert(result.valid, `timing event should be valid: ${result.errors.join(', ')}`);
-});
-
-// ============================================================
-// Existing harness.json format
-// ============================================================
-
-check('Custom harness.json policy is respected', () => {
-  const config = {
-    consent: { externalActions: 'always-ask' },
-    policy: {
-      externalActions: {
-        protectedBranches: ['main', 'dev'],
-        hard: ['gh release create', 'gh repo fork'],
-        soft: ['git push', 'gh pr create', 'gh pr merge'],
-      },
-    },
-  };
-  const policy = readExternalActionPolicy(config);
-  assert.deepStrictEqual(policy.protectedBranches, ['main', 'dev']);
-  assert.deepStrictEqual(policy.hard, ['gh release create', 'gh repo fork']);
-  assert(policy.soft.includes('gh pr merge'), 'custom soft should include gh pr merge');
-});
-
-check('Default policy fills missing config', () => {
-  const policy = readExternalActionPolicy({});
-  assert(policy.protectedBranches.includes('main'));
-  assert(policy.hard.includes('gh pr merge'));
-  assert(policy.soft.includes('git push'));
-});
-
-check('Policy with merge moved to soft tier works', () => {
-  const config = {
-    policy: {
-      externalActions: {
-        hard: ['gh release create'],
-        soft: ['git push', 'gh pr merge', 'gh pr close'],
-      },
-    },
-  };
-  const policy = readExternalActionPolicy(config);
-  const action = detectExternalAction('gh pr merge --auto', policy);
-  assert.equal(action.tier, 'soft', 'gh pr merge should be soft when moved to soft list');
-});
-
-check('Protected branch deletion detection works with custom branches', () => {
-  const config = {
-    policy: {
-      externalActions: {
-        protectedBranches: ['main', 'dev', 'release/v1'],
-      },
-    },
-  };
-  const policy = readExternalActionPolicy(config);
-  const action = detectExternalAction('git push origin --delete dev', policy);
-  assert.equal(action.kind, 'protected-branch');
-  assert.equal(action.branch, 'dev');
-});
-
-// ============================================================
-// Regex injection protection (quality fix)
-// ============================================================
-
-check('escapeRegExp handles special characters', () => {
-  const escaped = escapeRegExp('release/v1.0');
-  // Forward slash is not a regex special char, only the dot is escaped
-  assert.equal(escaped, 'release/v1\\.0');
-});
-
-check('Protected branch with regex-special chars does not inject', () => {
-  const config = {
-    policy: {
-      externalActions: {
-        protectedBranches: ['main', 'release/v1.0'],
-      },
-    },
-  };
-  const policy = readExternalActionPolicy(config);
-  // This should detect the deletion correctly
-  const action = detectExternalAction('git branch -D release/v1.0', policy);
-  assert.equal(action.kind, 'protected-branch');
-  assert.equal(action.branch, 'release/v1.0');
 });
 
 // ============================================================

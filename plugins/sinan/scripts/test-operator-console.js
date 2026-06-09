@@ -15,7 +15,7 @@ function write(filePath, content) {
 }
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-operator-console-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-operator-console-'));
   try {
     return run(dir);
   } finally {
@@ -143,13 +143,13 @@ withTempProject((projectRoot) => {
   write(path.join(projectRoot, '.planning', 'pr-readiness', 'base.md'), readinessReport({
     branch: 'codex/base',
     head: 'a111111',
-    pr: 'https://github.com/SethGammon/sinan/pull/1',
+    pr: 'https://github.com/example/sinan/pull/1',
     generated: '2026-06-05T12:01:00.000Z',
   }));
   write(path.join(projectRoot, '.planning', 'pr-readiness', 'top.md'), readinessReport({
     branch: 'codex/top',
     head: 'b222222',
-    pr: 'https://github.com/SethGammon/sinan/pull/2',
+    pr: 'https://github.com/example/sinan/pull/2',
     generated: '2026-06-05T12:02:00.000Z',
   }));
 
@@ -158,7 +158,7 @@ withTempProject((projectRoot) => {
 
   assert.equal(consoleState.status, 'approval-needed');
   assert.equal(consoleState.nextAction.label, 'Approve stack landing order');
-  assert(consoleState.nextAction.command.includes('/pull/1 -> https://github.com/SethGammon/sinan/pull/2'));
+  assert(consoleState.nextAction.command.includes('/pull/1 -> https://github.com/example/sinan/pull/2'));
   assert.equal(consoleState.boundary.kind, 'stack-approval');
   assert.equal(consoleState.boundary.risk, 'medium-high');
   assert.equal(consoleState.summary.stackStatus, 'approval-needed');
@@ -192,7 +192,7 @@ withTempProject((projectRoot) => {
     },
     reports: [{
       branch: 'codex/stale',
-      pr: 'https://github.com/SethGammon/sinan/pull/7',
+      pr: 'https://github.com/example/sinan/pull/7',
       head: '0000000',
       currentHead: '1111111',
       status: 'ready',

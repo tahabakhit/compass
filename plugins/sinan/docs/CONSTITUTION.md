@@ -61,7 +61,6 @@ Override acceptable and does not require logging.
 ## How Policy Enforcement Works
 
 ### Automatic (hooks)
-- `protect-files.js` enforces P-006 on every Edit/Write (blocking, PreToolUse)
 - `complexity-check.js` enforces E-003 on every Edit/Write of .js/.ts files (advisory, PostToolUse)
 - `governance.js` logs all significant actions to audit trail (observing, PreToolUse)
 

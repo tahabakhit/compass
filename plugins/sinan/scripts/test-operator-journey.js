@@ -13,7 +13,7 @@ function write(filePath, content) {
 }
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-operator-journey-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-operator-journey-'));
   try {
     return run(dir);
   } finally {

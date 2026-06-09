@@ -54,17 +54,17 @@ function translateCodexHooks(hooksTemplate, adapterScriptPath, options = {}) {
   const commandForHook = options.commandForHook || ((hookName) => `${adapterCmd} ${hookName}`);
   const commandWindowsForHook = options.commandWindowsForHook || null;
 
-  for (const [citadelEvent, entries] of Object.entries(hooksTemplate.hooks || {})) {
-    const codexEvent = EVENT_MAP[citadelEvent];
+  for (const [sinanEvent, entries] of Object.entries(hooksTemplate.hooks || {})) {
+    const codexEvent = EVENT_MAP[sinanEvent];
 
     if (!codexEvent) {
       for (const entry of entries) {
         for (const hook of entry.hooks || []) {
           const name = extractHookName(hook.command);
-          if (name) skipped.push({ hook: name, event: citadelEvent, reason: 'no Codex equivalent' });
+          if (name) skipped.push({ hook: name, event: sinanEvent, reason: 'no Codex equivalent' });
         }
       }
-      warnings.push(`${citadelEvent}: no Codex equivalent (${entries.length} hook(s) skipped)`);
+      warnings.push(`${sinanEvent}: no Codex equivalent (${entries.length} hook(s) skipped)`);
       continue;
     }
 
@@ -80,7 +80,7 @@ function translateCodexHooks(hooksTemplate, adapterScriptPath, options = {}) {
         const translatedHook = {
           type: 'command',
           command: commandForHook(hookName),
-          statusMessage: `Citadel: ${hookName}`,
+          statusMessage: `Sinan: ${hookName}`,
           timeout: hook.timeout || 30,
         };
         if (commandWindowsForHook) translatedHook.commandWindows = commandWindowsForHook(hookName);
@@ -104,7 +104,8 @@ function translateCodexHooks(hooksTemplate, adapterScriptPath, options = {}) {
 }
 
 function translateCodexPluginHooks(hooksTemplate) {
-  return translateCodexHooks(hooksTemplate, '${PLUGIN_ROOT}/hooks_src/codex-adapter.js', {
+  const adapter = '${PLUGIN_ROOT}/hooks_src/codex-adapter.js';
+  return translateCodexHooks(hooksTemplate, adapter, {
     commandForHook: (hookName) => `node "\${PLUGIN_ROOT}/hooks_src/codex-adapter.js" ${hookName}`,
     commandWindowsForHook: (hookName) => `node "%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js" ${hookName}`,
   });

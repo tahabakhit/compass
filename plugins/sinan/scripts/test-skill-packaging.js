@@ -12,7 +12,7 @@ const { buildSkillCatalog, validateOptionalMetadata } = require('../core/skills/
 const { scaffold } = require('./skill-scaffold');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-skill-packaging-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-skill-packaging-'));
   try {
     run(dir);
   } finally {

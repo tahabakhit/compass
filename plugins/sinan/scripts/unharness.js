@@ -4,10 +4,10 @@
  * unharness.js — Exports valuable Sinan state then removes the harness from a project.
  *
  * Export: reads campaigns, postmortems, research, intake, discoveries, and project metadata,
- * writes them to docs/citadel/ as human-readable markdown with citadel-archive frontmatter.
+ * writes them to docs/sinan/ as human-readable markdown with sinan-archive frontmatter.
  * Setup detects this archive on re-install and offers to restore it.
  *
- * Cleanup: removes .planning/, .citadel/, .claude/agent-context/, and strips all Sinan
+ * Cleanup: removes .planning/, .sinan/, .claude/agent-context/, and strips all Sinan
  * hook entries from .claude/settings.json.
  *
  * Usage:
@@ -48,14 +48,14 @@ function readMarkdownFiles(dir, skip = []) {
 
 function buildArchiveFile(source, files, exportedAt) {
   if (!files.length) return null;
-  const frontmatter = `---\ncitadel-archive: true\nexported-at: ${exportedAt}\nsource: ${source}\n---`;
+  const frontmatter = `---\nsinan-archive: true\nexported-at: ${exportedAt}\nsource: ${source}\n---`;
   const body = files
     .map(f => `## ${f.name.replace(/\.md$/, '')}\n\n${f.content}`)
     .join('\n\n---\n\n');
   return `${frontmatter}\n\n${body}\n`;
 }
 
-function removeCitadelHooks(settingsPath, citadelRoot) {
+function removeSinanHooks(settingsPath, sinanRoot) {
   if (!fs.existsSync(settingsPath)) return { removed: 0, preserved: 0 };
 
   let settings;
@@ -69,7 +69,7 @@ function removeCitadelHooks(settingsPath, citadelRoot) {
     return { removed: 0, preserved: 0 };
   }
 
-  const citadelRootNorm = citadelRoot.replace(/\\/g, '/');
+  const sinanRootNorm = sinanRoot.replace(/\\/g, '/');
   let removed = 0;
   let preserved = 0;
 
@@ -78,10 +78,10 @@ function removeCitadelHooks(settingsPath, citadelRoot) {
     if (!Array.isArray(hooks)) continue;
     const filtered = hooks.filter(hook => {
       const cmd = (hook.command || '').replace(/\\/g, '/');
-      const isCitadel = cmd.includes(citadelRootNorm) ||
+      const isSinan = cmd.includes(sinanRootNorm) ||
         cmd.includes('/hooks_src/') ||
-        cmd.includes('/.citadel/scripts/');
-      if (isCitadel) { removed++; return false; }
+        cmd.includes('/.sinan/scripts/');
+      if (isSinan) { removed++; return false; }
       preserved++;
       return true;
     });
@@ -125,7 +125,7 @@ function countFiles(dir) {
   return count;
 }
 
-function isCitadelRepo(dir) {
+function isSinanRepo(dir) {
   // Refuse to run unharness against the Sinan plugin repo itself.
   // Detect by presence of skills/ and hooks_src/ at the root.
   const packagePath = path.join(dir, 'package.json');
@@ -138,8 +138,8 @@ function isCitadelRepo(dir) {
     return false;
   }
 
-  const citadelPackage = new Set(['citadel', 'sinan', 'sinan']).has(packageName);
-  return citadelPackage &&
+  const sinanPackage = new Set(['sinan', 'sinan', 'sinan']).has(packageName);
+  return sinanPackage &&
     fs.existsSync(path.join(dir, 'hooks_src', 'init-project.js')) &&
     fs.existsSync(path.join(dir, 'skills', 'do', 'SKILL.md')) &&
     fs.existsSync(path.join(dir, 'scripts', 'install.js'));
@@ -149,7 +149,7 @@ function main() {
   const options = parseArgs(process.argv);
   const { projectRoot, exportOnly } = options;
 
-  if (isCitadelRepo(projectRoot)) {
+  if (isSinanRepo(projectRoot)) {
     console.error('Error: unharness cannot run against the Sinan plugin repo itself.');
     console.error('Run this from your project directory, or pass the project path as an argument:');
     console.error('  node /path/to/sinan/scripts/unharness.js /your/project');
@@ -157,14 +157,14 @@ function main() {
   }
 
   const planning = path.join(projectRoot, '.planning');
-  const citadelDir = path.join(projectRoot, '.citadel');
-  const pluginRootFile = path.join(citadelDir, 'plugin-root.txt');
-  const citadelRoot = fs.existsSync(pluginRootFile)
+  const sinanDir = path.join(projectRoot, '.sinan');
+  const pluginRootFile = path.join(sinanDir, 'plugin-root.txt');
+  const sinanRoot = fs.existsSync(pluginRootFile)
     ? fs.readFileSync(pluginRootFile, 'utf8').trim()
     : path.resolve(__dirname, '..');
 
   const exportedAt = new Date().toISOString();
-  const archiveDir = path.join(projectRoot, 'docs', 'citadel');
+  const archiveDir = path.join(projectRoot, 'docs', 'sinan');
 
   // --- SCAN ---
   const campaigns = readMarkdownFiles(path.join(planning, 'campaigns', 'completed'));
@@ -176,7 +176,7 @@ function main() {
   const hasContent = campaigns.length + postmortems.length + research.length +
     intake.length + discoveries.length > 0;
 
-  const projectMd = path.join(citadelDir, 'project.md');
+  const projectMd = path.join(sinanDir, 'project.md');
   const harnessJson = path.join(projectRoot, '.claude', 'harness.json');
 
   console.log('');
@@ -212,20 +212,20 @@ function main() {
 
     if (fs.existsSync(projectMd)) {
       const projectContent = fs.readFileSync(projectMd, 'utf8').trim();
-      const projectArchive = `---\ncitadel-archive: true\nexported-at: ${exportedAt}\nsource: project\n---\n\n${projectContent}\n`;
+      const projectArchive = `---\nsinan-archive: true\nexported-at: ${exportedAt}\nsource: project\n---\n\n${projectContent}\n`;
       fs.writeFileSync(path.join(archiveDir, 'project.md'), projectArchive);
       written++;
     }
 
     if (fs.existsSync(harnessJson)) {
       const harnessContent = fs.readFileSync(harnessJson, 'utf8');
-      const harnessArchive = `---\ncitadel-archive: true\nexported-at: ${exportedAt}\nsource: harness-config\n---\n\n${harnessContent}\n`;
+      const harnessArchive = `---\nsinan-archive: true\nexported-at: ${exportedAt}\nsource: harness-config\n---\n\n${harnessContent}\n`;
       fs.writeFileSync(path.join(archiveDir, 'harness.json.md'), harnessArchive);
       written++;
     }
 
     console.log('');
-    console.log(`Archive written to docs/citadel/ (${written} files)`);
+    console.log(`Archive written to docs/sinan/ (${written} files)`);
     console.log('  Review it, commit it, or delete it — your call.');
     console.log('  Run /do setup again anytime; it will offer to restore from this archive.');
   } else {
@@ -247,8 +247,8 @@ function main() {
     console.log(`  Removed .planning/ (${planningFileCount} files)`);
   }
 
-  if (removeDir(citadelDir)) {
-    console.log(`  Removed .citadel/`);
+  if (removeDir(sinanDir)) {
+    console.log(`  Removed .sinan/`);
   }
 
   const agentContextDir = path.join(projectRoot, '.claude', 'agent-context');
@@ -257,7 +257,7 @@ function main() {
   }
 
   const settingsPath = path.join(projectRoot, '.claude', 'settings.json');
-  const hookResult = removeCitadelHooks(settingsPath, citadelRoot);
+  const hookResult = removeSinanHooks(settingsPath, sinanRoot);
   if (hookResult.error) {
     console.log(`  settings.json: ${hookResult.error}`);
   } else if (hookResult.removed > 0) {
@@ -268,7 +268,7 @@ function main() {
   console.log('');
   console.log('Done. Sinan has been removed from this project.');
   if (hasContent) {
-    console.log('Your history is in docs/citadel/ — delete it or keep it.');
+    console.log('Your history is in docs/sinan/ — delete it or keep it.');
   }
   console.log('');
 }

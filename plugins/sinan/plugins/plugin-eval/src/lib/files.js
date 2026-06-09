@@ -5,7 +5,7 @@ import path from "node:path";
 const IGNORED_DIRS = new Set([
   ".git",
   ".agents",
-  ".citadel",
+  ".sinan",
   ".codex",
   ".planning",
   ".plugin-eval",

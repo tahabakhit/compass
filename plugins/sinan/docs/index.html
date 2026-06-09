@@ -1260,14 +1260,14 @@
   <canvas id="bg-dots"></canvas>
 
   <nav>
-    <a class="nav-logo" href="https://github.com/SethGammon/sinan">SINAN</a>
+    <a class="nav-logo" href="https://github.com/tahabakhit/ming">SINAN</a>
     <span class="nav-sep">·</span>
     <button class="nav-link" onclick="openPanel('skills')">Skills</button>
     <button class="nav-link" onclick="openPanel('hooks')">Hooks</button>
     <button class="nav-link" onclick="openPanel('campaigns')">Campaigns</button>
     <div class="nav-right">
       <span class="nav-badge">v3</span>
-      <a class="nav-star" id="nav-star" href="https://github.com/SethGammon/sinan">★ Star on GitHub</a>
+      <a class="nav-star" id="nav-star" href="https://github.com/tahabakhit/ming">★ Star on GitHub</a>
       <a class="nav-cta" href="#install-section" onclick="scrollToInstall(); return false;">Get Started</a>
     </div>
   </nav>
@@ -1717,7 +1717,7 @@
             <div class="install-step-num">2</div>
             <div class="install-step-body">
               <div class="install-step-label">Add Sinan as a plugin</div>
-              <div class="install-code">claude plugin marketplace add SethGammon/sinan</div>
+              <div class="install-code">claude plugin marketplace add https://github.com/tahabakhit/ming.git --scope local</div>
             </div>
           </div>
           <div class="install-step">
@@ -1736,8 +1736,8 @@
   <!-- Final CTA — single copy-pasteable command -->
   <div class="final-cta">
     <div class="final-cta-label">One command. Any project.</div>
-    <div class="final-cta-cmd" onclick="navigator.clipboard.writeText('claude plugin marketplace add SethGammon/sinan').then(()=>{this.querySelector('.final-cta-copy').textContent='copied!';setTimeout(()=>{this.querySelector('.final-cta-copy').textContent='copy'},1500)})" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
-      claude plugin marketplace add SethGammon/sinan
+    <div class="final-cta-cmd" onclick="navigator.clipboard.writeText('claude plugin marketplace add https://github.com/tahabakhit/ming.git --scope local').then(()=>{this.querySelector('.final-cta-copy').textContent='copied!';setTimeout(()=>{this.querySelector('.final-cta-copy').textContent='copy'},1500)})" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
+      claude plugin marketplace add https://github.com/tahabakhit/ming.git --scope local
       <button class="final-cta-copy">copy</button>
     </div>
   </div>
@@ -1749,11 +1749,11 @@
   </button>
 
   <footer>
-    <span>Sinan — Agent Orchestration for Claude Code &nbsp;·&nbsp; <a href="https://repo-explainer.com/SethGammon/sinan/">Architecture overview</a></span>
+    <span>Sinan — Agent Orchestration for Claude Code &nbsp;·&nbsp; <a href="https://repo-explainer.com/tahabakhit/ming/">Architecture overview</a></span>
     <span>
-      <a id="footer-star" href="https://github.com/SethGammon/sinan">★ Star on GitHub</a>
+      <a id="footer-star" href="https://github.com/tahabakhit/ming">★ Star on GitHub</a>
       &nbsp;·&nbsp;
-      <a href="https://github.com/SethGammon/sinan/blob/main/LICENSE">MIT License</a>
+      <a href="https://github.com/tahabakhit/ming/blob/main/LICENSE">MIT License</a>
     </span>
   </footer>
   </div><!-- /screen-2 -->
@@ -1783,7 +1783,7 @@
         <div class="panel-step-num">2</div>
         <div class="panel-step-body">
           <div class="panel-step-label">Add Sinan as a plugin</div>
-          <div class="panel-code">claude plugin marketplace add SethGammon/sinan</div>
+          <div class="panel-code">claude plugin marketplace add https://github.com/tahabakhit/ming.git --scope local</div>
           <div class="panel-note">Adds the Sinan marketplace. Then install sinan@sinan-local from /plugin.</div>
         </div>
       </div>
@@ -2827,7 +2827,7 @@
         sessionStorage.setItem(CACHE_KEY, n);
       }
       if (cached) { applyCount(Number(cached)); return; }
-      fetch('https://api.github.com/repos/SethGammon/sinan')
+      fetch('https://api.github.com/repos/tahabakhit/ming')
         .then(r => r.ok ? r.json() : null)
         .then(d => { if (d && d.stargazers_count != null) applyCount(d.stargazers_count); })
         .catch(() => {});

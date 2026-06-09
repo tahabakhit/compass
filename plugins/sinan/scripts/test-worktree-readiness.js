@@ -17,7 +17,7 @@ const {
 } = require('../core/worktree/readiness');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-readiness-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-readiness-'));
   return Promise.resolve()
     .then(() => run(dir))
     .finally(() => fs.rmSync(dir, { recursive: true, force: true }));

@@ -1,6 +1,6 @@
-# Rubric: citadel
+# Rubric: sinan
 
-> Target: The Citadel product (repo, docs, demo, skills, hooks, UI)
+> Target: The Sinan product (repo, docs, demo, skills, hooks, UI)
 > Created: 2026-03-28
 > Version: 1
 > Status: approved
@@ -9,9 +9,9 @@
 
 Three independent evaluator agents score every axis. Personas:
 
-- **Evaluator A — Builder**: Senior engineer, 6+ months with Claude Code, hitting scaling walls. Evaluates whether Citadel solves real orchestration problems they've already experienced.
-- **Evaluator B — Newcomer**: Developer who heard about Claude Code last week. Evaluates whether Citadel is approachable without prior context.
-- **Evaluator C — Decision-maker**: CTO or team lead evaluating whether to adopt this for a team of 5-10 engineers. Evaluates whether Citadel is trustworthy, maintainable, and worth the dependency.
+- **Evaluator A — Builder**: Senior engineer, 6+ months with Claude Code, hitting scaling walls. Evaluates whether Sinan solves real orchestration problems they've already experienced.
+- **Evaluator B — Newcomer**: Developer who heard about Claude Code last week. Evaluates whether Sinan is approachable without prior context.
+- **Evaluator C — Decision-maker**: CTO or team lead evaluating whether to adopt this for a team of 5-10 engineers. Evaluates whether Sinan is trustworthy, maintainable, and worth the dependency.
 
 Final score per axis = **minimum** of three evaluators (not median).
 A low score from any evaluator represents a genuine unresolved problem. Averaging would hide it.
@@ -40,7 +40,7 @@ Category: experience
 - **perceptual**: Panel scores "would a developer with Node.js and Claude Code installed succeed on first attempt without external help?"
 
 #### Research inputs
-- .planning/research/fleet-citadel-ui-arch/ (competitor onboarding flows)
+- .planning/research/fleet-sinan-ui-arch/ (competitor onboarding flows)
 - GitHub issues tagged "setup", "install", "getting started"
 - QUICKSTART.md (current state)
 
@@ -71,7 +71,7 @@ Weight: 0.7
 Category: experience
 
 #### Anchors
-- **0**: User knows Citadel is installed but has no idea what commands exist. `/do --list` output is a wall of text with no grouping or context. Skill names are cryptic. No guidance on which tool fits which problem.
+- **0**: User knows Sinan is installed but has no idea what commands exist. `/do --list` output is a wall of text with no grouping or context. Skill names are cryptic. No guidance on which tool fits which problem.
 - **5**: `/do --list` groups skills by category. Skill descriptions exist but are generic. User can find the right skill if they already know the concept (e.g., "I need a code review" → `/review`). Users who don't know the concept ("my code keeps breaking between sessions") can't find the solution (campaigns).
 - **10**: `/do --list` is organized by user intent, not system taxonomy. Entry points are task-oriented: "I want to review code", "I want to build something new", "I want to debug a problem." Each entry includes a one-line example. The `/do` router handles natural language well enough that the user never needs to know skill names. Typing `/do what should I work on next` produces a useful answer.
 
@@ -199,17 +199,17 @@ Weight: 0.9
 Category: positioning
 
 #### Anchors
-- **0**: README reads like a feature list. No clear statement of what problem Citadel solves that alternatives don't. A reader can't distinguish Citadel from CrewAI, LangChain, or a well-configured CLAUDE.md in under 30 seconds.
-- **5**: README explains what Citadel does and mentions unique features (campaign persistence, fleet coordination). But the "why this over alternatives" isn't explicit. A reader who hasn't used Claude Code extensively wouldn't understand why these features matter.
-- **10**: Within 10 seconds of landing on the README or demo page, a reader understands: (1) what Citadel does, (2) what pain it eliminates, (3) why existing alternatives don't solve it. The differentiation is demonstrated, not claimed. The demo page lets someone experience the routing system. The README's opening paragraph contains a concrete "before Citadel / after Citadel" contrast that any Claude Code user recognizes.
+- **0**: README reads like a feature list. No clear statement of what problem Sinan solves that alternatives don't. A reader can't distinguish Sinan from CrewAI, LangChain, or a well-configured CLAUDE.md in under 30 seconds.
+- **5**: README explains what Sinan does and mentions unique features (campaign persistence, fleet coordination). But the "why this over alternatives" isn't explicit. A reader who hasn't used Claude Code extensively wouldn't understand why these features matter.
+- **10**: Within 10 seconds of landing on the README or demo page, a reader understands: (1) what Sinan does, (2) what pain it eliminates, (3) why existing alternatives don't solve it. The differentiation is demonstrated, not claimed. The demo page lets someone experience the routing system. The README's opening paragraph contains a concrete "before Sinan / after Sinan" contrast that any Claude Code user recognizes.
 
 #### Verification
 - **programmatic**: Measure README word count before first code block (target: < 100 words to first value statement). Verify demo page loads in < 2 seconds. Verify demo page interactive elements function without JavaScript errors.
-- **structural**: README contains a "Why Citadel Exists" section in the first 3 sections. That section references a concrete pain point, not an abstract capability. Demo page has an interactive element, not just text. Competitive comparison exists somewhere accessible (FAQ, docs, or dedicated page).
-- **perceptual**: Panel scores "after 30 seconds with the README, can you explain to a colleague what Citadel does that CLAUDE.md alone doesn't?"
+- **structural**: README contains a "Why Sinan Exists" section in the first 3 sections. That section references a concrete pain point, not an abstract capability. Demo page has an interactive element, not just text. Competitive comparison exists somewhere accessible (FAQ, docs, or dedicated page).
+- **perceptual**: Panel scores "after 30 seconds with the README, can you explain to a colleague what Sinan does that CLAUDE.md alone doesn't?"
 
 #### Research inputs
-- .planning/research/fleet-citadel-ui-arch/ (competitor analysis)
+- .planning/research/fleet-sinan-ui-arch/ (competitor analysis)
 - README.md
 - docs/index.html (demo page)
 
@@ -220,17 +220,17 @@ Weight: 0.7
 Category: positioning
 
 #### Anchors
-- **0**: Competitors offer features Citadel doesn't have, and Citadel's docs don't address the gap. A CTO comparing options sees missing checkboxes with no explanation.
-- **5**: Citadel covers most features competitors offer, with gaps in areas like visual workflow builders or no-code interfaces. Gaps are acknowledged in FAQ but not positioned.
-- **10**: Every feature a competitor claims is either (a) implemented in Citadel, (b) explicitly addressed as out of scope with reasoning ("we don't do X because Y"), or (c) on a public roadmap with a timeline. Citadel's unique features (campaign persistence, speculative fleet, discovery relay) are prominently documented. The comparison is honest: Citadel loses on some axes and wins on others, and the positioning makes clear who should choose Citadel vs. alternatives.
+- **0**: Competitors offer features Sinan doesn't have, and Sinan's docs don't address the gap. A CTO comparing options sees missing checkboxes with no explanation.
+- **5**: Sinan covers most features competitors offer, with gaps in areas like visual workflow builders or no-code interfaces. Gaps are acknowledged in FAQ but not positioned.
+- **10**: Every feature a competitor claims is either (a) implemented in Sinan, (b) explicitly addressed as out of scope with reasoning ("we don't do X because Y"), or (c) on a public roadmap with a timeline. Sinan's unique features (campaign persistence, speculative fleet, discovery relay) are prominently documented. The comparison is honest: Sinan loses on some axes and wins on others, and the positioning makes clear who should choose Sinan vs. alternatives.
 
 #### Verification
-- **programmatic**: Parse competitive research matrix. For each competitor feature, verify Citadel has either an implementation, a documented "not applicable" response, or a roadmap entry.
-- **structural**: FAQ addresses "How is this different from [X]" for the top 3 competitors (CrewAI, LangChain, Superpowers). Each answer references specific Citadel capabilities, not vague claims.
-- **perceptual**: Panel scores "if you were choosing between Citadel and CrewAI, does the documentation give you enough information to decide?"
+- **programmatic**: Parse competitive research matrix. For each competitor feature, verify Sinan has either an implementation, a documented "not applicable" response, or a roadmap entry.
+- **structural**: FAQ addresses "How is this different from [X]" for the top 3 competitors (CrewAI, LangChain, Superpowers). Each answer references specific Sinan capabilities, not vague claims.
+- **perceptual**: Panel scores "if you were choosing between Sinan and CrewAI, does the documentation give you enough information to decide?"
 
 #### Research inputs
-- .planning/research/fleet-citadel-ui-arch/ (all scout reports)
+- .planning/research/fleet-sinan-ui-arch/ (all scout reports)
 
 ---
 
@@ -241,19 +241,19 @@ Weight: 0.85
 Category: presentation
 
 #### Anchors
-- **0**: Demo page is static text or a non-functional mockup. Doesn't demonstrate Citadel's actual behavior. Loads slowly or has broken elements.
-- **5**: Demo page has interactive elements (the routing demo works). Visual design is competent. But the page doesn't create desire to install. A visitor understands what Citadel does but not why they should care. The demo shows capability without showing value.
+- **0**: Demo page is static text or a non-functional mockup. Doesn't demonstrate Sinan's actual behavior. Loads slowly or has broken elements.
+- **5**: Demo page has interactive elements (the routing demo works). Visual design is competent. But the page doesn't create desire to install. A visitor understands what Sinan does but not why they should care. The demo shows capability without showing value.
 - **10**: Demo page creates an "I need to try this" reaction. The routing demo lets visitors type their own task descriptions and see the tier cascade animate in real time. The page loads in under 2 seconds, works on mobile, and has zero JavaScript errors. Visual design matches the positioning (developer tool, not enterprise SaaS). The page ends with a single clear CTA: install command, copy-pasteable.
 
 #### Verification
 - **programmatic**: Lighthouse performance score ≥ 90. Lighthouse accessibility score ≥ 85. Zero JavaScript console errors. Page load under 2 seconds on 3G throttle. All interactive elements respond to input. Mobile viewport renders without horizontal scroll.
 - **structural**: Page has exactly one CTA. CTA is a copy-pasteable install command, not a "sign up" button. Interactive demo accepts arbitrary text input, not just pre-set examples. Page contains no more than 3 scroll-lengths of content.
-- **perceptual**: Panel scores "after using the demo page, do you want to install Citadel?"
+- **perceptual**: Panel scores "after using the demo page, do you want to install Sinan?"
 
 #### Research inputs
 - docs/index.html
 - docs/FACELIFT_PLAN.md
-- .planning/research/fleet-citadel-ui-arch/ (competitor demo pages)
+- .planning/research/fleet-sinan-ui-arch/ (competitor demo pages)
 
 ---
 
@@ -264,7 +264,7 @@ Category: presentation
 #### Anchors
 - **0**: README is a wall of text, a feature dump, or mostly badges. No visual hierarchy. No clear entry point. A reader scrolls past without understanding what the project does.
 - **5**: README has structure: hero image, description, quickstart, feature list. Content is accurate. But it reads like technical documentation, not a landing page. The tone is neutral and informational. A reader understands the project but isn't excited.
-- **10**: README is the best single page about Citadel. Opens with a visual that communicates scale and sophistication. First paragraph answers "what is this and why should I care" in under 30 words. Quickstart is ≤ 5 steps, all copy-pasteable. Feature section shows, doesn't tell (the orchestration ladder with card visuals). FAQ addresses real objections. Closes with links to deeper docs, not a feature dump. The README makes a developer want to star the repo.
+- **10**: README is the best single page about Sinan. Opens with a visual that communicates scale and sophistication. First paragraph answers "what is this and why should I care" in under 30 words. Quickstart is ≤ 5 steps, all copy-pasteable. Feature section shows, doesn't tell (the orchestration ladder with card visuals). FAQ addresses real objections. Closes with links to deeper docs, not a feature dump. The README makes a developer want to star the repo.
 
 #### Verification
 - **programmatic**: Word count of first paragraph ≤ 50. Quickstart steps ≤ 6. Every command in quickstart is copy-pasteable. All images load (no broken src). All links resolve. README renders correctly on GitHub (no raw HTML artifacts).
@@ -312,7 +312,7 @@ Category: security
 #### Verification
 - **programmatic**: Grep all hooks_src/ for execSync (must be 0 occurrences outside of execFileSync). Attempt .env access through 5 known indirect paths, verify all blocked. Verify audit.jsonl receives entries for every blocked action. Verify protect-files handles ** glob patterns. Verify external-action-gate blocks git push, PR creation, and issue comments.
 - **structural**: Every hook that can block (exit 2) logs to audit.jsonl. Every hook has input validation before processing. harness-health-util.js validatePath and validateCommand are used by every hook that handles file paths or commands. CONTRIBUTING.md documents security requirements for new hooks.
-- **perceptual**: Panel scores "would you trust Citadel to run autonomous agents on a production codebase?"
+- **perceptual**: Panel scores "would you trust Sinan to run autonomous agents on a production codebase?"
 
 #### Research inputs
 - hooks_src/ (all files)

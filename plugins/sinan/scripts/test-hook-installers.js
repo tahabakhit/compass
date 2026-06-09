@@ -11,7 +11,7 @@ const { installClaudeHooks } = require('../runtimes/claude-code/generators/insta
 const { installCodexHooks, translateCodexHooks, translateCodexPluginHooks } = require('../runtimes/codex/generators/install-hooks');
 
 function withTempDir(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-hook-install-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-hook-install-'));
   try {
     run(dir);
   } finally {
@@ -19,8 +19,8 @@ function withTempDir(run) {
   }
 }
 
-const citadelRoot = path.resolve(__dirname, '..');
-const hooksTemplatePath = path.join(citadelRoot, 'hooks', 'hooks-template.json');
+const sinanRoot = path.resolve(__dirname, '..');
+const hooksTemplatePath = path.join(sinanRoot, 'hooks', 'hooks-template.json');
 const hooksTemplate = JSON.parse(fs.readFileSync(hooksTemplatePath, 'utf8'));
 
 withTempDir((projectRoot) => {
@@ -37,7 +37,7 @@ withTempDir((projectRoot) => {
     },
   }, null, 2));
 
-  const result = installClaudeHooks({ citadelRoot, hooksTemplatePath, projectRoot, hookProfile: 'latest' });
+  const result = installClaudeHooks({ sinanRoot, hooksTemplatePath, projectRoot, hookProfile: 'latest' });
   const settings = JSON.parse(fs.readFileSync(result.settingsPath, 'utf8'));
 
   assert(settings.hooks.PreToolUse.length >= 2, 'claude install should merge generated and user hooks');
@@ -48,7 +48,7 @@ withTempDir((projectRoot) => {
 
 withTempDir((projectRoot) => {
   const result = installClaudeHooks({
-    citadelRoot,
+    sinanRoot,
     hooksTemplatePath,
     projectRoot,
     hookProfile: 'auto',
@@ -79,7 +79,7 @@ assert(translated.hooks.SubagentStop, 'codex translation should install Subagent
 
 const pluginHooks = translateCodexPluginHooks(hooksTemplate);
 const pluginPermissionHook = pluginHooks.hooks.PermissionRequest[0].hooks[0];
-assert(pluginPermissionHook.command.includes('${PLUGIN_ROOT}'), 'plugin hooks should use PLUGIN_ROOT in POSIX command');
+assert(pluginPermissionHook.command.includes('${PLUGIN_ROOT'), 'plugin hooks should use PLUGIN_ROOT in POSIX command');
 assert(pluginPermissionHook.commandWindows.includes('%PLUGIN_ROOT%'), 'plugin hooks should use PLUGIN_ROOT in Windows command');
 
 withTempDir((projectRoot) => {

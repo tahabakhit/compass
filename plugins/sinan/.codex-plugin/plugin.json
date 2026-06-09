@@ -4,10 +4,9 @@
   "description": "Codex-native Sinan harness for durable agent orchestration",
   "author": {
     "name": "Sinan",
-    "url": "https://github.com/SethGammon/sinan"
+    "url": "https://github.com/tahabakhit/ming"
   },
-  "homepage": "https://github.com/SethGammon/sinan",
-  "repository": "https://github.com/SethGammon/sinan",
+  "repository": "https://github.com/tahabakhit/ming",
   "license": "MIT",
   "keywords": [
     "codex",
@@ -27,21 +26,28 @@
   "interface": {
     "displayName": "Sinan",
     "shortDescription": "Sinan orchestration with low-overhead routing and verification: 50 skills",
-    "longDescription": "Sinan is a cross-project Codex and Claude Code harness for durable planning state, proportional routing, explicit specialist skills, lifecycle hooks, telemetry, and capped context snapshots.",
+    "longDescription": "Sinan is a cross-project Codex and Claude Code harness for durable planning state, proportional routing, explicit specialist skills, lifecycle automation, telemetry, and capped context snapshots.",
     "developerName": "Sinan",
     "category": "Developer Tools",
-    "websiteURL": "https://github.com/SethGammon/sinan",
-    "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
-    "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+    "websiteURL": "https://github.com/tahabakhit/ming",
+    "privacyPolicyURL": "https://github.com/tahabakhit/ming",
+    "termsOfServiceURL": "https://github.com/tahabakhit/ming",
     "capabilities": [
-      "Interactive",
-      "Read",
-      "Write"
+      "orchestration",
+      "campaigns",
+      "parallel-agents",
+      "quality-gates",
+      "telemetry",
+      "intent-routing",
+      "tdd",
+      "red-team-review",
+      "context-snapshots",
+      "mcp",
+      "codex-hooks"
     ],
     "defaultPrompt": [
       "Use Sinan to route this task through the cheapest capable workflow.",
       "Use Sinan to continue active harness state and apply the appropriate verification loop."
-    ],
-    "brandColor": "#2563EB"
+    ]
   }
 }

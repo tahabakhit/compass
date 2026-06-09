@@ -14,7 +14,7 @@ const {
 } = require('../core/sandbox/providers');
 
 async function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-sandbox-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-sandbox-'));
   try {
     await run(dir);
   } finally {

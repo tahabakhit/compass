@@ -248,16 +248,16 @@ function readRealCostSummary(opts = {}) {
  *   real_total: number|null, real_sessions: number, data_source: string }}
  */
 function readCostDashboard() {
-  const citadel = readTotalCost();
+  const sinan = readTotalCost();
   const real = readRealCostSummary();
 
   return {
-    total_cost: real ? real.totals.total_cost : citadel.total,
-    session_count: real ? real.totals.session_count : citadel.session_count,
-    by_campaign: citadel.by_campaign,
+    total_cost: real ? real.totals.total_cost : sinan.total,
+    session_count: real ? real.totals.session_count : sinan.session_count,
+    by_campaign: sinan.by_campaign,
     real_total: real ? real.totals.total_cost : null,
     real_sessions: real ? real.totals.session_count : 0,
-    estimated_total: citadel.total,
+    estimated_total: sinan.total,
     data_source: real ? 'real+estimated' : 'estimated-only',
     total_messages: real ? real.totals.messages : null,
     total_subagents: real ? real.totals.subagent_count : null,
@@ -354,7 +354,7 @@ function readTokenEconomics() {
  *
  * @returns {{ spend: object, savings: object, hooks: object, value_ratio: number|null }}
  */
-function readCitadelValueMetrics() {
+function readSinanValueMetrics() {
   const cost = readCostDashboard();
   const economics = readTokenEconomics();
   const hookTiming = readJsonl(path.join(TELEMETRY_DIR, 'hook-timing.jsonl'));
@@ -381,10 +381,6 @@ function readCitadelValueMetrics() {
     ? Math.round((tokensSaved / 1_000_000) * pricing.output * 100) / 100
     : 0;
 
-  // Security catches: blocks from protect-files, external-action-gate
-  const securityBlocks = (blockCounts['protect-files'] || 0) +
-    (blockCounts['external-action-gate'] || 0);
-
   // Quality catches: blocks from quality-gate
   const qualityBlocks = blockCounts['quality-gate'] || 0;
 
@@ -407,7 +403,6 @@ function readCitadelValueMetrics() {
       by_hook: hookCounts,
       total_blocks: hookErrors.length,
       blocks_by_hook: blockCounts,
-      security_blocks: securityBlocks,
       quality_blocks: qualityBlocks,
     },
     value_ratio: cost.total_cost > 0
@@ -431,7 +426,7 @@ module.exports = {
   estimateSessionCost,
   readRealCostSummary,
   readCostDashboard,
-  readCitadelValueMetrics,
+  readSinanValueMetrics,
   bestCost,
   TOKENS_PER_TIER_RESOLUTION,
   TOKENS_PER_CIRCUIT_TRIP,

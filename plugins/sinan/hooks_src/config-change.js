@@ -27,7 +27,7 @@ const path = require('path');
 const health = require('./harness-health-util');
 
 const PROJECT_ROOT = health.PROJECT_ROOT;
-const CITADEL_UI = process.env.CITADEL_UI === 'true';
+const SINAN_UI = process.env.SINAN_UI === 'true';
 
 function main() {
   let input = '';
@@ -64,7 +64,7 @@ function main() {
 
     if (isHarnessConfig) {
       const msg = `[config-change] harness.json updated — re-read configuration before next action`;
-      if (!CITADEL_UI) {
+      if (!SINAN_UI) {
         process.stdout.write(JSON.stringify({ additionalContext: msg }));
       }
     }

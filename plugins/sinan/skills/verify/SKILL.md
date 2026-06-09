@@ -33,19 +33,19 @@ Run these tool calls in sequence. Each exercises a different hook:
 
 1. **Write** a temp file at `.planning/verify-temp.ts`:
    ```typescript
-   // citadel verify probe
+   // sinan verify probe
    export const verifyProbe = true;
    ```
-   → Exercises: PreToolUse (protect-files, governance), PostToolUse (post-edit)
+   → Exercises: PreToolUse (governance), PostToolUse (post-edit)
 
 2. **Edit** the same file — change `true` to `false`:
-   → Exercises: PreToolUse (protect-files, governance), PostToolUse (post-edit)
+   → Exercises: PreToolUse (governance), PostToolUse (post-edit)
 
 3. **Bash** a harmless read command: `echo "verify-probe"`
    → Exercises: PreToolUse (governance)
 
 4. **Read** the temp file back
-   → Exercises: PreToolUse (protect-files — should allow, it's not .env)
+   → Exercises: standard read path
 
 5. **Delete** the temp file: `rm .planning/verify-temp.ts` or equivalent
    → Cleanup

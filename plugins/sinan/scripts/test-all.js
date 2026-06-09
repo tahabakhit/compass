@@ -23,7 +23,6 @@ const PLUGIN_ROOT = path.resolve(__dirname, '..');
 const SMOKE_TEST = path.join(PLUGIN_ROOT, 'hooks_src', 'smoke-test.js');
 const SKILL_LINT = path.join(PLUGIN_ROOT, 'scripts', 'skill-lint.js');
 const DEMO_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-demo.js');
-const SECURITY_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-security.js');
 const RUNTIME_CONTRACT_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-runtime-contracts.js');
 const HOOK_EVENT_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-hook-events.js');
 const RUNTIME_REGISTRY_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-runtime-registry.js');
@@ -55,7 +54,6 @@ const DISCOVERY_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-discovery-core.js
 const DISCOVERY_WRITER_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-discovery-writer.js');
 const MOMENTUM_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-momentum-synthesizer.js');
 const MOMENTUM_WATCHER_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-momentum-watcher.js');
-const POLICY_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-policy-core.js');
 const CLAUDE_RUNTIME_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-claude-runtime.js');
 const CODEX_RUNTIME_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-codex-runtime.js');
 const CODEX_NATIVE_INTEGRATION_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-codex-native-integrations.js');
@@ -73,7 +71,7 @@ const WORKTREE_READINESS_TEST = path.join(PLUGIN_ROOT, 'scripts', 'test-worktree
 const STRICT = process.argv.includes('--strict');
 
 console.log('\nSinan Full Test Suite\n' + '='.repeat(40));
-console.log('Running: hook smoke test + security tests + runtime contract test + runtime registry test + runtime matrix test + hook event test + skill lint + demo routing check + telemetry core check + telemetry integrity check + memory block check + evidence contract check + sandbox provider check + skill packaging check + map substrate check + delivery preflight check + delivery package check + continue action check + next action check + route preview check + operating proof check + usefulness trial check + operator console check + operator journey check + first-use operator check + verification plan check + PR readiness check + stack plan check + coordination core check + hook installer check + campaign core check + discovery core check + discovery writer check + momentum synthesizer check + policy core check + Claude runtime check + Codex runtime check + Codex native integration check + Codex operational improvement check + installer check + project bootstrap check + compat fixtures + backward compat + cost tracker + dashboard + doc-sync + fleet session + worktree readiness\n');
+console.log('Running: hook smoke test + runtime contract test + runtime registry test + runtime matrix test + hook event test + skill lint + demo routing check + telemetry core check + telemetry integrity check + memory block check + evidence contract check + sandbox provider check + skill packaging check + map substrate check + delivery preflight check + delivery package check + continue action check + next action check + route preview check + operating proof check + usefulness trial check + operator console check + operator journey check + first-use operator check + verification plan check + PR readiness check + stack plan check + coordination core check + hook installer check + campaign core check + discovery core check + discovery writer check + momentum synthesizer check + Claude runtime check + Codex runtime check + Codex native integration check + Codex operational improvement check + installer check + project bootstrap check + compat fixtures + backward compat + cost tracker + dashboard + doc-sync + fleet session + worktree readiness\n');
 
 function run(label, scriptPath, extraArgs = []) {
   console.log(`\n> ${label}`);
@@ -92,7 +90,6 @@ function run(label, scriptPath, extraArgs = []) {
 }
 
 const hooksPassed = run('Hook Smoke Test', SMOKE_TEST);
-const securityPassed = run('Security Tests', SECURITY_TEST);
 const contractsPassed = run('Runtime Contract Tests', RUNTIME_CONTRACT_TEST);
 const runtimeRegistryPassed = run('Runtime Registry Tests', RUNTIME_REGISTRY_TEST);
 const runtimeMatrixPassed = run('Runtime Matrix Tests', RUNTIME_MATRIX_TEST);
@@ -127,7 +124,6 @@ const discoveryPassed = run('Discovery Core Check', DISCOVERY_TEST);
 const discoveryWriterPassed = run('Discovery Writer Check', DISCOVERY_WRITER_TEST);
 const momentumPassed = run('Momentum Synthesizer Check', MOMENTUM_TEST);
 const momentumWatcherPassed = run('Momentum Watcher Check', MOMENTUM_WATCHER_TEST);
-const policyPassed = run('Policy Core Check', POLICY_TEST);
 const claudeRuntimePassed = run('Claude Runtime Check', CLAUDE_RUNTIME_TEST);
 const codexRuntimePassed = run('Codex Runtime Check', CODEX_RUNTIME_TEST);
 const codexNativeIntegrationPassed = run('Codex Native Integration Check', CODEX_NATIVE_INTEGRATION_TEST);
@@ -145,7 +141,6 @@ const worktreeReadinessPassed = run('Worktree Readiness Tests', WORKTREE_READINE
 console.log('\n' + '='.repeat(40));
 console.log('SUMMARY');
 console.log(`  Hook smoke test:    ${hooksPassed ? 'PASS' : 'FAIL'}`);
-console.log(`  Security tests:     ${securityPassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Runtime contracts:  ${contractsPassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Runtime registry:   ${runtimeRegistryPassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Runtime matrix:     ${runtimeMatrixPassed ? 'PASS' : 'FAIL'}`);
@@ -179,7 +174,6 @@ console.log(`  Discovery core:     ${discoveryPassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Discovery writer:   ${discoveryWriterPassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Momentum synth:     ${momentumPassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Momentum watcher:   ${momentumWatcherPassed ? 'PASS' : 'FAIL'}`);
-console.log(`  Policy core:        ${policyPassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Claude runtime:     ${claudeRuntimePassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Codex runtime:      ${codexRuntimePassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Codex native:       ${codexNativeIntegrationPassed ? 'PASS' : 'FAIL'}`);
@@ -195,7 +189,7 @@ console.log(`  Fleet session:      ${fleetSessionPassed ? 'PASS' : 'FAIL'}`);
 console.log(`  Worktree readiness: ${worktreeReadinessPassed ? 'PASS' : 'FAIL'}`);
 console.log('');
 
-if (hooksPassed && securityPassed && contractsPassed && runtimeRegistryPassed && runtimeMatrixPassed && hookEventsPassed && skillsPassed && demoPassed && telemetryPassed && telemetryIntegrityPassed && memoryBlockPassed && evidenceContractPassed && sandboxProviderPassed && skillPackagingPassed && mapSubstratePassed && deliveryPassed && deliveryPackagePassed && continueActionPassed && nextActionPassed && routePreviewPassed && operatingProofPassed && usefulnessTrialPassed && operatorConsolePassed && operatorJourneyPassed && firstUseOperatorPassed && verificationPlanPassed && prReadyPassed && stackPlanPassed && coordinationPassed && hookInstallerPassed && campaignPassed && discoveryPassed && discoveryWriterPassed && momentumPassed && momentumWatcherPassed && policyPassed && claudeRuntimePassed && codexRuntimePassed && codexNativeIntegrationPassed && codexOperationalImprovementPassed && installerPassed && projectBootstrapPassed && compatFixturePassed && backwardCompatPassed && costTrackerPassed && dashboardPassed && docSyncPassed && fleetSessionPassed && worktreeReadinessPassed) {
+if (hooksPassed && contractsPassed && runtimeRegistryPassed && runtimeMatrixPassed && hookEventsPassed && skillsPassed && demoPassed && telemetryPassed && telemetryIntegrityPassed && memoryBlockPassed && evidenceContractPassed && sandboxProviderPassed && skillPackagingPassed && mapSubstratePassed && deliveryPassed && deliveryPackagePassed && continueActionPassed && nextActionPassed && routePreviewPassed && operatingProofPassed && usefulnessTrialPassed && operatorConsolePassed && operatorJourneyPassed && firstUseOperatorPassed && verificationPlanPassed && prReadyPassed && stackPlanPassed && coordinationPassed && hookInstallerPassed && campaignPassed && discoveryPassed && discoveryWriterPassed && momentumPassed && momentumWatcherPassed && claudeRuntimePassed && codexRuntimePassed && codexNativeIntegrationPassed && codexOperationalImprovementPassed && installerPassed && projectBootstrapPassed && compatFixturePassed && backwardCompatPassed && costTrackerPassed && dashboardPassed && docSyncPassed && fleetSessionPassed && worktreeReadinessPassed) {
   console.log('All tests pass.\n');
   console.log('Next steps:');
   console.log('  node scripts/skill-bench.js --list      see benchmark scenarios');
@@ -206,7 +200,6 @@ if (hooksPassed && securityPassed && contractsPassed && runtimeRegistryPassed &&
 }
 
 const hookFail = !hooksPassed ? 1 : 0;
-const securityFail = !securityPassed ? 2 : 0;
 const contractFail = !contractsPassed ? 4 : 0;
 const runtimeRegistryFail = !runtimeRegistryPassed ? 8 : 0;
 const runtimeMatrixFail = !runtimeMatrixPassed ? 8 : 0;
@@ -240,7 +233,6 @@ const discoveryFail = !discoveryPassed ? 2048 : 0;
 const discoveryWriterFail = !discoveryWriterPassed ? 4096 : 0;
 const momentumFail = !momentumPassed ? 8192 : 0;
 const momentumWatcherFail = !momentumWatcherPassed ? 16384 : 0;
-const policyFail = !policyPassed ? 32768 : 0;
 const claudeRuntimeFail = !claudeRuntimePassed ? 65536 : 0;
 const codexRuntimeFail = !codexRuntimePassed ? 131072 : 0;
 const codexNativeIntegrationFail = !codexNativeIntegrationPassed ? 262144 : 0;
@@ -254,10 +246,9 @@ const dashboardFail = !dashboardPassed ? 33554432 : 0;
 const docSyncFail = !docSyncPassed ? 33554432 : 0;
 const fleetSessionFail = !fleetSessionPassed ? 67108864 : 0;
 const worktreeReadinessFail = !worktreeReadinessPassed ? 134217728 : 0;
-const code = hookFail | securityFail | contractFail | runtimeRegistryFail | runtimeMatrixFail | hookEventFail | skillFail | demoFail | telemetryFail | telemetryIntegrityFail | memoryBlockFail | evidenceContractFail | sandboxProviderFail | skillPackagingFail | mapSubstrateFail | deliveryFail | deliveryPackageFail | continueActionFail | nextActionFail | routePreviewFail | operatingProofFail | usefulnessTrialFail | operatorConsoleFail | operatorJourneyFail | firstUseOperatorFail | verificationPlanFail | prReadyFail | stackPlanFail | coordinationFail | hookInstallerFail | campaignFail | discoveryFail | discoveryWriterFail | momentumFail | momentumWatcherFail | policyFail | claudeRuntimeFail | codexRuntimeFail | codexNativeIntegrationFail | codexOperationalImprovementFail | installerFail | projectBootstrapFail | compatFixtureFail | backwardCompatFail | costTrackerFail | dashboardFail | docSyncFail | fleetSessionFail | worktreeReadinessFail;
+const code = hookFail | contractFail | runtimeRegistryFail | runtimeMatrixFail | hookEventFail | skillFail | demoFail | telemetryFail | telemetryIntegrityFail | memoryBlockFail | evidenceContractFail | sandboxProviderFail | skillPackagingFail | mapSubstrateFail | deliveryFail | deliveryPackageFail | continueActionFail | nextActionFail | routePreviewFail | operatingProofFail | usefulnessTrialFail | operatorConsoleFail | operatorJourneyFail | firstUseOperatorFail | verificationPlanFail | prReadyFail | stackPlanFail | coordinationFail | hookInstallerFail | campaignFail | discoveryFail | discoveryWriterFail | momentumFail | momentumWatcherFail | claudeRuntimeFail | codexRuntimeFail | codexNativeIntegrationFail | codexOperationalImprovementFail | installerFail | projectBootstrapFail | compatFixtureFail | backwardCompatFail | costTrackerFail | dashboardFail | docSyncFail | fleetSessionFail | worktreeReadinessFail;
 
 if (!hooksPassed) console.log('Hook smoke test failed. Fix hook issues before proceeding.');
-if (!securityPassed) console.log('Security tests failed. DO NOT SHIP - critical vulnerabilities present.');
 if (!contractsPassed) console.log('Runtime contract tests failed. Fix the contract skeleton before proceeding.');
 if (!runtimeRegistryPassed) console.log('Runtime registry tests failed. Fix runtime metadata and detection before proceeding.');
 if (!runtimeMatrixPassed) console.log('Runtime matrix tests failed. Fix adapter levels or runtime tradeoff metadata before proceeding.');
@@ -291,7 +282,6 @@ if (!discoveryPassed) console.log('Discovery core check failed. Fix discovery re
 if (!discoveryWriterPassed) console.log('Discovery writer check failed. Fix discovery-writer regressions before shipping.');
 if (!momentumPassed) console.log('Momentum synthesizer check failed. Fix momentum synthesizer before shipping.');
 if (!momentumWatcherPassed) console.log('Momentum watcher check failed. Fix momentum watcher before shipping.');
-if (!policyPassed) console.log('Policy core check failed. Fix policy regressions before shipping.');
 if (!claudeRuntimePassed) console.log('Claude runtime check failed. Fix runtime adapter regressions before shipping.');
 if (!codexRuntimePassed) console.log('Codex runtime check failed. Fix runtime adapter regressions before shipping.');
 if (!codexNativeIntegrationPassed) console.log('Codex native integration check failed. Fix Codex bridge scripts, MCP, plugin, or docs before shipping.');

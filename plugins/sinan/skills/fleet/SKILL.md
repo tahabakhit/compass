@@ -41,7 +41,7 @@ Extended fleet variants should live in [references](references/quick-mode.md) on
 4. Determine input mode: directed, spec-driven, continuing, or undirected
 5. **Load prior session context**: If `.planning/momentum.json` exists, run
    ```bash
-   node .citadel/scripts/momentum-read.cjs
+   node .sinan/scripts/momentum-read.cjs
    ```
    and read the output. Use the active scopes and recurring decisions to inform
    work queue prioritization. Skip silently if the file is absent or output is empty.
@@ -57,8 +57,8 @@ Extended fleet variants should live in [references](references/quick-mode.md) on
 ### Step 1b: LOG SESSION START + START WATCHER
 
 ```bash
-node .citadel/scripts/telemetry-log.cjs --event campaign-start --agent fleet --session {session-slug}
-node .citadel/scripts/momentum-watch-start.cjs
+node .sinan/scripts/telemetry-log.cjs --event campaign-start --agent fleet --session {session-slug}
+node .sinan/scripts/momentum-watch-start.cjs
 ```
 
 The watcher runs in the background and re-synthesizes `momentum.json` within 500ms of any new discovery write. Safe to call if already running — only one watcher runs per project.
@@ -100,7 +100,7 @@ For each wave:
      and inject the generated `=== MAP SLICE ===` block. If the index does
      not exist, skip silently.
    - **Prior session context** (all waves): re-read `momentum.json` fresh at each
-     wave boundary via `node .citadel/scripts/momentum-read.cjs` and inject as a
+     wave boundary via `node .sinan/scripts/momentum-read.cjs` and inject as a
      `=== PRIOR SESSION CONTEXT ===` block. Re-reading (rather than reusing the
      Step 1 snapshot) picks up discoveries written by parallel fleet sessions in
      other terminals. If the output is empty, skip silently.
@@ -111,7 +111,7 @@ For each wave:
 
 2. **Log wave start**:
    ```bash
-   node .citadel/scripts/telemetry-log.cjs --event wave-start --agent fleet --session {session-slug} --meta '{"wave":N,"agents":["name1","name2"]}'
+   node .sinan/scripts/telemetry-log.cjs --event wave-start --agent fleet --session {session-slug} --meta '{"wave":N,"agents":["name1","name2"]}'
    ```
 
 3. **Spawn agents** with `isolation: "worktree"`:
@@ -129,7 +129,7 @@ For each wave:
    (validators are Haiku, read-only, effort: low):
    ```
    Agent(
-     subagent_type: "citadel:phase-validator",
+     subagent_type: "sinan:phase-validator",
      prompt: "Campaign: {session-slug}. Wave {N} agent: {agent-name}.
               Exit conditions: {agent's scope goal and any stated conditions}.
               HANDOFF: {agent's full handoff text}",
@@ -160,17 +160,17 @@ For each wave:
 
 5. **Log per-agent results**:
    ```bash
-   node .citadel/scripts/telemetry-log.cjs --event agent-complete --agent {agent-name} --session {session-slug} --status {success|partial|failed}
+   node .sinan/scripts/telemetry-log.cjs --event agent-complete --agent {agent-name} --session {session-slug} --status {success|partial|failed}
    ```
 
 6. **Compress discoveries** for each agent:
    - Extract HANDOFF blocks
-   - Run `node .citadel/scripts/compress-discovery.cjs` on each output
+   - Run `node .sinan/scripts/compress-discovery.cjs` on each output
    - Write compressed briefs to `.planning/fleet/briefs/`
 
 6b. **Write persistent discovery records** for each agent (cross-session memory):
    ```bash
-   node .citadel/scripts/discovery-write.cjs \
+   node .sinan/scripts/discovery-write.cjs \
      --session {session-slug} \
      --agent {agent-name} \
      --wave {wave-number} \
@@ -184,7 +184,7 @@ For each wave:
 
 7. **Log wave complete**:
    ```bash
-   node .citadel/scripts/telemetry-log.cjs --event wave-complete --agent fleet --session {session-slug} --meta '{"wave":N,"status":"complete"}'
+   node .sinan/scripts/telemetry-log.cjs --event wave-complete --agent fleet --session {session-slug} --meta '{"wave":N,"status":"complete"}'
    ```
 
 8. **Merge branches** from worktrees:
@@ -207,11 +207,11 @@ After all waves:
 3. Update session file status to `completed`
 4. Log session completion:
    ```bash
-   node .citadel/scripts/telemetry-log.cjs --event campaign-complete --agent fleet --session {session-slug}
+   node .sinan/scripts/telemetry-log.cjs --event campaign-complete --agent fleet --session {session-slug}
    ```
 5. **Update momentum** (cross-session synthesis):
    ```bash
-   node .citadel/scripts/momentum-synthesize.cjs
+   node .sinan/scripts/momentum-synthesize.cjs
    ```
 5.5. **Propagate knowledge** — for each campaign that completed this session, run:
    ```bash

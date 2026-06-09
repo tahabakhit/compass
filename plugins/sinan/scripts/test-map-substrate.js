@@ -33,7 +33,7 @@ function runCli(rootDir, args) {
 }
 
 function main() {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-map-test-'));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-map-test-'));
   writeFile(path.join(root, 'package.json'), JSON.stringify({
     scripts: {
       test: 'node test.js',

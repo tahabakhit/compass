@@ -27,7 +27,7 @@ function main() {
     fail(`runtime contract skeleton is invalid: ${errors.join('; ')}`);
   }
 
-  if (!contracts.events.isKnownCitadelEvent('session_start')) {
+  if (!contracts.events.isKnownSinanEvent('session_start')) {
     fail('session_start must be recognized as a canonical Sinan event');
   }
 

@@ -14,8 +14,8 @@ const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const MAX_BLAST_FILES = Number(process.env.CITADEL_CONTEXT_MAX_FILES || 12);
-const TIMEOUT_MS = Number(process.env.CITADEL_CONTEXT_TIMEOUT_MS || 5000);
+const MAX_BLAST_FILES = Number(process.env.SINAN_CONTEXT_MAX_FILES || 12);
+const TIMEOUT_MS = Number(process.env.SINAN_CONTEXT_TIMEOUT_MS || 5000);
 const BASENAME_DENYLIST = new Set([
   'index',
   'main',

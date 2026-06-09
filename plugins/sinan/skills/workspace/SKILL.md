@@ -28,8 +28,8 @@ user-invocable: true
 2. If starting fresh: identify repos, verify each path is a git repo, read each repo's `CLAUDE.md`, check `.planning/campaigns/` for active campaigns (avoid collisions)
 3. **Load prior session context and start watcher**:
    ```bash
-   node .citadel/scripts/momentum-watch-start.cjs
-   node .citadel/scripts/momentum-read.cjs
+   node .sinan/scripts/momentum-watch-start.cjs
+   node .sinan/scripts/momentum-read.cjs
    ```
    Skip momentum injection if output is empty.
 
@@ -61,12 +61,12 @@ For each repo-campaign in this wave:
 
 1. Create branch: `git checkout -b workspace/{slug}/{repo-name}`
 2. Spawn agent with direction: `/archon` for complex (3+ phases), `/fleet` if parallelizable, `/marshal` or direct skill for simple (1-2 steps)
-3. Inject context: discovery briefs from prior waves, prior session context (re-read `momentum.json` via `node .citadel/scripts/momentum-read.cjs`, inject as `=== PRIOR SESSION CONTEXT ===`, skip if empty), cross-repo contracts, relevant `CLAUDE.md` sections from other repos
+3. Inject context: discovery briefs from prior waves, prior session context (re-read `momentum.json` via `node .sinan/scripts/momentum-read.cjs`, inject as `=== PRIOR SESSION CONTEXT ===`, skip if empty), cross-repo contracts, relevant `CLAUDE.md` sections from other repos
 
 #### 4c. Collect results
 Extract HANDOFF blocks, compress into cross-repo discovery brief, write persistent discovery records:
   ```bash
-  node .citadel/scripts/discovery-write.cjs \
+  node .sinan/scripts/discovery-write.cjs \
     --session {session-slug} --agent {repo-name}-{campaign-type} \
     --wave {wave-number} --status {success|partial|failed} \
     --scope "{repo-name}:{scope-path}" --handoff "{json-array}" \
@@ -90,7 +90,7 @@ Mark completed campaigns, update wave status, write discovery relay, advance `cu
 
 1. Run typecheck/build for each repo in isolation (build shared types package first if present)
 2. Set session `status: completed`, `completed_at: {ISO timestamp}`
-3. Run `node .citadel/scripts/momentum-synthesize.cjs`
+3. Run `node .sinan/scripts/momentum-synthesize.cjs`
 4. List all branches created across repos with suggested merge order based on dependency graph
 5. Output HANDOFF
 

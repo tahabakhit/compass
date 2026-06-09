@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const { installCodexHooks } = require('../runtimes/codex/generators/install-hooks');
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
+const SINAN_ROOT = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const VERBOSE = args.includes('--verbose') || args.includes('-v');
 const JSON_OUTPUT = args.includes('--json');
@@ -14,9 +14,9 @@ const PROJECT_ROOT = args.find((a) => !a.startsWith('-')) || process.cwd();
 
 function main() {
   try {
-    const hooksTemplatePath = path.join(CITADEL_ROOT, 'hooks', 'hooks-template.json');
+    const hooksTemplatePath = path.join(SINAN_ROOT, 'hooks', 'hooks-template.json');
     const hooksTemplate = JSON.parse(fs.readFileSync(hooksTemplatePath, 'utf8'));
-    const adapterScriptPath = path.join(CITADEL_ROOT, 'hooks_src', 'codex-adapter.js');
+    const adapterScriptPath = path.join(SINAN_ROOT, 'hooks_src', 'codex-adapter.js');
     const outputPath = path.join(PROJECT_ROOT, '.codex', 'hooks.json');
     const existingHooks = fs.existsSync(outputPath)
       ? (JSON.parse(fs.readFileSync(outputPath, 'utf8')).hooks || {})

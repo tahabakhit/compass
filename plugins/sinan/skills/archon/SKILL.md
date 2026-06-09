@@ -36,7 +36,7 @@ On every invocation:
    - **Undirected**: no direction, no active campaign → run Health Diagnostic
 5. **Log campaign start** (new campaigns only):
    ```bash
-   node .citadel/scripts/telemetry-log.cjs --event campaign-start --agent archon --session {campaign-slug}
+   node .sinan/scripts/telemetry-log.cjs --event campaign-start --agent archon --session {campaign-slug}
    ```
 
 ### Step 2: DECOMPOSE (new campaigns only)
@@ -84,14 +84,14 @@ For each phase:
 
 1.5. **Create phase checkpoint**:
    ```bash
-   git stash push --include-untracked -m "citadel-checkpoint-{campaign-slug}-phase-{N}"
+   git stash push --include-untracked -m "sinan-checkpoint-{campaign-slug}-phase-{N}"
    ```
    - Capture stash ref and write to campaign Continuation State: `checkpoint-phase-N: stash@{0}`
    - If `git stash` fails: log `checkpoint-phase-N: none` and continue. Never block on checkpoint failure.
 
 2. **Log delegation start**:
    ```bash
-   node .citadel/scripts/telemetry-log.cjs --event agent-start --agent {delegate-name} --session {campaign-slug}
+   node .sinan/scripts/telemetry-log.cjs --event agent-start --agent {delegate-name} --session {campaign-slug}
    ```
 3. **Delegate**: Spawn a sub-agent with full context injection:
    - CLAUDE.md content
@@ -132,7 +132,7 @@ For each phase:
    confirm the HANDOFF demonstrates each exit condition was met:
    ```
    Agent(
-     subagent_type: "citadel:phase-validator",
+     subagent_type: "sinan:phase-validator",
      prompt: "Campaign: {slug}. Phase {N} — {title}.
               Exit conditions: {conditions from Phase End Conditions table}.
               HANDOFF: {full handoff text from sub-agent}",
@@ -160,7 +160,7 @@ For each phase:
    - If HANDOFF present but phase goal NOT met: re-delegate the phase to a fresh sub-agent with clarified success criteria. If second attempt also fails goal: mark phase as `partial`, log the gap, continue to next phase.
 5. **Log delegation result**:
    ```bash
-   node .citadel/scripts/telemetry-log.cjs --event agent-complete --agent {delegate-name} --session {campaign-slug} --status {success|partial|failed}
+   node .sinan/scripts/telemetry-log.cjs --event agent-complete --agent {delegate-name} --session {campaign-slug} --status {success|partial|failed}
    ```
 6. **Record**: Update the campaign file:
    - Mark phase status using `updatePhaseStatus`:
@@ -214,7 +214,7 @@ the detailed checklists and escalation thresholds.
 4. Release scope claims
 5. Log completion:
    ```bash
-   node .citadel/scripts/telemetry-log.cjs --event campaign-complete --agent archon --session {campaign-slug}
+   node .sinan/scripts/telemetry-log.cjs --event campaign-complete --agent archon --session {campaign-slug}
    ```
 6. Output final HANDOFF
 7. Suggest `/postmortem`

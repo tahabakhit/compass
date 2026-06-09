@@ -186,13 +186,13 @@ and any project-level custom skills in `.claude/skills/`.
 | "schedule", "recurring", "every N minutes", "cron", "set a reminder", "run periodically" | `/schedule` |
 | "merge review", "check merges", "any conflicts", "fleet conflicts", "pending branches", "safe to merge" | `/merge-review` |
 | "ascii diagram", "ascii art", "box diagram", "architecture diagram", "flow diagram", "draw a diagram", "text diagram", "sequence diagram" | `/ascii-diagram` |
-| "improve", "improvement loop", "quality loop", "rubric", "score against", "run improvement", "improve citadel" | `/improve` |
+| "improve", "improvement loop", "quality loop", "rubric", "score against", "run improvement", "improve sinan" | `/improve` |
 | "evolve", "sustained improve", "improvement director", "research-driven improve", "multi-cycle improve", "run until done", "improve until ceiling", "keep improving", "hypothesis", "belief model", "scout agents" | `/evolve` |
 | "organize", "directory structure", "folder structure", "project structure", "file organization", "where should this go", "cleanup directories" | `/organize` |
 | "houseclean", "house clean", "disk space", "free space", "drive full", "running out of space", "clean up disk", "clean worktrees", "disk audit", "storage audit", "move to another drive", "free up space", "c drive full", "orphaned worktrees" | `/houseclean` |
 | "daemon", "continuous", "run overnight", "keep running", "24/7", "unattended", "run autonomously", "daemon start", "daemon stop", "daemon status" | `/daemon` |
 | "map", "index codebase", "codebase map", "structural index", "scan codebase", "map stats", "map query" | `/map` |
-| "watch", "watch files", "watch changes", "file sentinel", "monitor files", "watch start", "watch stop", "watch scan", "marker comments", "@citadel" | `/watch` |
+| "watch", "watch files", "watch changes", "file sentinel", "monitor files", "watch start", "watch stop", "watch scan", "marker comments", "@sinan" | `/watch` |
 | "infra", "infrastructure", "what databases", "what systems", "docker-compose", "infra audit", "map infrastructure", "what does this connect to" | `/infra-audit` |
 | "workspace", "multi-repo", "cross-repo", "across repos", "multiple repos", "coordinate repos", "add redis and snowflake", "split into repos" | `/workspace` |
 
@@ -274,9 +274,9 @@ When 2+ independent tasks detected (non-overlapping scopes, complexity >= 3, not
 ### Step 4: After Classification
 
 1. **Log routing decision** (fire-and-forget):
-   `node .citadel/scripts/telemetry-log.cjs --event agent-complete --agent do-router --session routing --status success --meta '{"tier":N,"target":"[skill]","input_chars":M}'`
+   `node .sinan/scripts/telemetry-log.cjs --event agent-complete --agent do-router --session routing --status success --meta '{"tier":N,"target":"[skill]","input_chars":M}'`
 
-   Use `.citadel/scripts/telemetry-log.cjs` (the project-local copy). If it doesn't exist, skip logging silently — never block routing on telemetry failure.
+   Use `.sinan/scripts/telemetry-log.cjs` (the project-local copy). If it doesn't exist, skip logging silently — never block routing on telemetry failure.
 
 2. **Announce the routing decision**: "Routing to [target] because [one-sentence reason]"
 3. **Invoke the target** skill or orchestrator

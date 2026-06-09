@@ -22,7 +22,7 @@ async function run() {
         encoding: 'utf8',
         timeout: 10000,
         stdio: ['pipe', 'pipe', 'pipe'],
-        env: { ...process.env, CITADEL_RUNTIME: 'codex' },
+        env: { ...process.env, SINAN_RUNTIME: 'codex' },
       }
     );
     // governance.js logs to audit; if it doesn't crash, that's a pass
@@ -33,7 +33,7 @@ async function run() {
     }
   }
 
-  // Test 2: Verify adapter sets CITADEL_RUNTIME=codex
+  // Test 2: Verify adapter sets SINAN_RUNTIME=codex
   // (We check this indirectly -- the adapter spawns the hook with this env var)
 
   if (errors.length > 0) {

@@ -140,7 +140,7 @@ Agents in the same wave MUST NOT touch the same files:
 ### Multi-Instance Coordination
 
 If multiple Archon or Fleet instances run simultaneously:
-- `.citadel/scripts/coordination.js` manages instance registration and scope claims
+- `.sinan/scripts/coordination.js` manages instance registration and scope claims
 - Claims are file-based (no database needed)
 - Dead instances cleaned up by `npm run coord:sweep`
 
@@ -164,10 +164,10 @@ If multiple Archon or Fleet instances run simultaneously:
 
 | Script | Purpose |
 |--------|---------|
-| `.citadel/scripts/compress-discovery.cjs` | Compress agent output to ~500-token briefs |
-| `.citadel/scripts/parse-handoff.cjs` | Extract HANDOFF blocks from agent output |
-| `.citadel/scripts/coordination.js` | Multi-instance scope coordination |
-| `.citadel/scripts/telemetry-log.cjs` | Log agent events |
-| `.citadel/scripts/telemetry-report.cjs` | Generate performance summaries |
+| `.sinan/scripts/compress-discovery.cjs` | Compress agent output to ~500-token briefs |
+| `.sinan/scripts/parse-handoff.cjs` | Extract HANDOFF blocks from agent output |
+| `.sinan/scripts/coordination.js` | Multi-instance scope coordination |
+| `.sinan/scripts/telemetry-log.cjs` | Log agent events |
+| `.sinan/scripts/telemetry-report.cjs` | Generate performance summaries |
 | `scripts/fleet-steward.js` | Parse Fleet session DAGs, show ready/blocked/mergeable work, and create repair tasks |
 | `scripts/worktree-readiness.js` | Record dependency, env, port, and health readiness for worktrees |

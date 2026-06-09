@@ -27,7 +27,7 @@ function quoteNodeCommand(command) {
   });
 }
 
-function isCitadelHookEntry(entry, marker) {
+function isSinanHookEntry(entry, marker) {
   if (!entry.hooks) return false;
   return entry.hooks.some(hook => hook.command && hook.command.includes(marker));
 }
@@ -39,7 +39,7 @@ function mergeHookMaps({ existingHooks = {}, generatedHooks = {}, preserveMarker
   for (const event of allEvents) {
     const currentEntries = existingHooks[event] || [];
     const generatedEntries = generatedHooks[event] || [];
-    const preservedEntries = currentEntries.filter(entry => !isCitadelHookEntry(entry, preserveMarker));
+    const preservedEntries = currentEntries.filter(entry => !isSinanHookEntry(entry, preserveMarker));
 
     if (generatedEntries.length > 0 || preservedEntries.length > 0) {
       merged[event] = [...generatedEntries, ...preservedEntries];
@@ -55,7 +55,7 @@ function countGeneratedEntries(hooks) {
 
 function countPreservedHooks(hooks, preserveMarker) {
   return Object.values(hooks).reduce((sum, entries) => {
-    return sum + entries.filter(entry => !isCitadelHookEntry(entry, preserveMarker)).length;
+    return sum + entries.filter(entry => !isSinanHookEntry(entry, preserveMarker)).length;
   }, 0);
 }
 

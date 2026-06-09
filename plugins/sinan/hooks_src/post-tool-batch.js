@@ -28,7 +28,7 @@ const path = require('path');
 const health = require('./harness-health-util');
 
 const PROJECT_ROOT = health.PROJECT_ROOT;
-const CITADEL_UI = process.env.CITADEL_UI === 'true';
+const SINAN_UI = process.env.SINAN_UI === 'true';
 
 function main() {
   let input = '';
@@ -57,7 +57,7 @@ function main() {
     if (signals.length > 0) {
       const contextMsg = `[post-tool-batch] wave check:\n${signals.map(s => `  ${s}`).join('\n')}`;
 
-      if (CITADEL_UI) {
+      if (SINAN_UI) {
         process.stdout.write(JSON.stringify({
           hook: 'post-tool-batch',
           action: 'wave-check',

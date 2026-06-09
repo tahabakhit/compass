@@ -24,10 +24,10 @@ Operational variants and bulky edge-case detail should live in [progressive disc
 ### Step -1: ARCHIVE DETECTION (all modes, before anything else)
 
 ```bash
-ls docs/citadel/ 2>/dev/null
+ls docs/sinan/ 2>/dev/null
 ```
 
-If `docs/citadel/` exists and contains `.md` files with `citadel-archive: true` in frontmatter, extract `exported-at` date and prompt once:
+If `docs/sinan/` exists and contains `.md` files with `sinan-archive: true` in frontmatter, extract `exported-at` date and prompt once:
 
 ```
 Found a harness archive from {exported-at date}.
@@ -50,7 +50,7 @@ If no archive found, skip entirely — no output.
 | `research.md` | Split sections → `.planning/research/{name}.md` |
 | `backlog.md` | Split sections → `.planning/intake/{name}.md` |
 | `discoveries.md` | Split sections → `.planning/discoveries/{name}.md` |
-| `project.md` | Strip frontmatter → `.citadel/project.md` |
+| `project.md` | Strip frontmatter → `.sinan/project.md` |
 | `harness.json.md` | Strip frontmatter → `.claude/harness.json` |
 
 Splitting: each `## Section Title` becomes one restored file. Strip frontmatter before writing.
@@ -87,16 +87,16 @@ Default: Recommended. If `--express` flag passed: skip mode selection, run Expre
 Hooks must be live before anything else.
 
 ```bash
-node {citadel-root}/scripts/install-hooks.js
+node {sinan-root}/scripts/install-hooks.js
 ```
 
-Find `{citadel-root}`:
-1. Read `.citadel/plugin-root.txt`
+Find `{sinan-root}`:
+1. Read `.sinan/plugin-root.txt`
 2. Fallback: directory containing this SKILL.md
 
 The installer reads `hooks/hooks-template.json`, resolves absolute paths, writes into `.claude/settings.json`, preserves non-harness settings, and is idempotent.
 
-**On success:** `  ✓ {N} hooks installed (protect-files, external-gate, circuit-breaker, quality-gate + more)`
+**On success:** `  ✓ {N} hooks installed (governance, circuit-breaker, quality-gate + more)`
 
 **On failure:** output the error, explain manual install path (`node /path/to/harness/scripts/install-hooks.js`), continue — setup must not abort.
 
@@ -168,7 +168,7 @@ const existing = fs.existsSync('.claude/harness.json')
   ? JSON.parse(fs.readFileSync('.claude/harness.json', 'utf8'))
   : {};
 
-const skillDirs = fs.readdirSync('{citadelRoot}/skills', { withFileTypes: true })
+const skillDirs = fs.readdirSync('{sinanRoot}/skills', { withFileTypes: true })
   .filter(d => d.isDirectory()).map(d => d.name);
 
 const config = {
@@ -194,7 +194,7 @@ fs.writeFileSync('.claude/harness.json', JSON.stringify(config, null, 2));
 "
 ```
 
-**Skill registry rebuild:** populate `registeredSkills` from every directory under `{citadelRoot}/skills/` plus `.claude/skills/`. Set `registeredSkillCount` to match.
+**Skill registry rebuild:** populate `registeredSkills` from every directory under `{sinanRoot}/skills/` plus `.claude/skills/`. Set `registeredSkillCount` to match.
 
 **Dependency pattern suggestions (Recommended + Full Tour only):**
 Read `package.json` and check for known libraries:
@@ -214,9 +214,9 @@ Add accepted patterns to `dependencyPatterns` in harness.json.
 ### Step 4: CLAUDE.md + AGENTS.md (all modes)
 
 ```bash
-node {citadelRoot}/scripts/bootstrap-project-guidance.js --project-root {projectRoot}
+node {sinanRoot}/scripts/bootstrap-project-guidance.js --project-root {projectRoot}
 ```
-Creates `.citadel/project.md` and generates `CLAUDE.md` and `AGENTS.md`. Safe to run — only creates files that don't exist.
+Creates `.sinan/project.md` and generates `CLAUDE.md` and `AGENTS.md`. Safe to run — only creates files that don't exist.
 
 **Project description (Recommended + Full Tour only):**
 Ask: `"What's this project? One line is fine — or press Enter to use the package name."`

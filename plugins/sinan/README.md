@@ -6,12 +6,11 @@
 ![Node.js 18+](https://img.shields.io/badge/Node.js-18%2B-green.svg)
 ![Claude Code](https://img.shields.io/badge/Claude_Code-compatible-blueviolet.svg)
 ![Codex](https://img.shields.io/badge/Codex-compatible-5865F2.svg)
-[![GitHub stars](https://img.shields.io/github/stars/SethGammon/sinan?style=social)](https://github.com/SethGammon/sinan/stargazers)
-[![Interactive Demo](https://img.shields.io/badge/Try_the_Router-00d2ff.svg)](https://sethgammon.github.io/sinan/)
+[![GitHub stars](https://img.shields.io/github/stars/tahabakhit/ming?style=social)](https://github.com/tahabakhit/ming/stargazers)
 
 **Sinan is an open-source orchestration layer for Claude Code and OpenAI Codex.**
 
-It gives your coding agent durable project memory, `/do` intent routing, safety hooks, cost telemetry, and parallel agents in isolated git worktrees.
+It gives your coding agent durable project memory, `/do` intent routing, cost telemetry, verification loops, and parallel agents.
 
 Sinan is for developers who want AI coding agents to work across real projects, not just isolated chats.
 
@@ -31,12 +30,12 @@ Sinan is for developers who want AI coding agents to work across real projects, 
 
 Sinan turns one-off coding-agent chats into repeatable engineering workflows.
 
-Claude Code and OpenAI Codex are strong at local reasoning and code edits, but each session still needs project context, safe operating rules, task routing, and a way to continue work after context resets. Sinan provides that harness layer:
+Claude Code and OpenAI Codex are strong at local reasoning and code edits, but each session still needs project context, task routing, and a way to continue work after context resets. Sinan provides that harness layer:
 
 - **Project memory:** project state, decisions, discoveries, telemetry, and handoffs live in repo-local `.planning/` files.
 - **Routing:** `/do` classifies plain-English requests and dispatches to the right skill or orchestrator.
-- **Hooks:** lifecycle checks enforce file protection, quality gates, telemetry, and safety policies.
-- **Parallelism:** Fleet mode splits large work across agents running in isolated git worktrees.
+- **Hooks:** lifecycle automation records telemetry, refreshes project state, and runs quality gates.
+- **Parallelism:** Fleet mode splits large work across coordinated agents.
 
 If `CLAUDE.md` and `AGENTS.md` tell the runtime what your project is, Sinan tells the runtime how to operate on it.
 
@@ -59,10 +58,12 @@ Paste this:
 ```text
 Install Sinan in this repository.
 
-Use https://github.com/SethGammon/sinan as the source. If a local clone
-already exists, reuse it or update it. Detect whether this session is running
-in OpenAI Codex or Claude Code. From this project's root, run the matching
-Sinan installer and follow any printed plugin enable step.
+Use the Ming marketplace as the source:
+https://github.com/tahabakhit/ming.git
+
+Detect whether this session is running in OpenAI Codex or Claude Code, add the
+marketplace if needed, install or enable the Sinan plugin, and follow any
+printed plugin enable step.
 
 After Sinan is enabled in a fresh thread, run:
 
@@ -72,33 +73,27 @@ Use the current repository as the target project. Do not require placeholder
 path edits.
 ```
 
-That prompt is intentionally path-free. The agent should clone or update Sinan, choose the correct runtime installer, and use the repository it is already running in as the target.
+That prompt is intentionally path-free. The agent should use the installed plugin and the repository it is already running in as the target.
 
 ### Manual Fallback
 
 Only use this path if you want to run the installer yourself.
 
-First, clone Sinan once:
+Claude Code:
 
 ```bash
-git clone https://github.com/SethGammon/sinan.git ~/sinan
+claude plugin marketplace add https://github.com/tahabakhit/ming.git --scope local
+claude plugin install sinan@ming --scope local
 ```
 
-Then run exactly one installer from the target project root.
-
-For OpenAI Codex:
+OpenAI Codex:
 
 ```bash
-node ~/sinan/scripts/install.js --runtime codex --add-marketplace
+codex plugin marketplace add https://github.com/tahabakhit/ming.git --ref main
 ```
 
-For Claude Code:
-
-```bash
-node ~/sinan/scripts/install.js --runtime claude --install --scope local
-```
-
-Then start a fresh Codex or Claude Code session in the same project and run:
+Then enable Sinan from the plugin UI if prompted, start a fresh Codex or Claude
+Code session in the same project, and run:
 
 ```text
 /do setup --express
@@ -116,7 +111,7 @@ After install, copy this into Claude Code or Codex from your project root:
 /do setup --express
 /do next
 /do review README.md
-/do identify the project's safest verification command and run it
+/do identify the project's verification command and run it
 /do generate tests for the changed files
 /cost
 ```
@@ -128,8 +123,6 @@ Then try a larger task:
 /do continue
 ```
 
-For a live visual of the router tiers, open the [interactive routing demo](https://sethgammon.github.io/sinan/).
-
 ## Why Sinan Exists
 
 Claude Code and Codex made local agentic development practical. The next problem is operational: how do you make those agents reliable across real projects, repeated sessions, and larger tasks?
@@ -140,9 +133,9 @@ Without a harness, you keep solving the same coordination problems by hand:
 - Asking the agent to choose between review, debugging, refactor, test generation, or planning workflows.
 - Losing decisions and discoveries when context compresses or a session ends.
 - Manually splitting large tasks across branches or worktrees.
-- Rebuilding safety rules, cost checks, and handoff discipline in prompts.
+- Rebuilding verification, cost checks, and handoff discipline in prompts.
 
-Sinan exists to make Claude Code and Codex easier to operate as engineering systems. It adds the missing layer around the runtime: persistent state, intent routing, lifecycle enforcement, telemetry, and coordinated multi-agent execution.
+Sinan exists to make Claude Code and Codex easier to operate as engineering systems. It adds the missing layer around the runtime: persistent state, intent routing, lifecycle automation, telemetry, and coordinated multi-agent execution.
 
 ## Core Features
 
@@ -150,7 +143,7 @@ Sinan exists to make Claude Code and Codex easier to operate as engineering syst
 
 **`/do` routing.** Describe the task once. The router handles cheap pattern matching first, then skill lookup, then LLM classification only when needed.
 
-**Safety hooks.** Node-based hooks run across lifecycle events to protect files, gate risky external actions, track edits, enforce policy, and record handoffs.
+**Lifecycle hooks.** Node-based hooks run across lifecycle events to track edits, refresh state, run quality checks, and record handoffs.
 
 **Cost tracking.** Runtime-native telemetry feeds `/cost`, `/dashboard`, and local reports so token usage and session spend are visible instead of guessed.
 
@@ -169,7 +162,7 @@ Sinan is not a pitch deck. The repository contains the harness:
 - Runtime adapters for Claude Code and Codex under [`runtimes/`](runtimes/) plus package surfaces under [`packages/`](packages/).
 - Installer and verification scripts under [`scripts/`](scripts/), including `scripts/test-all.js`, hook verification, runtime checks, and skill linting.
 - Public docs for [campaigns](docs/CAMPAIGNS.md), [report artifacts](docs/REPORT_ARTIFACTS.md), [operating loop proof](docs/OPERATING_LOOP_PROOF.md), [usefulness trials](docs/USEFULNESS_TRIAL.md), [fleet coordination](docs/FLEET.md), [hooks](docs/HOOKS.md), [Codex install](docs/CODEX_INSTALLATION_GUIDE.md), and [Claude Code install](docs/CLAUDE_INSTALLATION_GUIDE.md).
-- Trust-boundary docs in [SECURITY.md](SECURITY.md) and [THREAT_MODEL.md](THREAT_MODEL.md), covering local automation risk, generated state, hooks, approval gates, and public-artifact review.
+- Trust-boundary docs in [SECURITY.md](SECURITY.md) and [THREAT_MODEL.md](THREAT_MODEL.md), covering local automation risk, generated state, hooks, and public-artifact review.
 
 Run the local verification suite from a Sinan clone:
 
@@ -179,9 +172,8 @@ npm test
 
 ## Current Traction
 
-- **Open source:** MIT-licensed public repo at [github.com/SethGammon/sinan](https://github.com/SethGammon/sinan).
+- **Open source:** MIT-licensed public plugin in the [Ming marketplace](https://github.com/tahabakhit/ming/tree/main/plugins/sinan).
 - **GitHub interest:** see the live stars badge at the top of this README.
-- **Community surface area:** discussion happens through [GitHub Discussions](https://github.com/SethGammon/sinan/discussions) and [X](https://x.com/SethGammon).
 - **External discovery:** Sinan is discoverable through Claude Code plugin and skill directory surfaces, with GitHub as the canonical source for install and contribution.
 
 ## How It Works
@@ -232,7 +224,6 @@ The priority is reliability over novelty: make the harness easier to install, ea
 - [Demo workflow](DEMO.md) - copyable operating-loop demo for a real repo
 - [Operating loop proof](docs/OPERATING_LOOP_PROOF.md) - evidence checklist for demos and PRs
 - [Quickstart](QUICKSTART.md) - first-run paths for both runtimes
-- [Interactive routing demo](https://sethgammon.github.io/sinan/) - watch the tier cascade animate
 - [Routing preview guide](docs/ROUTING_PREVIEW.md) - compare Skill, Marshal, Archon, and Fleet before heavier work
 - [Public positioning](docs/PUBLIC_POSITIONING.md) - how to describe Sinan without overclaiming
 - [Skill and memory visibility](docs/SKILL_MEMORY_VISIBILITY.md) - inspect available skills and compiled project memory
@@ -240,14 +231,14 @@ The priority is reliability over novelty: make the harness easier to install, ea
 - [Hooks reference](docs/HOOKS.md) - lifecycle events and enforcement behavior
 - [Campaign guide](docs/CAMPAIGNS.md) - persistent state, phases, and handoffs
 - [Fleet guide](docs/FLEET.md) - parallel agents, worktree isolation, discovery relay
-- [Security model](SECURITY.md) - path traversal, shell injection, and defensive measures
+- [Security model](SECURITY.md) - local automation boundaries and generated-state guidance
 - [Contributing](CONTRIBUTING.md) - issues, PRs, skills, and docs
 
 ## FAQ
 
 **Is this for me?** If you use Claude Code or Codex on a real repository and keep hitting context loss, repeated setup, weak handoffs, or manual coordination overhead, yes. Sinan is most useful once you have repeated workflows.
 
-**How is this different from `CLAUDE.md` or `AGENTS.md`?** Those files describe your project. Sinan adds the operating layer around the agent: routing, memory, hooks, telemetry, and parallel coordination.
+**How is this different from `CLAUDE.md` or `AGENTS.md`?** Those files describe your project. Sinan adds the operating layer around the agent: routing, memory, lifecycle automation, telemetry, and parallel coordination.
 
 **Do I need to learn all 50 skills?** No. Use `/do` and describe what you want. Direct skill commands are available when you want explicit control.
 
@@ -257,8 +248,7 @@ The priority is reliability over novelty: make the harness easier to install, ea
 
 ## Community
 
-- [GitHub Discussions](https://github.com/SethGammon/sinan/discussions) - questions, use cases, bugs, and workflow requests
-- [X / Twitter](https://x.com/SethGammon) - project updates
+- [Ming marketplace issues](https://github.com/tahabakhit/ming/issues) - questions, use cases, bugs, and workflow requests
 
 ## License
 

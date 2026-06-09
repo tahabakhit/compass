@@ -3,7 +3,7 @@
 'use strict';
 
 const { CAPABILITY_IDS, REQUIRED_CAPABILITY_FIELDS, isSupportLevel } = require('./capabilities');
-const { CIT_EVENT_ORDER } = require('./events');
+const { SINAN_EVENT_ORDER } = require('./events');
 
 const RUNTIME_IDS = Object.freeze([
   'claude-code',
@@ -52,10 +52,10 @@ function createRuntimeContractSkeleton(runtimeId) {
     id: runtimeId || 'unknown',
     displayName: '',
     guidance: {
-      canonical: '.citadel/project.md',
+      canonical: '.sinan/project.md',
       projections: [],
     },
-    events: CIT_EVENT_ORDER.map((eventId) => ({
+    events: SINAN_EVENT_ORDER.map((eventId) => ({
       event_id: eventId,
       nativeEvent: null,
       support: 'none',

@@ -5,7 +5,7 @@
 const path = require('path');
 const { projectCodexAgents } = require(path.join(__dirname, '..', 'runtimes', 'codex', 'generators', 'project-agents'));
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
+const SINAN_ROOT = path.resolve(__dirname, '..');
 
 function parseArgs(argv) {
   return {
@@ -20,7 +20,7 @@ function parseArgs(argv) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const results = projectCodexAgents({
-    citadelRoot: CITADEL_ROOT,
+    sinanRoot: SINAN_ROOT,
     projectRoot: args.projectRoot,
     agentName: args.agentName,
     dryRun: args.dryRun,

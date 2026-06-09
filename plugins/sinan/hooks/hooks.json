@@ -5,56 +5,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" protect-files",
-            "statusMessage": "Citadel: protect-files",
-            "timeout": 5,
-            "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" protect-files"
-          }
-        ],
-        "matcher": "Edit"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" protect-files",
-            "statusMessage": "Citadel: protect-files",
-            "timeout": 5,
-            "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" protect-files"
-          }
-        ],
-        "matcher": "Write"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" protect-files",
-            "statusMessage": "Citadel: protect-files",
-            "timeout": 5,
-            "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" protect-files"
-          }
-        ],
-        "matcher": "Read"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" external-action-gate",
-            "statusMessage": "Citadel: external-action-gate",
-            "timeout": 5,
-            "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" external-action-gate"
-          }
-        ],
-        "matcher": "Bash"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" governance",
-            "statusMessage": "Citadel: governance",
+            "statusMessage": "Sinan: governance",
             "timeout": 3,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" governance"
           }
@@ -66,7 +18,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" governance",
-            "statusMessage": "Citadel: governance",
+            "statusMessage": "Sinan: governance",
             "timeout": 3,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" governance"
           }
@@ -78,7 +30,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" governance",
-            "statusMessage": "Citadel: governance",
+            "statusMessage": "Sinan: governance",
             "timeout": 3,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" governance"
           }
@@ -90,7 +42,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" governance",
-            "statusMessage": "Citadel: governance",
+            "statusMessage": "Sinan: governance",
             "timeout": 3,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" governance"
           }
@@ -104,7 +56,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" post-edit",
-            "statusMessage": "Citadel: post-edit",
+            "statusMessage": "Sinan: post-edit",
             "timeout": 30,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" post-edit"
           }
@@ -115,7 +67,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" organize-enforce",
-            "statusMessage": "Citadel: organize-enforce",
+            "statusMessage": "Sinan: organize-enforce",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" organize-enforce"
           }
@@ -127,7 +79,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" organize-enforce",
-            "statusMessage": "Citadel: organize-enforce",
+            "statusMessage": "Sinan: organize-enforce",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" organize-enforce"
           }
@@ -139,7 +91,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" complexity-check",
-            "statusMessage": "Citadel: complexity-check",
+            "statusMessage": "Sinan: complexity-check",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" complexity-check"
           }
@@ -151,7 +103,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" complexity-check",
-            "statusMessage": "Citadel: complexity-check",
+            "statusMessage": "Sinan: complexity-check",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" complexity-check"
           }
@@ -163,7 +115,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" circuit-breaker",
-            "statusMessage": "Citadel: circuit-breaker",
+            "statusMessage": "Sinan: circuit-breaker",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" circuit-breaker"
           }
@@ -175,7 +127,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" cost-tracker",
-            "statusMessage": "Citadel: cost-tracker",
+            "statusMessage": "Sinan: cost-tracker",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" cost-tracker"
           }
@@ -188,7 +140,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" pre-compact",
-            "statusMessage": "Citadel: pre-compact",
+            "statusMessage": "Sinan: pre-compact",
             "timeout": 15,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" pre-compact"
           }
@@ -201,7 +153,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" post-compact",
-            "statusMessage": "Citadel: post-compact",
+            "statusMessage": "Sinan: post-compact",
             "timeout": 10,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" post-compact"
           }
@@ -214,7 +166,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" quality-gate",
-            "statusMessage": "Citadel: quality-gate",
+            "statusMessage": "Sinan: quality-gate",
             "timeout": 10,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" quality-gate"
           }
@@ -225,7 +177,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" session-end",
-            "statusMessage": "Citadel: session-end",
+            "statusMessage": "Sinan: session-end",
             "timeout": 10,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" session-end"
           }
@@ -238,7 +190,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" init-project",
-            "statusMessage": "Citadel: init-project",
+            "statusMessage": "Sinan: init-project",
             "timeout": 10,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" init-project"
           }
@@ -249,7 +201,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" restore-compact",
-            "statusMessage": "Citadel: restore-compact",
+            "statusMessage": "Sinan: restore-compact",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" restore-compact"
           }
@@ -261,7 +213,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" intake-scanner",
-            "statusMessage": "Citadel: intake-scanner",
+            "statusMessage": "Sinan: intake-scanner",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" intake-scanner"
           }
@@ -274,7 +226,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" subagent-start",
-            "statusMessage": "Citadel: subagent-start",
+            "statusMessage": "Sinan: subagent-start",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" subagent-start"
           }
@@ -287,7 +239,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" subagent-stop",
-            "statusMessage": "Citadel: subagent-stop",
+            "statusMessage": "Sinan: subagent-stop",
             "timeout": 5,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" subagent-stop"
           }
@@ -300,7 +252,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks_src/codex-adapter.js\" permission-request",
-            "statusMessage": "Citadel: permission-request",
+            "statusMessage": "Sinan: permission-request",
             "timeout": 3,
             "commandWindows": "node \"%PLUGIN_ROOT%\\hooks_src\\codex-adapter.js\" permission-request"
           }

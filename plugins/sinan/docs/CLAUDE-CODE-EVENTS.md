@@ -65,7 +65,7 @@ session startup.
 full conversation. Useful for `claude --init-only` in deployment scripts.
 
 **Sinan use:** Registered with `init-project.js` — the same scaffolding script
-that runs on SessionStart. This ensures `.planning/` directories, `.citadel/scripts/`
+that runs on SessionStart. This ensures `.planning/` directories, `.sinan/scripts/`
 delegates, and templates are created in maintenance runs, not just interactive sessions.
 
 ---
@@ -80,7 +80,7 @@ user prompt is processed.
 saved context, detecting pending work.
 
 **Sinan use:** Three hooks registered here, each with a distinct purpose:
-- `init-project.js` — scaffolds `.planning/`, `.citadel/scripts/` delegates,
+- `init-project.js` — scaffolds `.planning/`, `.sinan/scripts/` delegates,
   and `_templates/` if not present (idempotent — safe to re-run every session)
 - `restore-compact.js` — if this session follows a compaction, restores the
   saved context snapshot so campaign state isn't lost
@@ -150,16 +150,9 @@ Bash, Agent, WebSearch, etc. Can block the tool by exiting 2.
 **Payload fields:** `tool_name`, `tool_input` (full tool parameters), `session_id`,
 `agent_id` (if inside subagent), `cwd`
 
-**What it's for:** The enforcement gate. Block dangerous operations, enforce
-scope constraints, audit what's about to happen.
+**What it's for:** Observing and auditing tool calls before they execute.
 
-**Sinan use:** Three hooks registered with matchers:
-- `protect-files.js` (Edit|Write|Read) — blocks edits to `.claude/harness.json`,
-  `.env*`, and files in active campaign's Restricted Files list; warns for
-  edits outside the campaign's Claimed Scope
-- `external-action-gate.js` (Bash) — gates external actions like `git push`,
-  `gh pr create`, Slack/email sends; first encounter triggers consent flow;
-  hard-blocks secrets patterns regardless of consent
+**Sinan use:** One hook registered with matchers:
 - `governance.js` (Edit|Write|Bash|Agent) — writes every significant tool call
   to `audit.jsonl` including `agent_id` and `agent_type` for attribution; never blocks
 
@@ -378,8 +371,8 @@ update could trigger a dialog.
 
 **Sinan use:** `permission-request.js` — auto-approves two categories of
 known-safe operations:
-- Bash: `node .citadel/scripts/*.js` (telemetry delegates — these are Sinan's own scripts)
-- Write/Edit: paths under `.planning/` and `.citadel/` (campaign state, harness scaffolding)
+- Bash: `node .sinan/scripts/*.js` (telemetry delegates — these are Sinan's own scripts)
+- Write/Edit: paths under `.planning/` and `.sinan/` (campaign state, harness scaffolding)
 
 Unknown patterns emit no decision (defer to user). All requests logged to `audit.jsonl`
 regardless of outcome.
@@ -595,8 +588,8 @@ worktree for a fleet agent.
 in the worktree.
 
 **Sinan use:** `worktree-setup.js` — scaffolds the worktree with Sinan
-infrastructure: creates `.citadel/` directory, writes a `plugin-root.txt` pointing
-back to the Sinan install, creates delegate scripts in `.citadel/scripts/` so
+infrastructure: creates `.sinan/` directory, writes a `plugin-root.txt` pointing
+back to the Sinan install, creates delegate scripts in `.sinan/scripts/` so
 fleet agents can log telemetry from their isolated worktree. This is what enables
 fleet agents in separate worktrees to still write to the shared `.planning/telemetry/`
 directory via delegates that resolve the real Sinan root.
@@ -663,8 +656,6 @@ SubagentStop        ← agent session ends
 | `post-compact.js` | PostCompact | None | No |
 | `user-prompt-submit.js` | UserPromptSubmit | None | No (observer) |
 | `user-prompt-expansion.js` | UserPromptExpansion | None | No (observer) |
-| `protect-files.js` | PreToolUse | Block message (exit 2) | Yes |
-| `external-action-gate.js` | PreToolUse | Block or consent flow | Yes |
 | `governance.js` | PreToolUse | None | No |
 | `post-edit.js` | PostToolUse | Typecheck errors | No |
 | `organize-enforce.js` | PostToolUse | Placement warnings | No |
@@ -707,7 +698,6 @@ in context; they don't get lost in terminal output.
 (PostToolBatch quality scan) run async and only wake Claude on failure. This
 eliminates the latency penalty for checks that pass — the common case.
 
-**Audit log for governance:** Every blocking decision (protect-files, external-action-gate,
-permission-request) and every subagent spawn writes to `audit.jsonl`. The audit
+**Audit log for governance:** Permission-request decisions and every subagent spawn write to `audit.jsonl`. The audit
 log is the governance artifact — it records what happened and why, not just what
 files were touched.

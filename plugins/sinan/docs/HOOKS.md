@@ -9,8 +9,6 @@ You never invoke them manually. They provide automated quality enforcement and t
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| `protect-files.js` | PreToolUse | Block edits to protected files and out-of-scope paths |
-| `external-action-gate.js` | PreToolUse (Bash) | Gate external actions (git push, API calls) |
 | `governance.js` | PreToolUse (Edit/Write/Bash/Agent) | Audit every significant tool call |
 | `post-edit.js` | PostToolUse | Per-file typecheck + structural/performance/visual lenses |
 | `organize-enforce.js` | PostToolUse (Edit/Write) | Enforce file placement conventions |
@@ -50,7 +48,7 @@ You never invoke them manually. They provide automated quality enforcement and t
 | `UserPromptSubmit` | Before Claude processes each user prompt | Yes | `user-prompt-submit.js` |
 | `UserPromptExpansion` | Slash command expands | Yes | `user-prompt-expansion.js` |
 | `SessionStart` | New conversation begins | No | `init-project.js`, `restore-compact.js`, `intake-scanner.js` |
-| `PreToolUse` | Before a tool executes | Yes (exit 2) | `protect-files.js`, `external-action-gate.js`, `governance.js` |
+| `PreToolUse` | Before a tool executes | Yes (exit 2) | `governance.js` |
 | `PostToolUse` | After a tool completes | No | `post-edit.js`, `organize-enforce.js`, `circuit-breaker.js`, `cost-tracker.js`, `complexity-check.js` |
 | `PostToolBatch` | After ALL parallel tools in a wave settle | No | `post-tool-batch.js` |
 | `PostToolUseFailure` | After a tool fails | No | `circuit-breaker.js` |
@@ -127,9 +125,9 @@ feedback. Currently exit 0 only (observer mode).
 `permission-request.js` auto-approves known-safe Sinan operations without showing
 the permission dialog. Safe patterns:
 
-- `node .citadel/scripts/*.js` (telemetry delegates)
+- `node .sinan/scripts/*.js` (telemetry delegates)
 - Write/Edit to `.planning/**` (campaign and fleet state)
-- Write/Edit to `.citadel/**` (harness scaffolding)
+- Write/Edit to `.sinan/**` (harness scaffolding)
 
 All permission requests (approved and deferred) are logged to `audit.jsonl`.
 
@@ -140,7 +138,7 @@ directly into Claude's context window via the `additionalContext` protocol field
 than printing to stderr. This means Claude sees the violation summary in its context
 without relying on stderr display.
 
-CITADEL_UI mode (when `CITADEL_UI=true`) uses the Sinan-formatted JSON instead.
+SINAN_UI mode (when `SINAN_UI=true`) uses the Sinan-formatted JSON instead.
 
 ## Language-Adaptive Typecheck
 

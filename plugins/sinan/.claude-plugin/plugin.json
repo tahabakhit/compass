@@ -6,10 +6,10 @@
   "version": "0.1.0",
   "author": {
     "name": "Sinan",
-    "url": "https://github.com/SethGammon/sinan"
+    "url": "https://github.com/tahabakhit/ming/tree/main/plugins/sinan"
   },
-  "homepage": "https://github.com/SethGammon/sinan",
-  "repository": "https://github.com/SethGammon/sinan",
+  "homepage": "https://github.com/tahabakhit/ming/tree/main/plugins/sinan",
+  "repository": "https://github.com/tahabakhit/ming",
   "license": "MIT",
   "keywords": [
     "sinan",

@@ -53,12 +53,12 @@ Automatic Node.js scripts that fire on 29 lifecycle events. 32 hooks total. Full
 
 | Category | Key Hooks | Purpose |
 |----------|-----------|---------|
-| Safety (PreToolUse) | `protect-files.js`, `external-action-gate.js`, `governance.js` | Block protected edits, gate external actions, audit tool calls |
+| Audit (PreToolUse) | `governance.js` | Audit tool calls |
 | Quality (PostToolUse) | `post-edit.js`, `organize-enforce.js`, `complexity-check.js` | Typecheck, file placement, advisory complexity scores |
 | Wave (PostToolBatch) | `post-tool-batch.js` | Async quality checkpoint after parallel tool waves |
 | Session | `init-project.js`, `session-end.js`, `restore-compact.js` | Scaffold state, flush telemetry, restore after compression |
 | Fleet | `subagent-start.js`, `subagent-stop.js`, `worktree-setup.js` | Agent identity binding, completion logging, worktree init |
-| Consent | `permission-request.js`, `external-action-gate.js` | Auto-approve safe ops, gate pushes/PRs with user consent |
+| Consent | `permission-request.js` | Auto-approve known Sinan ops and log permission decisions |
 | Signals | `instructions-loaded.js`, `file-changed.js`, `config-change.js` | React to CLAUDE.md reloads, file-on-disk changes, settings changes |
 
 Hook definitions live in `hooks/hooks-template.json`. Installed per-project via `scripts/install-hooks.js`.
@@ -75,7 +75,7 @@ Three layers of policy enforcement:
 
 The `policy-enforcer` agent receives a proposed action, reads the Tier-appropriate rules, and returns a structured JSON verdict (allow/block). Tier 1 violations always block. Archon spawns it before destructive or hard-to-reverse operations.
 
-New telemetry and artifact records carry stable lineage fields (`event_id`, `run_id`, `agent_id`, `task_id`, `artifact_id`, `parent_id`, `source_event_id`) plus `_hash`, a SHA-256 digest of the canonical record content without integrity fields. Optional HMAC-SHA256 signing is enabled with `CITADEL_TELEMETRY_HMAC_KEY`. Run `node scripts/verify-telemetry-integrity.js` to verify hashes/signatures; older unsigned records are reported as legacy instead of treated as corrupted.
+New telemetry and artifact records carry stable lineage fields (`event_id`, `run_id`, `agent_id`, `task_id`, `artifact_id`, `parent_id`, `source_event_id`) plus `_hash`, a SHA-256 digest of the canonical record content without integrity fields. Optional HMAC-SHA256 signing is enabled with `SINAN_TELEMETRY_HMAC_KEY`. Run `node scripts/verify-telemetry-integrity.js` to verify hashes/signatures; older unsigned records are reported as legacy instead of treated as corrupted.
 
 ## Campaign Files
 

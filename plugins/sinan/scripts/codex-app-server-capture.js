@@ -268,7 +268,7 @@ send({
   id: 1,
   params: {
     clientInfo: {
-      name: 'citadel_app_server_capture',
+      name: 'sinan_app_server_capture',
       title: 'Sinan App Server Capture',
       version: '0.1.0',
     },

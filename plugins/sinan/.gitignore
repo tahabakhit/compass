@@ -8,9 +8,9 @@
 .claude/agent-context/
 
 # Per-project scaffolded state (created by init-project hook)
-.citadel/*
-!.citadel/project.md
-!.citadel/project.template.md
+.sinan/*
+!.sinan/project.md
+!.sinan/project.template.md
 
 # Desktop app (experimental, not production-ready)
 apps/
@@ -92,9 +92,9 @@ Thumbs.db
 
 # Local planning notes (roadmaps, drafts -- not for public repo)
 .planning/roadmap/
-CITADEL-STATE.md
+SINAN-STATE.md
 
-# Codex runtime state (local, like .citadel/)
+# Codex runtime state (local, like .sinan/)
 .codex/
 .codex-plugin/*
 !.codex-plugin/
@@ -106,7 +106,7 @@ CITADEL-STATE.md
 .agents/plugins/*
 !.agents/plugins/marketplace.json
 
-# JourneyKit distribution (private -- funnels users back to Citadel, not for public repo)
+# JourneyKit distribution (private -- funnels users back to Sinan, not for public repo)
 .planning/journeykits/
 
 # Internal source analysis and private cloud/strategy docs

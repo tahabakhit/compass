@@ -17,7 +17,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
+const SINAN_ROOT = path.resolve(__dirname, '..');
 const FIXTURES_DIR = path.join(__dirname, 'fixtures');
 const WRITE = process.argv.includes('--write');
 
@@ -28,18 +28,18 @@ const { renderCodexGuidance } = require('../core/project/render-codex-guidance')
 const { parseProjectSpec } = require('../core/project/load-project-spec');
 
 function normalizePaths(str) {
-  const forward = CITADEL_ROOT.replace(/\\/g, '/');
-  return str.split(forward).join('${CITADEL_ROOT}');
+  const forward = SINAN_ROOT.replace(/\\/g, '/');
+  return str.split(forward).join('${SINAN_ROOT}');
 }
 
 // 1. Claude Code settings.json
 function generateClaudeSettings() {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-fixture-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-fixture-'));
   try {
     fs.mkdirSync(path.join(tmpDir, '.claude'), { recursive: true });
-    const hooksTemplatePath = path.join(CITADEL_ROOT, 'hooks', 'hooks-template.json');
+    const hooksTemplatePath = path.join(SINAN_ROOT, 'hooks', 'hooks-template.json');
     const result = installClaudeHooks({
-      citadelRoot: CITADEL_ROOT,
+      sinanRoot: SINAN_ROOT,
       hooksTemplatePath,
       projectRoot: tmpDir,
       hookProfile: 'latest',
@@ -53,29 +53,29 @@ function generateClaudeSettings() {
 
 // 2. Codex hooks.json
 function generateCodexHooks() {
-  const hooksTemplate = JSON.parse(fs.readFileSync(path.join(CITADEL_ROOT, 'hooks', 'hooks-template.json'), 'utf8'));
-  const translated = translateCodexHooks(hooksTemplate, '${CITADEL_ROOT}/codex-adapter.js');
+  const hooksTemplate = JSON.parse(fs.readFileSync(path.join(SINAN_ROOT, 'hooks', 'hooks-template.json'), 'utf8'));
+  const translated = translateCodexHooks(hooksTemplate, '${SINAN_ROOT}/codex-adapter.js');
   return JSON.stringify({ hooks: translated.hooks }, null, 2);
 }
 
 // 3. Claude guidance (CLAUDE.md projection)
 function generateClaudeGuidance() {
-  const specContent = fs.readFileSync(path.join(CITADEL_ROOT, '.citadel', 'project.md'), 'utf8');
+  const specContent = fs.readFileSync(path.join(SINAN_ROOT, '.sinan', 'project.md'), 'utf8');
   const spec = parseProjectSpec(specContent);
   return renderClaudeGuidance(spec);
 }
 
 // 4. Codex guidance (AGENTS.md projection)
 function generateCodexGuidance() {
-  const specContent = fs.readFileSync(path.join(CITADEL_ROOT, '.citadel', 'project.md'), 'utf8');
+  const specContent = fs.readFileSync(path.join(SINAN_ROOT, '.sinan', 'project.md'), 'utf8');
   const spec = parseProjectSpec(specContent);
   return renderCodexGuidance(spec);
 }
 
 // 5. Codex hook translation metadata
 function generateCodexTranslationMeta() {
-  const hooksTemplate = JSON.parse(fs.readFileSync(path.join(CITADEL_ROOT, 'hooks', 'hooks-template.json'), 'utf8'));
-  const translated = translateCodexHooks(hooksTemplate, '${CITADEL_ROOT}/codex-adapter.js');
+  const hooksTemplate = JSON.parse(fs.readFileSync(path.join(SINAN_ROOT, 'hooks', 'hooks-template.json'), 'utf8'));
+  const translated = translateCodexHooks(hooksTemplate, '${SINAN_ROOT}/codex-adapter.js');
   return JSON.stringify({
     installedCount: translated.installed.length,
     skippedCount: translated.skipped.length,

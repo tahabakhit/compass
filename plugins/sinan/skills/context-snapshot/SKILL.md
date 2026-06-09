@@ -67,13 +67,13 @@ Context snapshot:
 
 **Not a git repository:** Report that snapshot generation was skipped. Use direct file inspection or run `/setup` if the user wants durable Sinan state.
 
-**Large diff:** Trust the changed file list, but treat `blast_radius` as partial because it is capped by `CITADEL_CONTEXT_MAX_FILES`.
+**Large diff:** Trust the changed file list, but treat `blast_radius` as partial because it is capped by `SINAN_CONTEXT_MAX_FILES`.
 
 **No known issues file:** Treat known issues as empty; the script will create the template on the next successful run.
 
 ## Waste Controls
 
-- The script is capped by `CITADEL_CONTEXT_MAX_FILES` and `CITADEL_CONTEXT_TIMEOUT_MS`.
+- The script is capped by `SINAN_CONTEXT_MAX_FILES` and `SINAN_CONTEXT_TIMEOUT_MS`.
 - It stores generated state under `.planning/`, not in root-level memory files.
 - It does not replace `/do`; it feeds `/do` better project facts.
 

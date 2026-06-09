@@ -121,18 +121,18 @@ class Grid {
 via Bash using Node.** Do not attempt to mentally compute grid coordinates for
 complex diagrams. This is the entire point of the skill — let code handle alignment.
 
-**Pre-built grid engine**: `.citadel/scripts/grid.cjs` provides
+**Pre-built grid engine**: `.sinan/scripts/grid.cjs` provides
 `Grid` and `autoLayout()`. For auto-layout, pass a JSON spec:
 
 ```bash
-node .citadel/scripts/grid.cjs '{"direction":"horizontal","boxes":[{"id":"a","label":"Input"},{"id":"b","label":"Output"}],"arrows":[{"from":"a","to":"b","label":"data"}]}'
+node .sinan/scripts/grid.cjs '{"direction":"horizontal","boxes":[{"id":"a","label":"Input"},{"id":"b","label":"Output"}],"arrows":[{"from":"a","to":"b","label":"data"}]}'
 ```
 
 For complex/nested diagrams, use the Grid class directly via `require()`:
 
 ```bash
 node -e "
-const {Grid} = require('./.citadel/scripts/grid.cjs');
+const {Grid} = require('./.sinan/scripts/grid.cjs');
 const g = new Grid(60, 10);
 g.box(0, 0, 20, 5, 'Box A');
 g.box(30, 0, 20, 5, 'Box B');
@@ -141,10 +141,10 @@ console.log(g.render());
 "
 ```
 
-**Verification**: `.citadel/scripts/verify.cjs` checks alignment:
+**Verification**: `.sinan/scripts/verify.cjs` checks alignment:
 
 ```bash
-echo "<diagram>" | node .citadel/scripts/verify.cjs --stdin
+echo "<diagram>" | node .sinan/scripts/verify.cjs --stdin
 ```
 
 ### Step 3: VERIFY ALIGNMENT
@@ -261,7 +261,7 @@ Labeled:      HTTP
 
 ## Fringe Cases
 
-- **`.citadel/scripts/grid.cjs` not present**: The harness hasn't been initialized in this project yet. Either run `/do setup` to initialize, or use the inline Grid class from Step 2 directly — it's embedded in this skill's protocol as a copy-paste template.
+- **`.sinan/scripts/grid.cjs` not present**: The harness hasn't been initialized in this project yet. Either run `/do setup` to initialize, or use the inline Grid class from Step 2 directly — it's embedded in this skill's protocol as a copy-paste template.
 - **User asks for an image, not ASCII**: Suggest Mermaid (for GitHub/GitLab rendering), PlantUML, or an image generation tool. Do not attempt to produce ASCII for an image request.
 - **Diagram has crossing arrows**: ASCII doesn't handle crossings well. Either restructure the layout (change direction, use layered topology) or note the limitation and offer Mermaid instead.
 - **Unicode box-drawing renders incorrectly**: The user's terminal or font may not support Unicode box-drawing characters. Fall back to single-line ASCII (`+--+` style) and note the switch.

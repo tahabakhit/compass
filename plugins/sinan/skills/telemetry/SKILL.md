@@ -138,7 +138,7 @@ CONTROLS
 
 ### Step 3: SUB-COMMAND HANDLING
 
-**`/telemetry off`:** Set `telemetry.sessionSummary = "off"` and `telemetry.costAlerts = false` in harness.json. Output: "Telemetry summary disabled. Hook safety checks remain active." Safety hooks (protect-files, circuit-breaker, external-action-gate) are never disabled.
+**`/telemetry off`:** Set `telemetry.sessionSummary = "off"` and `telemetry.costAlerts = false` in harness.json. Output: "Telemetry summary disabled. Lifecycle hooks remain active."
 
 **`/telemetry on`:** Set `telemetry.sessionSummary = "auto"` and `telemetry.costAlerts = true`. Output: "Telemetry re-enabled."
 
@@ -189,13 +189,13 @@ Never blend real and estimated in the same total without flagging it.
 
 **Not covered (by design):** per-tool-call cost, per-subagent cost isolation, real-time streaming token count.
 
-**Safety hooks always on (cannot be disabled):** protect-files, external-action-gate, circuit-breaker, quality-gate.
+**Lifecycle hooks remain active:** circuit-breaker, quality-gate.
 
 ## Quality Gates
 
 - Never show raw JSONL to the user — always parse and format
 - Cost totals must be labeled with their source (real / est / mixed)
-- `/telemetry off` must NOT disable safety hooks — make this explicit in output
+- `/telemetry off` must NOT disable lifecycle hooks — make this explicit in output
 - Relative timestamps required — no raw ISO strings in output
 - If all data sources are missing, show the empty-state version with setup hint
 

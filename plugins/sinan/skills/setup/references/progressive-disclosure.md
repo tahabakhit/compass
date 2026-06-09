@@ -33,7 +33,7 @@ Print actual counts from detected config. The card should show:
 - route: `/do [anything]`
 - common starts: review, fix, why, build, test, next, status, continue
 - larger work: `/marshal` session, `/archon` campaign, `/fleet` parallel
-- guards: protect-files, external-gate, circuit-breaker, quality-gate, telemetry
+- hooks: governance, circuit-breaker, quality-gate, telemetry
 - next steps: add conventions, list skills, create a skill, run improve
 
 Express mode prints route basics and active guards only.
@@ -50,7 +50,7 @@ Update: `Configuration updated. {N} hooks reinstalled, {N} skills re-registered.
 
 ## Fringe Cases
 
-- If `.citadel/plugin-root.txt` is missing, prompt for the install path and save it.
+- If `.sinan/plugin-root.txt` is missing, prompt for the install path and save it.
 - If no source files exist, skip the demo and suggest `/review [file]` once code exists.
 - If protected writes block `harness.json`, use the authorized Node write path.
 - If an existing guidance file lacks a trailing blank line, append one before the harness section.

@@ -25,10 +25,10 @@ const health = require('./harness-health-util');
 const PROJECT_ROOT = health.PROJECT_ROOT;
 const PLUGIN_DATA_DIR = health.PLUGIN_DATA_DIR;
 
-const CITADEL_UI = process.env.CITADEL_UI === 'true';
+const SINAN_UI = process.env.SINAN_UI === 'true';
 
 function hookOutput(hookName, action, message, data = {}) {
-  if (CITADEL_UI) {
+  if (SINAN_UI) {
     process.stdout.write(JSON.stringify({
       hook: hookName,
       action,

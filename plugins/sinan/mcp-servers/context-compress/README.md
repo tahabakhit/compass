@@ -29,7 +29,7 @@ Add to `~/.claude/settings.json`:
 "mcpServers": {
   "context-compress": {
     "command": "node",
-    "args": ["C:/Users/gammo/Desktop/Citadel/mcp-servers/context-compress/index.js"]
+    "args": ["/absolute/path/to/sinan/mcp-servers/context-compress/index.js"]
   }
 }
 ```

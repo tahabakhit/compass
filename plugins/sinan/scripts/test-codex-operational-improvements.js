@@ -21,18 +21,18 @@ const {
   writeAppServerDashboard,
 } = require('../core/codex/native-integrations');
 
-const CITADEL_ROOT = path.resolve(__dirname, '..');
+const SINAN_ROOT = path.resolve(__dirname, '..');
 
 function tempProject(prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
 }
 
 function testReadinessCheck() {
-  const tmp = tempProject('citadel-readiness-');
+  const tmp = tempProject('sinan-readiness-');
   try {
     fs.writeFileSync(path.join(tmp, 'AGENTS.md'), '# Test\n\n## Review guidelines\n\n- Focus on P0/P1 issues.\n', 'utf8');
-    execFileSync(process.execPath, [path.join(CITADEL_ROOT, 'scripts', 'codex-compat.js'), tmp], {
-      cwd: CITADEL_ROOT,
+    execFileSync(process.execPath, [path.join(SINAN_ROOT, 'scripts', 'codex-compat.js'), tmp], {
+      cwd: SINAN_ROOT,
       stdio: 'pipe',
       encoding: 'utf8',
       timeout: 20000,
@@ -50,11 +50,11 @@ function testReadinessCheck() {
 }
 
 function testPluginMarketplaceSmoke() {
-  const tmp = tempProject('citadel-plugin-smoke-');
+  const tmp = tempProject('sinan-plugin-smoke-');
   try {
     fs.writeFileSync(path.join(tmp, 'AGENTS.md'), '# Test\n\n## Review guidelines\n\n- Focus on P0/P1 issues.\n', 'utf8');
-    execFileSync(process.execPath, [path.join(CITADEL_ROOT, 'scripts', 'codex-compat.js'), tmp], {
-      cwd: CITADEL_ROOT,
+    execFileSync(process.execPath, [path.join(SINAN_ROOT, 'scripts', 'codex-compat.js'), tmp], {
+      cwd: SINAN_ROOT,
       stdio: 'pipe',
       encoding: 'utf8',
       timeout: 20000,
@@ -66,12 +66,12 @@ function testPluginMarketplaceSmoke() {
     assert(report.codexCliCommands.some((command) => command.includes('codex plugin marketplace add')));
 
     const smoke = execFileSync(process.execPath, [
-      path.join(CITADEL_ROOT, 'scripts', 'codex-plugin-smoke.js'),
+      path.join(SINAN_ROOT, 'scripts', 'codex-plugin-smoke.js'),
       '--project-root',
       tmp,
       '--write',
     ], {
-      cwd: CITADEL_ROOT,
+      cwd: SINAN_ROOT,
       stdio: 'pipe',
       encoding: 'utf8',
       timeout: 20000,
@@ -84,16 +84,16 @@ function testPluginMarketplaceSmoke() {
 }
 
 function testCodexInstallScript() {
-  const tmp = tempProject('citadel-codex-install-');
+  const tmp = tempProject('sinan-codex-install-');
   try {
     fs.writeFileSync(path.join(tmp, 'AGENTS.md'), '# Test\n\n## Review guidelines\n\n- Focus on P0/P1 issues.\n', 'utf8');
     const output = execFileSync(process.execPath, [
-      path.join(CITADEL_ROOT, 'scripts', 'codex-install.js'),
+      path.join(SINAN_ROOT, 'scripts', 'codex-install.js'),
       '--project-root',
       tmp,
       '--json',
     ], {
-      cwd: CITADEL_ROOT,
+      cwd: SINAN_ROOT,
       stdio: 'pipe',
       encoding: 'utf8',
       timeout: 60000,
@@ -105,18 +105,18 @@ function testCodexInstallScript() {
     assert(report.steps.some((step) => step.name === 'Verify Codex project readiness'));
     assert(fs.existsSync(path.join(tmp, '.codex', 'config.toml')));
     assert(fs.existsSync(path.join(tmp, '.planning', 'verification', 'codex-readiness.json')));
-    assert(fs.existsSync(path.join(CITADEL_ROOT, '.agents', 'plugins', 'marketplace.json')));
+    assert(fs.existsSync(path.join(SINAN_ROOT, '.agents', 'plugins', 'marketplace.json')));
     assert(report.nextSteps.codexApp.some((step) => step.includes('Add to Codex')));
 
     const dryRun = execFileSync(process.execPath, [
-      path.join(CITADEL_ROOT, 'scripts', 'codex-install.js'),
+      path.join(SINAN_ROOT, 'scripts', 'codex-install.js'),
       '--project-root',
       tmp,
       '--plugin-only',
       '--dry-run',
       '--json',
     ], {
-      cwd: CITADEL_ROOT,
+      cwd: SINAN_ROOT,
       stdio: 'pipe',
       encoding: 'utf8',
       timeout: 20000,
@@ -131,7 +131,7 @@ function testCodexInstallScript() {
 }
 
 function testCodexReviewIngestion() {
-  const tmp = tempProject('citadel-review-ingest-');
+  const tmp = tempProject('sinan-review-ingest-');
   try {
     const input = [
       {
@@ -169,7 +169,7 @@ function testCodexReviewIngestion() {
 }
 
 function testCodexReviewFetchScript() {
-  const tmp = tempProject('citadel-review-fetch-');
+  const tmp = tempProject('sinan-review-fetch-');
   try {
     const fixture = path.join(tmp, 'reviews.json');
     fs.writeFileSync(fixture, JSON.stringify([
@@ -187,7 +187,7 @@ function testCodexReviewFetchScript() {
     assert(commands[0][1].includes('repos/owner/repo/issues/7/comments'));
 
     const output = execFileSync(process.execPath, [
-      path.join(CITADEL_ROOT, 'scripts', 'codex-review-fetch.js'),
+      path.join(SINAN_ROOT, 'scripts', 'codex-review-fetch.js'),
       '--repo',
       'owner/repo',
       '--pr',
@@ -198,7 +198,7 @@ function testCodexReviewFetchScript() {
       tmp,
       '--write',
     ], {
-      cwd: CITADEL_ROOT,
+      cwd: SINAN_ROOT,
       stdio: 'pipe',
       encoding: 'utf8',
       timeout: 20000,
@@ -213,7 +213,7 @@ function testCodexReviewFetchScript() {
 }
 
 function testArtifactVerification() {
-  const tmp = tempProject('citadel-artifacts-');
+  const tmp = tempProject('sinan-artifacts-');
   try {
     const screenshot = path.join(tmp, '.planning', 'screenshots', 'qa.png');
     fs.mkdirSync(path.dirname(screenshot), { recursive: true });
@@ -286,7 +286,7 @@ function testAppServerApprovalResponse() {
 }
 
 function testAppServerDashboard() {
-  const tmp = tempProject('citadel-app-server-dashboard-');
+  const tmp = tempProject('sinan-app-server-dashboard-');
   try {
     const events = [
       JSON.stringify({ result: { thread: { id: 'thr_1' } } }),
@@ -303,13 +303,13 @@ function testAppServerDashboard() {
     assert(fs.readFileSync(dashboard.dashboardPath, 'utf8').includes('Codex App-Server Event Summary'));
 
     const output = execFileSync(process.execPath, [
-      path.join(CITADEL_ROOT, 'scripts', 'codex-app-server-dashboard.js'),
+      path.join(SINAN_ROOT, 'scripts', 'codex-app-server-dashboard.js'),
       '--project-root',
       tmp,
       '--file',
       eventPath,
     ], {
-      cwd: CITADEL_ROOT,
+      cwd: SINAN_ROOT,
       stdio: 'pipe',
       encoding: 'utf8',
       timeout: 20000,
@@ -324,7 +324,7 @@ function testAppServerDashboard() {
 
 function testAppServerCaptureVerification() {
   const fixture = [
-    { id: 1, result: { userAgent: 'citadel_test/0.1.0', platformFamily: 'windows' } },
+    { id: 1, result: { userAgent: 'sinan_test/0.1.0', platformFamily: 'windows' } },
     { method: 'remoteControl/status/changed', params: { status: 'disabled' } },
     { id: 2, result: { thread: { id: 'thr_fixture', cwd: 'C:/repo' } } },
     { method: 'thread/started', params: { thread: { id: 'thr_fixture' } } },
@@ -342,17 +342,17 @@ function testAppServerCaptureVerification() {
   assert.equal(verification.summary.threads[0], 'thr_fixture');
 
   const dryRun = execFileSync(process.execPath, [
-    path.join(CITADEL_ROOT, 'scripts', 'codex-app-server-capture.js'),
+    path.join(SINAN_ROOT, 'scripts', 'codex-app-server-capture.js'),
     '--dry-run',
     '--project-root',
-    CITADEL_ROOT,
+    SINAN_ROOT,
     '--turn-file',
-    path.join(CITADEL_ROOT, 'AGENTS.md'),
+    path.join(SINAN_ROOT, 'AGENTS.md'),
     '--expect-approval',
     '--turn-sandbox',
     'readOnly',
   ], {
-    cwd: CITADEL_ROOT,
+    cwd: SINAN_ROOT,
     stdio: 'pipe',
     encoding: 'utf8',
     timeout: 20000,

@@ -1,5 +1,5 @@
 {
-  "name": "@citadel/runtime-openai",
+  "name": "@sinan/runtime-openai",
   "version": "0.1.0",
   "private": true,
   "main": "./index.js"

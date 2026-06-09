@@ -2,7 +2,7 @@
 name: unharness
 description: >-
   Use when remove Sinan from a project. Exports valuable state (campaigns,
-  postmortems, research, backlog, discoveries) to docs/citadel/ as
+  postmortems, research, backlog, discoveries) to docs/sinan/ as
   human-readable markdown, then removes all harness files and hooks. The
   archive is detected by /do setup on re-install and offered for restore.
 user-invocable: true
@@ -18,7 +18,7 @@ user-invocable: true
 
 ```
 /unharness               # Export archive, then remove harness
-/unharness --export-only # Export to docs/citadel/ without removing anything
+/unharness --export-only # Export to docs/sinan/ without removing anything
 ```
 
 ---
@@ -27,34 +27,34 @@ user-invocable: true
 
 ### Step 1: FIND SINAN ROOT
 
-Read `.citadel/plugin-root.txt` to locate the Sinan install.
+Read `.sinan/plugin-root.txt` to locate the Sinan install.
 If missing, use the directory containing this SKILL.md as the fallback.
 
 ```bash
-cat .citadel/plugin-root.txt 2>/dev/null || echo "fallback"
+cat .sinan/plugin-root.txt 2>/dev/null || echo "fallback"
 ```
 
-Store as `{citadelRoot}`.
+Store as `{sinanRoot}`.
 
 ---
 
 ### Step 2: RUN UNHARNESS SCRIPT
 
 ```bash
-node {citadelRoot}/scripts/unharness.js
+node {sinanRoot}/scripts/unharness.js
 ```
 
 For `--export-only`:
 
 ```bash
-node {citadelRoot}/scripts/unharness.js --export-only
+node {sinanRoot}/scripts/unharness.js --export-only
 ```
 
 The script:
 1. Scans `.planning/` for valuable content (campaigns, postmortems, research, backlog, discoveries)
-2. Reads `.citadel/project.md` and `.claude/harness.json` for project metadata
-3. Writes `docs/citadel/{category}.md` files with `citadel-archive: true` frontmatter
-4. Removes `.planning/`, `.citadel/`, `.claude/agent-context/`
+2. Reads `.sinan/project.md` and `.claude/harness.json` for project metadata
+3. Writes `docs/sinan/{category}.md` files with `sinan-archive: true` frontmatter
+4. Removes `.planning/`, `.sinan/`, `.claude/agent-context/`
 5. Strips Sinan hook entries from `.claude/settings.json` (preserves user hooks)
 6. Prints a summary of what was exported and removed
 
@@ -68,7 +68,7 @@ After the script completes, print:
 
 **If archive was written:**
 ```
-Archive is at docs/citadel/ — commit it, delete it, or leave it.
+Archive is at docs/sinan/ — commit it, delete it, or leave it.
 Run /do setup again anytime to reinstall Sinan.
 If you run setup in this project, it will find the archive and offer to restore your history.
 ```
@@ -81,7 +81,7 @@ Run /do setup again anytime to reinstall.
 
 **If --export-only:**
 ```
-Archive written to docs/citadel/. Harness files left in place.
+Archive written to docs/sinan/. Harness files left in place.
 Run /unharness without --export-only to complete the removal.
 ```
 
@@ -97,9 +97,9 @@ Report the error and explain the user can run the hook installer manually:
 The script handles this gracefully — it skips the export and proceeds to cleanup.
 Nothing special needed.
 
-**docs/citadel/ already exists from a previous unharness:**
+**docs/sinan/ already exists from a previous unharness:**
 The script overwrites with the current timestamp. Prior archives are replaced.
-If the user wants to keep prior archives, they should commit `docs/citadel/` to git first.
+If the user wants to keep prior archives, they should commit `docs/sinan/` to git first.
 
 **User runs unharness on a project that was never set up:**
 The script exits cleanly with "Nothing to export." and nothing is deleted that shouldn't be.

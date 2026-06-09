@@ -18,7 +18,7 @@
  *   node scripts/local-schedule.js list
  *   node scripts/local-schedule.js remove <id>
  *
- * IDs are prefixed `citadel-` on both platforms so they're easy to find.
+ * IDs are prefixed `sinan-` on both platforms so they're easy to find.
  */
 
 'use strict';
@@ -58,7 +58,7 @@ function toCron(expr) {
 }
 
 function newId() {
-    return `citadel-${crypto.randomBytes(4).toString('hex')}`;
+    return `sinan-${crypto.randomBytes(4).toString('hex')}`;
 }
 
 function claudeInvocation(claudeCommand) {
@@ -95,7 +95,7 @@ function winAdd(cronExpr, claudeCommand) {
 
 function winList() {
     const out = spawnSync('schtasks', ['/Query', '/FO', 'CSV', '/NH'], { encoding: 'utf8' });
-    const lines = (out.stdout || '').split('\n').filter((l) => l.includes('citadel-'));
+    const lines = (out.stdout || '').split('\n').filter((l) => l.includes('sinan-'));
     if (!lines.length) { console.log('No Sinan schedules found.'); return; }
     for (const line of lines) console.log(line.trim());
 }
@@ -107,8 +107,8 @@ function winRemove(id) {
 
 // --- Unix: crontab -----------------------------------------------------------
 
-const CRON_MARKER_START = '# CITADEL-SCHEDULES-START';
-const CRON_MARKER_END = '# CITADEL-SCHEDULES-END';
+const CRON_MARKER_START = '# SINAN-SCHEDULES-START';
+const CRON_MARKER_END = '# SINAN-SCHEDULES-END';
 
 function readCrontab() {
     const r = spawnSync('crontab', ['-l'], { encoding: 'utf8' });
@@ -138,7 +138,7 @@ function unixAdd(cronExpr, claudeCommand) {
 
 function unixList() {
     const current = readCrontab();
-    const lines = current.split('\n').filter((l) => l.includes('# citadel-'));
+    const lines = current.split('\n').filter((l) => l.includes('# sinan-'));
     if (!lines.length) { console.log('No Sinan schedules found.'); return; }
     for (const line of lines) console.log(line);
 }

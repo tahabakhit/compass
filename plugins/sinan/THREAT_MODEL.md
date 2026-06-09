@@ -63,7 +63,7 @@ prefer blocking or surfacing a repair over silently allowing sensitive actions.
 
 ### Generated State
 
-Sinan writes state under paths such as `.planning/`, `.citadel/`, `.codex/`,
+Sinan writes state under paths such as `.planning/`, `.sinan/`, `.codex/`,
 and `.claude/`. These files are useful for continuity, but they may contain
 private project details. Users should review them before publishing.
 
@@ -159,7 +159,6 @@ Sinan review should be strict around:
 - runtime adapters
 - installer output
 - generated config
-- file protection
 - command execution
 - MCP surfaces
 - Fleet and campaign automation

@@ -61,11 +61,11 @@ async function main(input) {
   // Security: only run pip install if the requirements.txt is tracked by git
   // (committed to the repository), not if it was written solely by an agent
   // during this session. This prevents supply-chain attacks via agent-generated
-  // package lists. Set CITADEL_ALLOW_UNTRACKED_PIP=true to opt-out (e.g. greenfield).
+  // package lists. Set SINAN_ALLOW_UNTRACKED_PIP=true to opt-out (e.g. greenfield).
   if (fs.existsSync(path.join(worktreePath, 'requirements.txt'))) {
     if (!fs.existsSync(path.join(worktreePath, '.venv'))) {
       // Check whether requirements.txt is tracked in git
-      const allowUntrackedPip = process.env.CITADEL_ALLOW_UNTRACKED_PIP === 'true';
+      const allowUntrackedPip = process.env.SINAN_ALLOW_UNTRACKED_PIP === 'true';
       let reqTracked = false;
       try {
         execFileSync('git', ['ls-files', '--error-unmatch', 'requirements.txt'], {
@@ -81,7 +81,7 @@ async function main(input) {
       if (!reqTracked && !allowUntrackedPip) {
         process.stderr.write(
           '[worktree-setup] Skipping pip install: requirements.txt is not tracked by git. ' +
-          'Set CITADEL_ALLOW_UNTRACKED_PIP=true to allow installing untracked requirements.\n'
+          'Set SINAN_ALLOW_UNTRACKED_PIP=true to allow installing untracked requirements.\n'
         );
       } else {
         try {

@@ -23,11 +23,11 @@ only primary router.
 | Static benchmarks | Scenario file validity for supported skills | `node scripts/skill-bench.js` | Pass: 74 valid, 0 invalid, 0 skipped |
 | Codex compatibility | Codex native integration helpers, plugin artifact generation, readiness checks | `node scripts/test-codex-native-integrations.js`; `node scripts/codex-install.js --project-root <tmp> --skip-plugin-refresh --json` | Pass |
 | Claude Code compatibility | Claude hook generation and runtime compatibility without requiring global CLI marketplace mutation | `node scripts/test-all.js`; `node scripts/claude-install.js --project-root <tmp> --skip-validate --install-hooks --json` | Pass |
-| Fresh project install/init | New Git repo receives Codex artifacts, Claude settings, `.planning/`, `.citadel/`, delegate scripts, and plugin root marker | Temp runtime trial: fresh repo | Pass |
+| Fresh project install/init | New Git repo receives Codex artifacts, Claude settings, `.planning/`, `.sinan/`, delegate scripts, and plugin root marker | Temp runtime trial: fresh repo | Pass |
 | Existing initialized project | Existing `.planning/` content and user hooks are preserved while Sinan artifacts are refreshed | Temp runtime trial: existing repo | Pass |
 | Dirty repo safety | Dirty source file is preserved and remains dirty after install/init | Temp runtime trial: dirty repo | Pass |
 | Multi-repo workspace | Two sibling Git repos receive isolated Sinan state; workspace parent is untouched; multi-repo request routes to `/workspace` | Temp runtime trial: `workspace/repo-a`, `workspace/repo-b` | Pass |
-| Uninit/unharness | Sinan state is exported, `.planning/`, `.citadel/`, and agent context are removed, Sinan hooks are stripped, user hooks preserved, and the plugin root refuses self-removal | `node scripts/test-installers.js`; temp runtime trial: `node scripts/unharness.js <tmp>` | Pass |
+| Uninit/unharness | Sinan state is exported, `.planning/`, `.sinan/`, and agent context are removed, Sinan hooks are stripped, user hooks preserved, and the plugin root refuses self-removal | `node scripts/test-installers.js`; temp runtime trial: `node scripts/unharness.js <tmp>` | Pass |
 
 ## Latest Hardening Slice
 
@@ -64,7 +64,7 @@ not mutate source files in this repository. The combined trial suite completed
 - Dirty repo: preserved an untracked source file and left Git dirty state intact.
 - Multi-repo workspace: initialized sibling repos independently and left the
   parent workspace untouched.
-- Unharness: exported research state to `docs/citadel/`, removed Sinan state,
+- Unharness: exported research state to `docs/sinan/`, removed Sinan state,
   removed Sinan hooks, and preserved the user hook.
 
 ## Known Limits
@@ -82,8 +82,8 @@ not mutate source files in this repository. The combined trial suite completed
 - Plugin Eval reports explicit-only aggregate skill cost as large by design;
   those skills are excluded from implicit trigger/invoke budgets, which is the
   intended governance boundary.
-- Some internal compatibility names still use Citadel, including `.citadel/`
-  project state and the `citadel-state` MCP server. They are retained to avoid
+- Some internal compatibility names still use Sinan, including `.sinan/`
+  project state and the `sinan-state` MCP server. They are retained to avoid
   breaking already-initialized projects and can be migrated separately with a
   compatibility bridge.
 

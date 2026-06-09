@@ -9,7 +9,7 @@ const path = require('path');
 const { writeDiscovery } = require('../core/fleet/discovery-writer');
 const { synthesize, writeMomentum, readMomentum, formatMomentumContext } = require('../core/momentum/synthesizer');
 
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-momentum-'));
+const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-momentum-'));
 try {
   // --- Empty project → empty momentum ---
   const empty = synthesize(tempRoot);

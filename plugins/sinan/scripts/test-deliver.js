@@ -15,7 +15,7 @@ function write(filePath, content) {
 }
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-deliver-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-deliver-'));
   try {
     return run(dir);
   } finally {

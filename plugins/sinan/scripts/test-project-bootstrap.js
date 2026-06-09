@@ -8,24 +8,24 @@ const os = require('os');
 const path = require('path');
 const { bootstrapProjectGuidance } = require(path.join(__dirname, '..', 'core', 'project', 'bootstrap-project-guidance'));
 
-const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-project-bootstrap-'));
+const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-project-bootstrap-'));
 
 try {
   const first = bootstrapProjectGuidance({
-    citadelRoot: path.join(__dirname, '..'),
+    sinanRoot: path.join(__dirname, '..'),
     projectRoot: tmpRoot,
     projectName: 'Bootstrap Test',
     projectSummary: 'Bootstrap test summary.',
   });
 
   assert(first.specCreated, 'bootstrap should create a missing canonical spec');
-  assert(fs.existsSync(path.join(tmpRoot, '.citadel', 'project.md')), 'bootstrap should create .citadel/project.md');
+  assert(fs.existsSync(path.join(tmpRoot, '.sinan', 'project.md')), 'bootstrap should create .sinan/project.md');
   assert(fs.existsSync(path.join(tmpRoot, 'CLAUDE.md')), 'bootstrap should create CLAUDE.md');
   assert(fs.existsSync(path.join(tmpRoot, 'AGENTS.md')), 'bootstrap should create AGENTS.md');
 
   fs.writeFileSync(path.join(tmpRoot, 'CLAUDE.md'), 'custom claude guidance', 'utf8');
   const second = bootstrapProjectGuidance({
-    citadelRoot: path.join(__dirname, '..'),
+    sinanRoot: path.join(__dirname, '..'),
     projectRoot: tmpRoot,
   });
 
@@ -34,7 +34,7 @@ try {
   assert.equal(fs.readFileSync(path.join(tmpRoot, 'CLAUDE.md'), 'utf8'), 'custom claude guidance');
 
   const third = bootstrapProjectGuidance({
-    citadelRoot: path.join(__dirname, '..'),
+    sinanRoot: path.join(__dirname, '..'),
     projectRoot: tmpRoot,
     overwriteGuidance: true,
   });

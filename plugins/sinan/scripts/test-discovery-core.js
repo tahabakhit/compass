@@ -33,7 +33,7 @@ assert(brief.includes('**Remaining:** Remaining: fix flaky auth test'), 'brief s
 assert(brief.includes('**Decisions:**'), 'brief should include decisions section');
 assert(brief.includes('src/auth.ts'), 'brief should include extracted files');
 
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-discovery-'));
+const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-discovery-'));
 try {
   const statsFile = logCompressionStat(tempRoot, {
     timestamp: '2026-03-30T22:00:00.000Z',

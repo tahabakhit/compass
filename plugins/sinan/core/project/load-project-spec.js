@@ -96,7 +96,7 @@ function validateProjectSpec(spec) {
 
 function resolveProjectSpecPath(projectRoot, explicitPath) {
   if (explicitPath) return path.resolve(explicitPath);
-  return path.join(projectRoot, '.citadel', 'project.md');
+  return path.join(projectRoot, '.sinan', 'project.md');
 }
 
 function loadProjectSpec(projectRoot, explicitPath) {

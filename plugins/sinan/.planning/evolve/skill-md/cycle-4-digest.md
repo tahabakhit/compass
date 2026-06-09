@@ -46,7 +46,7 @@ are targeted at 4 complex orchestrators — may not fully propagate to simpler s
 - do: routing bias rationale — enforced by rules, not prose (~35w)
 - do: Escape Hatches section — meta-commentary for humans (~25w)
 - do: /do status standalone section — duplicate of Tier 0 table (~15w)
-- improve: Citadel hardcode special case — redundant with existing guard (~15w)
+- improve: Sinan hardcode special case — redundant with existing guard (~15w)
 - improve: Campaign Mode status transition duplicate — restates Phase 6 (~40w)
 
 ## Cross-Pollination

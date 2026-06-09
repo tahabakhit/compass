@@ -1,11 +1,11 @@
-# `@citadel/runtime-openai`
+# `@sinan/runtime-openai`
 
 Public runtime adapter surface for OpenAI Responses API integration.
 
 ## Purpose
 
 This package exposes the stable runtime-facing pieces needed to describe and
-configure Citadel's OpenAI integration without reaching into repo internals.
+configure Sinan's OpenAI integration without reaching into repo internals.
 
 It targets the **OpenAI Responses API** (2025+), which provides:
 
@@ -18,7 +18,7 @@ It targets the **OpenAI Responses API** (2025+), which provides:
 ## Usage
 
 ```js
-const { runtime } = require('@citadel/runtime-openai');
+const { runtime } = require('@sinan/runtime-openai');
 
 console.log(runtime.id);           // 'openai'
 console.log(runtime.displayName);  // 'OpenAI Responses API'
@@ -31,13 +31,13 @@ The runtime reads model configuration from environment variables:
 
 | Variable | Default | Description |
 |---|---|---|
-| `CITADEL_OPENAI_MODEL` | `gpt-5.4` | Primary model for agent execution |
-| `CITADEL_OPENAI_API_KEY` | (none) | OpenAI API key (required) |
-| `CITADEL_OPENAI_BASE_URL` | `https://api.openai.com/v1` | API base URL for custom endpoints |
-| `CITADEL_OPENAI_REASONING_EFFORT` | `high` | Reasoning effort level: low, medium, high |
+| `SINAN_OPENAI_MODEL` | `gpt-5.4` | Primary model for agent execution |
+| `SINAN_OPENAI_API_KEY` | (none) | OpenAI API key (required) |
+| `SINAN_OPENAI_BASE_URL` | `https://api.openai.com/v1` | API base URL for custom endpoints |
+| `SINAN_OPENAI_REASONING_EFFORT` | `high` | Reasoning effort level: low, medium, high |
 
 Do **not** hardcode model names. When Spud (GPT-5.5/6) ships, update the
-`CITADEL_OPENAI_MODEL` environment variable or config. The runtime itself is
+`SINAN_OPENAI_MODEL` environment variable or config. The runtime itself is
 model-agnostic.
 
 ## Responses API Features
@@ -49,7 +49,7 @@ are unavailable:
 |---|---|---|
 | Shell tool | Yes (Responses API) | Falls back to standard tool calling |
 | Hosted container | Yes (Responses API) | Falls back to local workspace |
-| Context compaction | Yes (Responses API) | Falls back to Citadel-managed compaction |
+| Context compaction | Yes (Responses API) | Falls back to Sinan-managed compaction |
 | Reusable agent skills | Yes (Responses API) | Falls back to projected SKILL.md files |
 | Agent execution loop | Yes (Responses API) | Falls back to single-turn tool use |
 
@@ -84,10 +84,10 @@ The OpenAI provider is registered in `core/contracts/provider.js` with:
 When used with the Codex CLI, this runtime is detected by `scripts/codex-compat.js`.
 The model mapping uses this runtime's suggested defaults:
 
-| Citadel Model Tier | OpenAI Model |
+| Sinan Model Tier | OpenAI Model |
 |---|---|
 | `opus` | `gpt-5.4` |
 | `sonnet` | `gpt-5.4-mini` |
 | `haiku` | `gpt-5.4-mini` |
 
-These mappings are configurable via `CITADEL_OPENAI_MODEL` for the primary tier.
+These mappings are configurable via `SINAN_OPENAI_MODEL` for the primary tier.

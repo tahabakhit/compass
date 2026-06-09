@@ -13,7 +13,7 @@ const { claimScope, findOverlap, getClaimStatus, releaseClaim, scopesOverlap } =
 const { sweepStaleInstances } = require('../core/coordination/sweep');
 
 function withTempProject(run) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'citadel-coordination-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sinan-coordination-'));
   try {
     run(dir);
   } finally {
