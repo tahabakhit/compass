@@ -1,6 +1,7 @@
 ---
 name: architecture
 description: Use when a design needs architecture review for simpler boundaries, lower coupling, migration sequencing, or better testability.
+disable-model-invocation: true
 ---
 
 # Architecture

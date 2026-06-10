@@ -1,6 +1,7 @@
 ---
 name: brainstorm
 description: Use when an idea, product direction, architecture choice, or vague implementation request needs structured exploration before decisions are captured.
+disable-model-invocation: true
 ---
 
 # Brainstorm

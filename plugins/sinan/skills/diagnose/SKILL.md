@@ -1,6 +1,7 @@
 ---
 name: diagnose
 description: Use when failing tests, regressions, broken behavior, crashes, or performance problems need evidence-based diagnosis before fixing.
+disable-model-invocation: true
 ---
 
 # Diagnose

@@ -1,6 +1,7 @@
 ---
 name: review
 description: Use when reviewing code, PRs, or diffs for high-confidence bugs, behavioral regressions, missing tests, and risky changes.
+disable-model-invocation: true
 ---
 
 # Review

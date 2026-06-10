@@ -1,6 +1,7 @@
 ---
 name: scaffold
 description: Use when setting up or refreshing agent-facing repo guidance such as AGENTS.md, CLAUDE.md, GLOSSARY.md conventions, ADR conventions, and GitHub workflow/label guidance.
+disable-model-invocation: true
 ---
 
 # Scaffold

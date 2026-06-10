@@ -1,6 +1,7 @@
 ---
 name: zoom-out
 description: Use when unfamiliar code, architecture context, source boundaries, or a local change needs a broader system map.
+disable-model-invocation: true
 ---
 
 # Zoom Out

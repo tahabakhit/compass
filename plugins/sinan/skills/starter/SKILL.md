@@ -1,6 +1,7 @@
 ---
 name: starter
 description: Use when generating initial framework or application files for the first vertical slice after brainstorm, decision capture, and architecture.
+disable-model-invocation: true
 ---
 
 # Starter

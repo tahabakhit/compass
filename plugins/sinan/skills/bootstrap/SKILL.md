@@ -1,6 +1,7 @@
 ---
 name: bootstrap
 description: Use when starting or resuming a repo and deciding which early Sinan steps are needed before implementation.
+disable-model-invocation: true
 ---
 
 # Bootstrap

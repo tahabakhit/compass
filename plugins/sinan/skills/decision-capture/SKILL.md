@@ -1,6 +1,7 @@
 ---
 name: decision-capture
 description: Use when stable terminology, product decisions, or architecture decisions should be written into durable project memory after brainstorming or planning.
+disable-model-invocation: true
 ---
 
 # Decision Capture

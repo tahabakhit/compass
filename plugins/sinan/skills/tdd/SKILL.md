@@ -1,6 +1,7 @@
 ---
 name: tdd
 description: Use when implementation should proceed through a focused red-green-refactor loop with scoped regression coverage.
+disable-model-invocation: true
 ---
 
 # TDD

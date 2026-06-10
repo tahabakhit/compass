@@ -1,6 +1,7 @@
 ---
 name: architecture-deepening
 description: "Use when a codebase needs deepening opportunities: shallow modules, weak interfaces, coupling, testability friction, or a prioritized architecture refactor report."
+disable-model-invocation: true
 ---
 
 # Architecture Deepening
