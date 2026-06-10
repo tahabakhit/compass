@@ -95,8 +95,13 @@
           "adversarial review",
           "red-team review",
           "challenge review",
+          "thermo review",
           "second opinion review",
-          "pressure-test this diff"
+          "pressure-test this diff",
+          "audit this pr",
+          "audit this diff",
+          "review this pr",
+          "code review"
         ],
         "intentHints": [
           "review"
@@ -121,6 +126,59 @@
         ],
         "budget": "medium",
         "reason": "Adversarial review should use native review when available, with Sinan review as fallback."
+      }
+    },
+    {
+      "id": "change-verification",
+      "priority": 88,
+      "match": {
+        "anyPromptIncludes": [
+          "verify this change",
+          "verify the change",
+          "verify my change",
+          "verify this diff",
+          "verify the diff",
+          "check this change",
+          "check this diff",
+          "validate this change",
+          "validate this diff",
+          "verified change"
+        ],
+        "anyPromptMatches": [
+          "(^|\\b(can you|could you|please|help me)\\s+)(verify|validate|check)\\b.{0,80}\\b(implementation|fix|change|diff|build|pr|pull request)\\b",
+          "(^|\\b(can you|could you|please|help me)\\s+)?(verify|validate|check)\\s+this\\b.{0,80}\\b(commit|merge|release|diff|change|implementation|fix|build|pr|pull request)\\b",
+          "(^|\\b(can you|could you|please|help me)\\s+)?(verify|validate|check)\\s+(this|the|my|our|their)\\s+(pr|pull request)\\b",
+          "(^|\\b(can you|could you|please|help me)\\s+)?(verify|validate|check)\\s+((this|the|my|our|their)\\s+)?patch\\b([.!?]?$|\\s+(before|for|against|diff|change|implementation|fix|build|commit|merge|release)\\b)",
+          "(^|\\b(can you|could you|please|help me)\\s+)?(verify|validate|check)\\s+((this|the|my|our|their)\\s+)?work\\b(?!\\s+(calendar|schedule|notes?)).{0,80}\\b(commit|merge|release|diff|change|implementation|fix|build)\\b",
+          "(^|\\b(can you|could you|please|help me)\\s+)?(verify|validate|check)\\s+(this|the|my|our|their)\\s+work[.!?]?$",
+          "(^|\\b(can you|could you|please|help me)\\s+)?(verify|validate|check)\\s+work[.!?]?$",
+          "(^|\\b(can you|could you|please|help me)\\s+)(verify|validate)\\b.{0,80}\\b(the\\s+)?architecture[.!?]?$",
+          "^(change|diff|implementation|fix|work)\\s+verification\\b",
+          "^verification(\\s+(for|of)\\s+(this\\s+)?(change|diff|implementation|fix|work))?[.!?]?$"
+        ],
+        "intentHints": [
+          "review"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "review",
+        "workflow": "review",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "review"
+        ],
+        "agents": {
+          "count": 1,
+          "roles": [
+            "review"
+          ]
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "medium",
+        "reason": "Change verification should inspect the diff, run relevant checks, and report evidence."
       }
     },
     {
@@ -233,6 +291,92 @@
       }
     },
     {
+      "id": "prototype-exploration",
+      "priority": 85,
+      "match": {
+        "anyPromptIncludes": [
+          "prototype the feature idea",
+          "prototype this feature",
+          "prototype the feature",
+          "prototype this idea",
+          "prototype the idea",
+          "explore this feature",
+          "explore the feature idea"
+        ],
+        "anyPromptMatches": [
+          "(^|\\b(can you|could you|please|help me|let's|lets|let us)\\s+)(prototype|prototyping|sketch|sketching|explore|exploring)\\b.{0,80}\\b(options?|approach(?:es)?|ideas?|features?|solutions?)\\b"
+        ],
+        "intentHints": [
+          "clarify"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "clarify",
+        "workflow": "clarify",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "brainstorm"
+        ],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "small",
+        "reason": "Prototype language should explore the idea before choosing starter files or implementation."
+      }
+    },
+    {
+      "id": "slice-planning",
+      "priority": 85,
+      "match": {
+        "anyPromptIncludes": [
+          "slice plan",
+          "slice-plan",
+          "vertical slice plan",
+          "plan the slice",
+          "smallest slice",
+          "first vertical slice"
+        ],
+        "anyPromptMatches": [
+          "(^|\\b(can you|could you|please|help me|let's|lets)\\s+)(break|split|divide|slice)\\b.{0,80}\\bvertical slices?\\b",
+          "(^|\\b(can you|could you|please|help me|let's|lets)\\s+)(break|split|divide|slice)\\b(?!.*\\b(from|out of)\\s+(the\\s+)?(path|list)\\b)(?=.{0,80}\\b(work|feature|task|implementation|release|project|epic|modules?)\\b).{0,80}\\b(slices?|slice plan)\\b",
+          "(^|\\b(can you|could you|please|help me|let's|lets)\\s+)(break|split)\\b.{0,80}\\bmodules?[.!?]?$",
+          "(^|\\b(can you|could you|please|help me|let's|lets)\\s+)(break|split)\\b.{0,80}\\bmodules?\\s+list[.!?]?$",
+          "(^|\\b(can you|could you|please|help me|let's|lets)\\s+)slice\\b(?!.*\\b(from|out of)\\s+(the\\s+)?(path|list)\\b)(?!.*\\bby\\s+(path|name|path name)\\b).{0,80}\\bmodules?\\s+list[.!?]?$",
+          "(^|\\b(can you|could you|please|help me|let's|lets)\\s+)slice\\b(?!.*\\b(from|out of)\\s+(the\\s+)?(path|list)\\b)(?!.*\\bby\\s+(path|name|path name)\\b).{0,80}\\bmodules?\\b(?!\\s+(name|names|path|paths|list)\\b)",
+          "^(vertical[- ]slice|slice)\\s+planning\\s+(for|this|the|our|my)\\b"
+        ],
+        "intentHints": [
+          "architecture"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "architecture",
+        "workflow": "architecture-sweep",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "zoom-out",
+          "architecture"
+        ],
+        "agents": {
+          "count": 1,
+          "roles": [
+            "review"
+          ]
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "medium",
+        "reason": "Slice planning is planning and architecture vocabulary, not a separate command users must remember."
+      }
+    },
+    {
       "id": "decision-capture",
       "priority": 84,
       "match": {
@@ -267,6 +411,41 @@
       }
     },
     {
+      "id": "doctor-readiness",
+      "priority": 84,
+      "match": {
+        "anyPromptIncludes": [
+          "run doctor",
+          "doctor",
+          "doctor this repo",
+          "doctor on this repo",
+          "repo doctor",
+          "readiness check"
+        ],
+        "intentHints": [
+          "setup"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "setup",
+        "workflow": "scaffold",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "scaffold"
+        ],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "small",
+        "reason": "Doctor/readiness checks should enforce scaffold and bootstrap signals without adding a new skill."
+      }
+    },
+    {
       "id": "scaffold",
       "priority": 83,
       "match": {
@@ -274,6 +453,10 @@
           "agent scaffold",
           "scaffold instructions",
           "set up instructions",
+          "set this up",
+          "set this project up",
+          "need to set this up",
+          "can you set this up",
           "agents.md",
           "claude.md",
           "github labels",
@@ -470,7 +653,12 @@
       "priority": 60,
       "match": {
         "anyPromptIncludes": [
-          "audit",
+          "research audit",
+          "audit this orchestration plugin",
+          "audit this plugin",
+          "audit this system",
+          "audit this project",
+          "design v2",
           "research",
           "compare"
         ],

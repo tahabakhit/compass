@@ -7,7 +7,8 @@
     "pr feedback",
     "adversarial review",
     "red-team review",
-    "challenge review"
+    "challenge review",
+    "thermo review"
   ],
   "mode": {
     "default": "medium"
@@ -25,7 +26,7 @@
     },
     {
       "id": "native-adversarial-review",
-      "when": "Claude Code has codex@openai-codex and the user requests adversarial, red-team, or second-opinion review."
+      "when": "adversarial-review-requested"
     },
     {
       "id": "identify-risks"

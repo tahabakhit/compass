@@ -1,0 +1,22 @@
+# Layout Policy
+
+Use descriptive project directories rather than plugin-branded paths.
+
+- `.agents/`: repo-local agent policy bundle.
+- `.planning/`: active human/agent working memory, usually at the workspace root.
+- `.workflow-state/`: generated machine/runtime JSON only.
+- `.wiki/`: repo-local durable knowledge.
+- `docs/adr/`: durable architecture decisions.
+- `docs/reference/`: durable runbooks and evidence.
+
+Detected or selected repo type: `{{ repo_type }}`.
+
+Supported repo types: `workspace`, `application`, `library`, `cli`, `plugin`, `data-registry`, and `docs-only`.
+
+Cargo-Inspired Optional Directories:
+
+{% for name in common_optional_dirs -%}
+- `{{ name }}/`
+{% endfor %}
+
+Use these only when needed. Data registries, docs-only repos, plugin repos, and workspaces may be valid without `src/`. Avoid root `HANDOFF.md`, `docs/plans/`, `docs/brainstorms/`, random workflow-state folders, and `.sinan/`. Child repos keep `docs/adr/`, `docs/reference/`, `.github/`, `.agents/`, `AGENTS.md`, and `CLAUDE.md`; cross-repo planning lives in the parent workspace `.planning/`.

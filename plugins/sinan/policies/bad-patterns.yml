@@ -1,0 +1,17 @@
+bad_patterns:
+  - path: docs/agents
+    message: Use .agents/ as the canonical repo-local agent policy bundle.
+  - path: docs/plans
+    message: Committed docs/plans/ is transient planning; use workspace .planning/plans/ instead.
+  - path: docs/brainstorms
+    message: Committed docs/brainstorms/ is transient ideation; use workspace .planning/brainstorm/ instead.
+  - path: HANDOFF.md
+    message: Root HANDOFF.md is transient; use workspace .planning/handoffs/ instead.
+  - path: .sinan
+    message: Use descriptive project directories instead of plugin-branded state.
+  - path: .sinan-state
+    message: Use descriptive project directories instead of plugin-branded state.
+  - path: .sinan-workflow
+    message: Use descriptive project directories instead of plugin-branded state.
+  - path: docs/sinan
+    message: Use descriptive docs/architecture, docs/reference, or .agents/ surfaces instead of plugin-branded docs.

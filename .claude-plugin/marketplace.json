@@ -11,14 +11,14 @@
     {
       "name": "sinan",
       "displayName": "Sinan",
-      "description": "Cross-project Codex and Claude Code harness for durable planning, proportional routing, hooks, telemetry, and explicit specialist skills.",
-      "version": "0.1.0",
+      "description": "Cross-agent orchestration plugin with small skills, deterministic routing, declarative workflows, and a four-hook core.",
+      "version": "0.2.3",
       "author": {
         "name": "Sinan",
-        "url": "https://github.com/SethGammon/sinan"
+        "url": "https://github.com/tahabakhit/ming"
       },
-      "homepage": "https://github.com/SethGammon/sinan",
-      "repository": "https://github.com/SethGammon/sinan",
+      "homepage": "https://github.com/tahabakhit/ming",
+      "repository": "https://github.com/tahabakhit/ming",
       "license": "MIT",
       "keywords": [
         "sinan",

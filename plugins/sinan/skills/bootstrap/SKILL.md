@@ -11,7 +11,7 @@ Use this skill as the startup front door for a new, empty, partial, or resumed r
 ## Workflow
 
 1. Inspect the repo or workspace state before recommending work: git status, nested repos, file tree, package manager, README, tests, CI, app files, agent files, glossary, ADRs, and GitHub surfaces.
-2. Run `node scripts/bootstrap-report.js --target <repo-or-workspace> --json` when available; add `--persist` when the startup plan should be saved under `.workflow-state/plans/bootstrap-report.json`.
+2. Run `python3 -m scripts.sinan.cli bootstrap --target <repo-or-workspace> --json` when available; add `--persist` when the startup plan should be saved under `.workflow-state/plans/bootstrap-report.json`.
 3. Look for prior context first: pasted handoff, `.planning/handoffs/`, `.workflow-state/runs/`, recent commits, and continuation notes.
 4. Classify the target as empty, foundation-only, app-started, established, workspace, or resumed-from-handoff.
 5. Recommend only the needed next steps: `$brainstorm`, `$decision-capture`, `$architecture`, `$scaffold`, `$starter`, or `$tdd`.

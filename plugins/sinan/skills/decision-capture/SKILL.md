@@ -13,7 +13,7 @@ Use this skill when exploration has produced decisions worth preserving.
 1. Inspect existing `GLOSSARY.md`, `docs/adr/`, `AGENTS.md`, and nearby docs before proposing writes.
 2. Separate vocabulary from decisions: terms go in `GLOSSARY.md`; durable architecture choices go in ADRs.
 3. Confirm the exact terms, definitions, decision titles, status, consequences, and non-goals before writing.
-4. Run `node scripts/decision-capture.js --target <repo> --json` with confirmed `--term "Name=Definition"` and `--adr-title`/`--adr-decision` inputs to preview writes.
+4. Do not run legacy JS helpers. Preview glossary or ADR writes in the plan, then write only confirmed terms and decisions while preserving existing manual content.
 5. Use `--write` only after confirmation. The script updates `GLOSSARY.md` and writes ADRs under `docs/adr/YYYY-MM-DD-title.md`.
 6. Preserve manual text and append or update only the confirmed generated entries.
 7. Keep speculative ideas out of durable memory; send unresolved questions back to `$brainstorm`.

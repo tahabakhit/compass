@@ -32,12 +32,16 @@
     },
     {
       "id": "regression-test"
+    },
+    {
+      "id": "review"
     }
   ],
   "gates": [
     "reproduction-understood",
     "tests-pass",
-    "regression-covered"
+    "regression-covered",
+    "diff-reviewed"
   ],
   "budget": {
     "default_agents": 0,

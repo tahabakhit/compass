@@ -1,35 +1,40 @@
 ---
 name: scaffold
-description: Use when setting up or refreshing agent-facing repo guidance such as AGENTS.md, CLAUDE.md, GLOSSARY.md conventions, ADR conventions, and GitHub workflow/label guidance.
+description: Use when setting up or refreshing repo-local agent policy such as .agents/, AGENTS.md, CLAUDE.md, GitHub Copilot instructions, GLOSSARY.md conventions, ADR conventions, and GitHub workflow/label guidance.
 disable-model-invocation: true
 ---
 
 # Scaffold
 
-Use this skill when a repo needs agent-facing instruction, memory conventions, GitHub labels, and lightweight agent-check workflow surfaces before or during early implementation.
+Use this skill when a repo needs agent-facing policy, memory conventions, GitHub labels, templates, and lightweight agent-check workflow surfaces before or during early implementation.
 
 This is not an app generator. Use `$bootstrap` for startup sequencing and `$starter` for generating the initial framework/app files.
 
 ## Workflow
 
-1. Inspect existing `AGENTS.md`, `CLAUDE.md`, `GLOSSARY.md`, `docs/adr/`, `.planning/`, `.workflow-state/`, `.wiki/`, `.github/labels.yml`, `.github/workflows/`, and issue label conventions.
+1. Inspect existing `.agents/`, `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `GLOSSARY.md`, `docs/adr/`, `docs/reference/`, `.planning/`, `.workflow-state/`, `.wiki/`, `.github/labels.yml`, `.github/workflows/`, and issue label/template conventions.
 2. If files exist, preserve manual text and only update marked Sinan blocks.
-3. Make `AGENTS.md` the canonical shared project guidance.
-4. Make `CLAUDE.md` import `AGENTS.md`, then add only Claude Code-specific notes.
-5. Create empty memory convention surfaces for `GLOSSARY.md`, `docs/adr/README.md`, `.planning/`, and `.workflow-state/`; put actual terms and ADRs through `$decision-capture`.
-6. Propose the scaffold before writing unless the user explicitly asked to generate it.
-7. Run `node scripts/scaffold-instructions.js --target <repo>` to write, or `--check` to verify.
-8. If `.github/labels.yml` or `.github/workflows/agent-checks.yml` already exist without Sinan markers, preserve them and report that manual files were skipped.
+3. Make `.agents/` the canonical shared repo-local policy bundle.
+4. Keep `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` as short entrypoints/mirrors pointing to `.agents/`.
+5. Create durable memory convention surfaces for `GLOSSARY.md`, `docs/adr/README.md`, and `docs/reference/README.md`; put actual terms and ADRs through `$decision-capture`.
+6. Create `.planning/` and `.workflow-state/` scaffold only for workspace targets; child repo transient planning and handoffs should live in the parent workspace.
+7. Propose the scaffold before writing unless the user explicitly asked to generate it.
+8. Run `python3 -m scripts.sinan.cli audit --target <repo>` for advisory audit, `python3 -m scripts.sinan.cli scaffold --target <repo>` to write, or `python3 -m scripts.sinan.cli enforce --target <repo>` for opt-in failing verification.
+9. If `.github/labels.yml`, `.github/workflows/agent-checks.yml`, or GitHub templates already exist without Sinan markers, preserve them and report that manual files were skipped.
 
 ## Defaults
 
-- `AGENTS.md`: shared context, Sinan workflows, and cross-agent operating rules.
-- `CLAUDE.md`: `@AGENTS.md` plus Claude Code-specific tool and planning notes.
+- `.agents/`: shared layout, workflow, routing, review, safety, and surface-specific rules.
+- `AGENTS.md`: short Codex entrypoint to `.agents/`.
+- `CLAUDE.md`: imports `.agents/README.md` and `.agents/surfaces/claude.md`.
+- `.github/copilot-instructions.md`: short GitHub Copilot entrypoint to `.agents/`.
 - `GLOSSARY.md`: domain vocabulary conventions only until `$decision-capture` adds confirmed terms.
 - `docs/adr/README.md`: ADR conventions only until `$decision-capture` writes durable decisions.
-- `.planning/`: human-readable working memory, templates, campaigns, plans, reviews, and handoffs.
+- `docs/reference/README.md`: durable runbook/evidence conventions.
+- `.planning/`: workspace-level human-readable working memory, templates, campaigns, plans, reviews, and handoffs.
 - `.workflow-state/`: generated machine-readable workflow state.
 - `.wiki/` and `~/.wiki/`: repo-local and personal/global durable knowledge, with writes routed through Zhi when available.
 - `.github/labels.yml`: small triage label manifest for humans or label-sync tooling.
 - `.github/workflows/agent-checks.yml`: lightweight workflow that checks expected agent guidance files exist.
+- `.github/ISSUE_TEMPLATE/` and `.github/pull_request_template.md`: repo-owned templates after scaffold.
 - GitHub labels: prefer a small triage vocabulary such as `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `bug`, `enhancement`, `docs`, and `architecture`.

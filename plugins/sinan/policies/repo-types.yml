@@ -1,0 +1,25 @@
+repo_types:
+  workspace:
+    description: Multi-repo coordination root.
+    allowed_dirs: [plugins, packages, docs, templates, schemas, tools]
+    workspace_state: true
+  application:
+    description: User-facing application or service.
+    allowed_dirs: [src, app, pages, public, tests, examples, docs, tools]
+  library:
+    description: Reusable package or module.
+    allowed_dirs: [src, tests, examples, benchmarks, docs, tools]
+  cli:
+    description: Command-line tool.
+    allowed_dirs: [src, tests, examples, docs, tools]
+  plugin:
+    description: Agent, marketplace, or runtime plugin.
+    allowed_dirs: [plugins, schemas, tools, templates, tests, skills, hooks, hooks_src, runtime, docs]
+  data-registry:
+    description: Data, schema, or catalog repository.
+    allowed_dirs: [schemas, data, docs, tools, examples, tests]
+    src_required: false
+  docs-only:
+    description: Documentation-only repository.
+    allowed_dirs: [docs, examples, reference]
+    src_required: false

@@ -11,7 +11,7 @@ Use this skill when the repo needs initial app/framework files, not just a plan.
 ## Workflow
 
 1. Confirm product direction, architecture, package manager, runtime, test command, styling choice, and first vertical slice.
-2. Run `node scripts/starter-plan.js --target <repo> --json` when available; add `--persist` to save the dry-run plan under `.workflow-state/plans/starter-plan.json`.
+2. Do not run legacy JS helpers. Inspect the target with `python3 -m scripts.sinan.cli bootstrap --target <repo> --json`, then propose starter files before writing.
 3. Inspect existing files before generating anything.
 4. Propose the starter shape before writing unless the user explicitly asked to generate it.
 5. Generate the smallest useful shell: config, source layout, first route or entry point, starter tests, and scripts.

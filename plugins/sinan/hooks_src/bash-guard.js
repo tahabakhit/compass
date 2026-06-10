@@ -46,7 +46,7 @@ const ALLOW_PATTERNS = [
   /\bgit\s+log\b/,
   /\bnpm\s+test\b/,
   /\bnpm\s+run\s+[a-z0-9:-]+\b/,
-  /\bnode\s+scripts\/[a-z0-9-]+\.js\b/,
+  /\bpython3?\s+-m\s+scripts\.sinan\.cli\b/,
 ];
 
 function normalizeCommand(command) {

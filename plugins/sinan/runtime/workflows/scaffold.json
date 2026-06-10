@@ -1,6 +1,6 @@
 {
   "id": "scaffold",
-  "description": "Inspect and propose agent instruction scaffolding.",
+  "description": "Audit, propose, and optionally write repo-local agent policy scaffolding.",
   "triggers": [
     "setup workspace",
     "scaffold",
@@ -20,7 +20,10 @@
       "id": "inspect-surfaces"
     },
     {
-      "id": "detect-project"
+      "id": "detect-repo-type"
+    },
+    {
+      "id": "audit-layout"
     },
     {
       "id": "inspect-github-surfaces"
@@ -36,13 +39,20 @@
     },
     {
       "id": "verify-generated-surfaces"
+    },
+    {
+      "id": "review"
     }
   ],
   "gates": [
+    "advisory-audit-default",
     "proposal-shown-before-write",
     "manual-text-preserved",
+    "generated-surfaces-verified",
     "generated-markers-present",
-    "github-guidance-explicit"
+    "agents-policy-bundle-present",
+    "github-guidance-explicit",
+    "diff-reviewed"
   ],
   "budget": {
     "default_agents": 0,

@@ -16,7 +16,7 @@
   },
   "phases": [
     {
-      "id": "run-starter-plan"
+      "id": "confirm-starter-scope"
     },
     {
       "id": "inspect-existing-files"
@@ -34,6 +34,9 @@
       "id": "verify-commands"
     },
     {
+      "id": "review"
+    },
+    {
       "id": "handoff-to-tdd"
     }
   ],
@@ -41,7 +44,8 @@
     "decisions-confirmed",
     "proposal-shown-before-write",
     "generated-files-minimal",
-    "tests-or-run-command-verified"
+    "tests-or-run-command-verified",
+    "diff-reviewed"
   ],
   "budget": {
     "default_agents": 0,

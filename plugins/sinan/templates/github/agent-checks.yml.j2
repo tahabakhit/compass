@@ -1,0 +1,19 @@
+name: Agent Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  agent-surfaces:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check agent guidance files
+        run: |
+          test -f .agents/README.md
+          test -f .agents/layout.md
+          test -f .agents/workflow.md
+          test -f AGENTS.md
+          test -f CLAUDE.md
