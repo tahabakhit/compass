@@ -88,4 +88,22 @@ tests/                          — test suite (see above)
 
 ## Release Process
 
+Canonical development now happens in `/Users/taha.bakhit@m10s.io/projects/personal/repos/agent-plugins/zhi`.
+The Ming marketplace copy at `/Users/taha.bakhit@m10s.io/projects/personal/repos/agent-marketplaces/ming/plugins/zhi`
+is generated release output, not the place to do source edits.
+
+Use the package scripts for the normal loop:
+
+```bash
+npm test
+npm run package:publish-to-marketplace
+npm run package:marketplace-sync:check
+```
+
+`scripts/publish-to-marketplace.js` publishes the runtime surfaces into Ming:
+Claude plugin metadata/source, native Codex skill files, OpenCode/Pi mirror,
+portable docs, and packaged helper scripts. It intentionally leaves source-only
+dev material such as `tests/`, `.plugin-eval/`, `package.json`, and release
+automation in this canonical repo.
+
 See `.claude/release-checklist.md` for the full ship process. Run all structural tests before bumping version.

@@ -26,9 +26,30 @@ def title_from_slug(slug: str) -> str:
 def scaffold(topic: str, title: str, description: str) -> list[str]:
     changed: list[str] = []
     topic_root = ROOT / "topics" / topic
+    hub_index = (
+        "# LLM Wiki Hub\n\n"
+        "Status: active\n\n"
+        "## Topics\n\n"
+        f"- [{topic}](topics/{topic}/_index.md): {description}\n"
+    )
+    topic_config = (
+        "---\n"
+        f'title: "{title}"\n'
+        f'summary: "{description}"\n'
+        "type: config\n"
+        "---\n\n"
+        f"# {title}\n"
+    )
+    topic_index = (
+        f"# {title} Topic Wiki\n\n"
+        "## Quick Navigation\n\n"
+        "- [Raw sources](raw/_index.md)\n"
+        "- [Compiled articles](wiki/_index.md)\n"
+        "- [Log](log.md)\n"
+    )
 
     files = {
-        ROOT / "_index.md": f"# LLM Wiki Hub\n\nStatus: active\n\n## Topics\n\n- [{topic}](topics/{topic}/_index.md): {description}\n",
+        ROOT / "_index.md": hub_index,
         ROOT / "wikis.json": json.dumps(
             {
                 "default": topic,
@@ -48,14 +69,19 @@ def scaffold(topic: str, title: str, description: str) -> list[str]:
         + "\n",
         ROOT / "log.md": "# Wiki Activity Log\n\n## scaffold | Initialized LLM Wiki hub\n",
         ROOT / "AGENTS.md": "# AGENTS.md\n\nPurpose: operating guide for this LLM Wiki hub.\n",
-        topic_root / "config.md": f"---\ntitle: \"{title}\"\nsummary: \"{description}\"\ntype: config\n---\n\n# {title}\n",
-        topic_root / "_index.md": f"# {title} Topic Wiki\n\n## Quick Navigation\n\n- [Raw sources](raw/_index.md)\n- [Compiled articles](wiki/_index.md)\n- [Log](log.md)\n",
+        topic_root / "config.md": topic_config,
+        topic_root / "_index.md": topic_index,
         topic_root / "raw" / "_index.md": "# Raw Sources\n\nImmutable source material for this topic.\n",
         topic_root / "wiki" / "_index.md": "# Compiled Articles\n\nSynthesized wiki articles for this topic.\n",
         topic_root / "log.md": "# Wiki Log\n\n## scaffold | Initialized topic wiki\n",
     }
 
-    for directory in [topic_root / "raw", topic_root / "wiki", topic_root / "output"]:
+    for directory in [
+        topic_root / "raw",
+        topic_root / "wiki",
+        topic_root / "output",
+        topic_root / "inbox" / ".processed",
+    ]:
         directory.mkdir(parents=True, exist_ok=True)
 
     for path, text in files.items():

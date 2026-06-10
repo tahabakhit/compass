@@ -1,17 +1,12 @@
 ---
 name: wiki-manager
 description: >
-  LLM-compiled knowledge base manager for OpenCode. Use it to initialize, ingest,
-  import source collections, collect catalogs, track inventory, index datasets, archive old topics, compile, query, lint, audit, research, plan, and generate outputs from topic-scoped wikis.
-  Activates when the user mentions wiki workflows, knowledge-base management,
-  ingestion, collection ingestion, import wiki, collect, catalog, curate,
-  find all, inventory, source queue,
-  candidate list, watch list, backlog, dataset, large data, data registry,
-  dataset manifest, compilation, querying, linting, audit, research, librarian,
-  scan quality, article quality, content review, output drift, provenance,
-  archive wiki, archive topic, restore wiki, lessons learned, implementation
-  plan, or uses wiki-related shorthand in a repo with .wiki/, ~/wiki/, or a
-  configured hub path.
+  Use when the user wants OpenCode to initialize, ingest, import, compile,
+  query, lint, audit, archive, research, collect, inventory, or generate
+  outputs from an LLM-compiled knowledge base. Also use for wiki/knowledge-base
+  phrasing, source queues, candidates, corpora, datasets, provenance, trust
+  checks, librarian scans, or factual questions in a repo with .wiki/, ~/wiki/,
+  or a configured llm-wiki hub path.
 ---
 
 # LLM Wiki Manager
@@ -106,7 +101,7 @@ explicit migration.
 
 3. **Articles are synthesized, not copied.** A wiki article draws from multiple sources, contextualizes, and connects to other concepts. Think textbook, not clipboard.
 
-4. **Dual-linking for Obsidian + OpenCode.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown `[text](path)` (for OpenCode navigation) on the same line: `[[slug|Name]] ([Name](../category/slug.md))`. Bidirectional when it makes sense.
+4. **Dual-linking for Obsidian + OpenCode.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown links (for OpenCode navigation) on the same line, for example a wikilink plus a path like `wiki/concepts/example.md`. Bidirectional when it makes sense.
 
 5. **Frontmatter is structured data.** Every `.md` file has YAML frontmatter with title, summary, tags, dates. This makes the wiki searchable without full-text scans.
 

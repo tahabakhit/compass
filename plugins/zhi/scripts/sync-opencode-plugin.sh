@@ -41,17 +41,12 @@ text = skill_path.read_text()
 frontmatter = """---
 name: wiki-manager
 description: >
-  LLM-compiled knowledge base manager for OpenCode. Use it to initialize, ingest,
-  import source collections, collect catalogs, track inventory, index datasets, archive old topics, compile, query, lint, audit, research, plan, and generate outputs from topic-scoped wikis.
-  Activates when the user mentions wiki workflows, knowledge-base management,
-  ingestion, collection ingestion, import wiki, collect, catalog, curate,
-  find all, inventory, source queue,
-  candidate list, watch list, backlog, dataset, large data, data registry,
-  dataset manifest, compilation, querying, linting, audit, research, librarian,
-  scan quality, article quality, content review, output drift, provenance,
-  archive wiki, archive topic, restore wiki, lessons learned, implementation
-  plan, or uses wiki-related shorthand in a repo with .wiki/, ~/wiki/, or a
-  configured hub path.
+  Use when the user wants OpenCode to initialize, ingest, import, compile,
+  query, lint, audit, archive, research, collect, inventory, or generate
+  outputs from an LLM-compiled knowledge base. Also use for wiki/knowledge-base
+  phrasing, source queues, candidates, corpora, datasets, provenance, trust
+  checks, librarian scans, or factual questions in a repo with .wiki/, ~/wiki/,
+  or a configured llm-wiki hub path.
 ---
 """
 
@@ -67,8 +62,8 @@ replacements = [
         "You manage an LLM-compiled knowledge base. Source documents are ingested into `raw/`, then incrementally compiled into a wiki of interconnected markdown articles. OpenCode is both the compiler and the query engine.\n\n## OpenCode Integration Notes\n\nThis skill is loaded as an instruction file. OpenCode does not have Claude-style `/wiki:*` slash commands or Codex-style `@wiki` invocations. Treat any `/wiki:*` references in this skill and its references as shorthand for the equivalent natural-language request. For example, `/wiki:compile` means the user is asking you to compile the wiki.\n\nOpenCode's built-in tools (`read`, `write`, `edit`, `glob`, `grep`, `bash`, `webfetch`, `websearch`) map directly to the tools this skill requires. Web search requires `OPENCODE_ENABLE_EXA=1` in the environment.\n\n**Permissions**: OpenCode sandboxes file access to the project directory. The wiki hub at `~/wiki/` is external. Add `external_directory` permissions in `opencode.json` to allow access: `{ \"permission\": { \"external_directory\": { \"~/wiki/**\": \"allow\", \"~/.config/llm-wiki/**\": \"allow\" } } }`. If your configured hub uses another absolute path (for example iCloud Drive), add that path too. Alternatively, use `--local` mode to keep everything in `.wiki/` inside the project.\n",
     ),
     (
-        "**Dual-linking for Obsidian + Claude.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown `[text](path)` (for Claude navigation) on the same line: `[[slug|Name]] ([Name](../category/slug.md))`. Bidirectional when it makes sense.",
-        "**Dual-linking for Obsidian + OpenCode.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown `[text](path)` (for OpenCode navigation) on the same line: `[[slug|Name]] ([Name](../category/slug.md))`. Bidirectional when it makes sense.",
+        "**Dual-linking for Obsidian + Claude.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown links (for Claude navigation) on the same line, for example a wikilink plus a path like `wiki/concepts/example.md`. Bidirectional when it makes sense.",
+        "**Dual-linking for Obsidian + OpenCode.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown links (for OpenCode navigation) on the same line, for example a wikilink plus a path like `wiki/concepts/example.md`. Bidirectional when it makes sense.",
     ),
     (
         "When this skill activates outside of an explicit `/wiki:*` command:",

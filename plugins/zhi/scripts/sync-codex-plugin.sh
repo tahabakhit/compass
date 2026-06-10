@@ -62,16 +62,12 @@ text = skill_path.read_text()
 frontmatter = """---
 name: wiki
 description: >
-  LLM-compiled knowledge base manager for Codex. Use it to initialize, ingest,
-  import source collections, collect catalogs, track inventory, index datasets, archive old topics, compile, query, lint, audit, research, plan, and generate outputs from topic-scoped wikis.
-  Activates when the user mentions wiki workflows, knowledge-base management,
-  ingestion, collection ingestion, import wiki, collect, catalog, curate,
-  find all, inventory, source queue,
-  candidate list, watch list, backlog, dataset, large data, data registry,
-  dataset manifest, compilation, querying, linting, audit, research, librarian,
-  scan quality, article quality, content review, output drift, provenance,
-  archive wiki, archive topic, restore wiki, implementation plan, or uses
-  /wiki-style shorthand in a repo with .wiki/, ~/wiki/, or a configured hub path.
+  Use when the user wants Codex to initialize, ingest, import, compile, query,
+  lint, audit, archive, research, collect, inventory, or generate outputs from
+  an LLM-compiled knowledge base. Also use for wiki/knowledge-base phrasing,
+  source queues, candidates, corpora, datasets, provenance, trust checks,
+  librarian scans, or factual questions in a repo with .wiki/, ~/wiki/, or a
+  configured llm-wiki hub path.
 ---
 """
 
@@ -87,8 +83,8 @@ replacements = [
         "You manage an LLM-compiled knowledge base. Source documents are ingested into `raw/`, then incrementally compiled into a wiki of interconnected markdown articles. Codex is both the compiler and the query engine.\n\n## Codex Plugin Notes\n\nCodex plugins package skills, MCP servers, apps, and metadata. They do not register Claude-style custom `/wiki:*` commands. Treat any `/wiki`, `/wiki:*`, or command-flag examples in this skill and its references as shorthand for the same workflow expressed in natural language, or via explicit `@wiki` invocation.\n",
     ),
     (
-        "**Dual-linking for Obsidian + Claude.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown `[text](path)` (for Claude navigation) on the same line: `[[slug|Name]] ([Name](../category/slug.md))`. Bidirectional when it makes sense.",
-        "**Dual-linking for Obsidian + Codex.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown `[text](path)` (for Codex navigation) on the same line: `[[slug|Name]] ([Name](../category/slug.md))`. Bidirectional when it makes sense.",
+        "**Dual-linking for Obsidian + Claude.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown links (for Claude navigation) on the same line, for example a wikilink plus a path like `wiki/concepts/example.md`. Bidirectional when it makes sense.",
+        "**Dual-linking for Obsidian + Codex.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown links (for Codex navigation) on the same line, for example a wikilink plus a path like `wiki/concepts/example.md`. Bidirectional when it makes sense.",
     ),
     (
         "When this skill activates outside of an explicit `/wiki:*` command:",

@@ -62,14 +62,15 @@ def route_text(text: str) -> tuple[str, dict[str, int]]:
     lowered = text.lower()
     work_score = sum(1 for term in WORK_TERMS if term in lowered)
     personal_score = sum(1 for term in PERSONAL_TERMS if term in lowered)
+    scores = {"personal": personal_score, "ptxc-ia": work_score}
 
-    if work_score and personal_score:
-        return "ask-or-split", {"personal": personal_score, "ptxc-ia": work_score}
-    if work_score:
-        return "ptxc-ia", {"personal": personal_score, "ptxc-ia": work_score}
-    if personal_score:
-        return "personal", {"personal": personal_score, "ptxc-ia": work_score}
-    return "personal", {"personal": personal_score, "ptxc-ia": work_score}
+    route = {
+        (True, True): "ask-or-split",
+        (True, False): "ptxc-ia",
+        (False, True): "personal",
+        (False, False): "personal",
+    }[(bool(work_score), bool(personal_score))]
+    return route, scores
 
 
 def status(registry: dict) -> int:
@@ -129,21 +130,28 @@ def main() -> int:
     args = parser.parse_args()
     registry = load_registry(Path(os.path.expanduser(args.registry)))
 
-    if args.command == "status":
-        return status(registry)
-
-    if args.command == "route":
+    def route_command() -> int:
         hub, scores = route_text(args.text)
         print(json.dumps({"hub": hub, "scores": scores}, indent=2))
         return 0
 
-    if args.command == "scaffold-hub":
-        return run_scaffold(Path(os.path.expanduser(args.path)), args.topic, args.title, args.description)
-
-    if args.command == "scaffold-topic":
-        return run_scaffold(hub_path(registry, args.hub), args.topic, args.title, args.description)
-
-    raise SystemExit(f"unknown command: {args.command}")
+    handlers = {
+        "status": lambda: status(registry),
+        "route": route_command,
+        "scaffold-hub": lambda: run_scaffold(
+            Path(os.path.expanduser(args.path)),
+            args.topic,
+            args.title,
+            args.description,
+        ),
+        "scaffold-topic": lambda: run_scaffold(
+            hub_path(registry, args.hub),
+            args.topic,
+            args.title,
+            args.description,
+        ),
+    }
+    return handlers[args.command]()
 
 
 if __name__ == "__main__":

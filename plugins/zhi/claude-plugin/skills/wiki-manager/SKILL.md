@@ -1,22 +1,12 @@
 ---
 name: wiki-manager
 description: >
-  LLM-compiled knowledge base manager. Activates when user works with wiki
-  directories, mentions knowledge base management, asks knowledge questions
-  in a project with a wiki, wants to ingest/import/compile/query/lint/audit knowledge,
-  collect/catalog discoverable artifacts and examples, track inventory,
-  manage source queues, candidates, corpora, entities, watch lists,
-  dataset manifests, large datasets, or data that is too big for the wiki,
-  archive old topic wikis, or uses /wiki commands. Also activates when user says "wiki", "knowledge base",
-  "ingest", "import wiki", "ingest collection", "collect", "catalog",
-  "curate", "find all", "compile wiki", "add to wiki", "search wiki", "audit", "librarian",
-  "scan quality", "article quality", "content review", "output drift", "inventory",
-  "ingest queue", "source queue", "candidate list", "watch list", "backlog",
-  "dataset", "large data", "data registry", "dataset manifest",
-  "archive wiki", "archive topic", "restore wiki",
-  "provenance", "trust this", or asks a factual question in a directory
-  containing .wiki/ or when ~/wiki/ exists or the configured hub path exists
-  (check ~/.config/llm-wiki/config.json for hub_path).
+  Use when the user wants to initialize, ingest, import, compile, query, lint,
+  audit, archive, research, collect, inventory, or generate outputs from an
+  LLM-compiled knowledge base. Also use for wiki/knowledge-base phrasing,
+  source queues, candidates, corpora, datasets, provenance, trust checks,
+  librarian scans, or factual questions in a repo with .wiki/, ~/wiki/, or a
+  configured llm-wiki hub path.
 tools:
   - Read
   - Write
@@ -112,7 +102,7 @@ explicit migration.
 
 3. **Articles are synthesized, not copied.** A wiki article draws from multiple sources, contextualizes, and connects to other concepts. Think textbook, not clipboard.
 
-4. **Dual-linking for Obsidian + Claude.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown `[text](path)` (for Claude navigation) on the same line: `[[slug|Name]] ([Name](../category/slug.md))`. Bidirectional when it makes sense.
+4. **Dual-linking for Obsidian + Claude.** Cross-references use both `[[wikilink]]` (for Obsidian graph view) and standard markdown links (for Claude navigation) on the same line, for example a wikilink plus a path like `wiki/concepts/example.md`. Bidirectional when it makes sense.
 
 5. **Frontmatter is structured data.** Every `.md` file has YAML frontmatter with title, summary, tags, dates. This makes the wiki searchable without full-text scans.
 
