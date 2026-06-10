@@ -1,7 +1,7 @@
 {
   "name": "sinan",
   "displayName": "Sinan",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Claude-compatible projection of the Sinan orchestration plugin with small skills and declarative workflow guidance.",
   "author": {
     "name": "Sinan"
