@@ -88,6 +88,42 @@
       }
     },
     {
+      "id": "adversarial-review",
+      "priority": 87,
+      "match": {
+        "anyPromptIncludes": [
+          "adversarial review",
+          "red-team review",
+          "challenge review",
+          "second opinion review",
+          "pressure-test this diff"
+        ],
+        "intentHints": [
+          "review"
+        ]
+      },
+      "route": {
+        "taskSize": "full",
+        "intent": "review",
+        "workflow": "review",
+        "nativeMode": "codex-plan",
+        "skills": [
+          "review"
+        ],
+        "agents": {
+          "count": 1,
+          "roles": [
+            "review"
+          ]
+        },
+        "hooks": [
+          "bash-guard"
+        ],
+        "budget": "medium",
+        "reason": "Adversarial review should use native review when available, with Sinan review as fallback."
+      }
+    },
+    {
       "id": "bootstrap",
       "priority": 90,
       "match": {

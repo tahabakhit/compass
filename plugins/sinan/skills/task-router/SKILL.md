@@ -13,7 +13,7 @@ Use this skill when the user wants Sinan to choose the right work shape for a re
 2. If the task is ambiguous, route to the `clarify` workflow or use `$brainstorm` for structured exploration.
 3. For implementation, debugging, review, research, cleanup, architecture, deepening, or setup work, prefer the matching workflow in `workflows/`.
 4. Use `scripts/route.js` when a deterministic preview is useful.
-5. Prefer native platform capabilities over Sinan machinery when they fit: Codex plan mode, Codex subagents, Claude plan mode, or Claude dynamic workflows.
+5. Prefer native platform capabilities over Sinan machinery when they fit: Codex plan mode, Codex subagents, Claude plan mode, Claude dynamic workflows, or Claude Code's `/codex:*` commands when `codex@openai-codex` is installed.
 6. Keep route explanations short and include only the selected workflow, skills, native mode, agents, hooks, and budget.
 
 ## Guardrails

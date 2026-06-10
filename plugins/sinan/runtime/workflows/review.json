@@ -4,7 +4,10 @@
   "triggers": [
     "review",
     "audit diff",
-    "pr feedback"
+    "pr feedback",
+    "adversarial review",
+    "red-team review",
+    "challenge review"
   ],
   "mode": {
     "default": "medium"
@@ -21,6 +24,10 @@
       "id": "trace-behavior"
     },
     {
+      "id": "native-adversarial-review",
+      "when": "Claude Code has codex@openai-codex and the user requests adversarial, red-team, or second-opinion review."
+    },
+    {
       "id": "identify-risks"
     },
     {
@@ -32,6 +39,7 @@
   ],
   "gates": [
     "findings-evidenced",
+    "adversarial-output-handled",
     "no-speculation"
   ],
   "budget": {

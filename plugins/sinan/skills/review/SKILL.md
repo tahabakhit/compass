@@ -8,6 +8,21 @@ disable-model-invocation: true
 
 Use this skill for code review, PR review, and diff risk assessment.
 
+## Native Review
+
+Prefer native review first: Codex `/review`; Claude Code `/codex:review` or
+`/codex:adversarial-review` when `codex@openai-codex` is installed. Otherwise
+use this skill plus `review` workflow.
+
+Use adversarial review for red-team, second-opinion, challenge, or risk reviews:
+
+```text
+/codex:adversarial-review --background hidden assumptions, failure modes, simpler alternatives
+/codex:adversarial-review --base main --background data-loss, auth, rollback, race risks
+```
+
+Prefer `--background`. Treat Codex output as read-only.
+
 ## Workflow
 
 1. Inspect the diff and surrounding code paths.

@@ -28,7 +28,8 @@
       "id": "reconcile"
     },
     {
-      "id": "pressure-test"
+      "id": "pressure-test",
+      "when": "Use native adversarial review surfaces when available and scoped to a concrete review target."
     },
     {
       "id": "write-docs"

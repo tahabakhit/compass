@@ -164,7 +164,7 @@ function fallbackRoute(input) {
     };
   }
 
-  if (/\b(review|audit diff|pr feedback)\b/.test(prompt)) {
+  if (/\b(review|audit diff|pr feedback|adversarial review|red-team review|challenge review|second opinion review|pressure-test this diff)\b/.test(prompt)) {
     return {
       taskSize: "full",
       intent: "review",
