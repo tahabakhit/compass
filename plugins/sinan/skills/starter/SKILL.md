@@ -20,12 +20,13 @@ Do not run `python3 -m scripts.sinan.cli` from the target repo or workspace; tha
 
 1. Confirm product direction, architecture, package manager, runtime, test command, styling choice, and first vertical slice.
 2. Do not run legacy JS helpers. Inspect the target with `<sinanCli> bootstrap --target <repo> --json`, then propose starter files before writing.
-3. Inspect existing files before generating anything.
-4. Propose the starter shape before writing unless the user explicitly asked to generate it.
-5. Generate the smallest useful shell: config, source layout, first route or entry point, starter tests, and scripts.
-6. Avoid broad templates, sample clutter, and unchosen framework defaults.
-7. Verify install, lint, test, and run commands when available.
-8. Hand off to `$tdd` for the first real feature.
+3. If the request includes agent conventions, AGENTS.md, CLAUDE.md, `.agents/`, or GitHub agent surfaces, run or recommend `$scaffold` before generating app files.
+4. Inspect existing files before generating anything.
+5. Propose the starter shape before writing unless the user explicitly asked to generate it.
+6. Generate the smallest useful shell: config, source layout, first route or entry point, starter tests, and scripts.
+7. Avoid broad templates, sample clutter, and unchosen framework defaults.
+8. Verify install, lint, test, and run commands when available.
+9. Hand off to `$tdd` for the first real feature.
 
 ## Output
 

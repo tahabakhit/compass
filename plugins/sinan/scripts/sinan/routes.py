@@ -108,13 +108,19 @@ def base_route(**overrides: Any) -> dict[str, Any]:
     return route
 
 
+MICRO_PATTERN = r"\b(run `date`|show git status|what is in `package.json`|summarize this paragraph|translate this|make this sentence clearer|what does this file do)\b"
+BOOTSTRAP_PATTERN = r"\b(bootstrap|start this repo|new repo|empty repo|resume from handoff|previous handoff|continuation notes)\b"
+INIT_TARGET_PATTERN = r"\b(init|initialize|initialise)\b.{0,50}\b(repo|repository|workspace|project)\b|\b(repo|repository|workspace|project)\b.{0,50}\b(init|initialize|initialise)\b"
+SCAFFOLD_PATTERN = r"\b(setup|set up|set this up|set this project up|need to set this up|can you set this up|scaffold|doctor|instructions|agent conventions?|agent policy|repo-local agent policy)\b"
+
+
 def fallback_route(input_data: dict[str, Any]) -> dict[str, Any]:
     prompt = normalize_prompt(input_data["prompt"])
     platform = input_data.get("platform", "codex")
     plan = "claude-plan" if platform == "claude" else "codex-plan"
-    if re.search(r"\b(run `date`|show git status|what is in `package.json`|summarize this paragraph|translate this|make this sentence clearer|what does this file do)\b", prompt):
+    if re.search(MICRO_PATTERN, prompt):
         return base_route(taskSize="micro", reason="Simple read or language task; no Sinan overhead.")
-    if re.search(r"\b(bootstrap|start this repo|new repo|empty repo|resume from handoff|previous handoff|continuation notes)\b", prompt):
+    if re.search(BOOTSTRAP_PATTERN, prompt) or re.search(INIT_TARGET_PATTERN, prompt):
         return base_route(taskSize="full", intent="setup", workflow="bootstrap", nativeMode=plan, skills=["bootstrap"], hooks=["bash-guard"], budget="medium", reason="Bootstrap should inspect repo state and handoffs before choosing startup steps.")
     if re.search(r"\b(brainstorm|think through|shape this idea|product direction|ambiguous|acceptance criteria)\b", prompt):
         return base_route(taskSize="full", intent="clarify", workflow="clarify", nativeMode=plan, skills=["brainstorm"], hooks=["bash-guard"], reason="Ambiguous work should be shaped before decisions or implementation.")
@@ -131,7 +137,7 @@ def fallback_route(input_data: dict[str, Any]) -> dict[str, Any]:
     if re.search(r"\b(simplify|system map|deepening|architecture sweep|architecture review|architecture refactor|architecture cleanup|architecture work)\b", prompt):
         skills = ["zoom-out", "architecture-deepening"] if "deepening" in prompt else ["zoom-out", "architecture"]
         return base_route(taskSize="full", intent="architecture", workflow="architecture-sweep", nativeMode=plan, skills=skills, agents={"count": 1, "roles": ["review"]}, hooks=["bash-guard"], budget="medium", reason="Architecture work benefits from system mapping.")
-    if re.search(r"\b(setup|set up|set this up|set this project up|need to set this up|can you set this up|scaffold|doctor|instructions)\b", prompt):
+    if re.search(SCAFFOLD_PATTERN, prompt):
         return base_route(taskSize="full", intent="setup", workflow="scaffold", nativeMode=plan, skills=["scaffold"], hooks=["bash-guard"], budget="small", reason="Scaffold should audit repo-local agent policy.")
     if re.search(r"\b(starter|generate starter|initial app)\b", prompt):
         return base_route(taskSize="full", intent="setup", workflow="starter", nativeMode=plan, skills=["starter"], hooks=["bash-guard"], budget="medium", reason="Starter generation should follow confirmed decisions.")

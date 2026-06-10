@@ -189,11 +189,21 @@
           "bootstrap",
           "bootstrap this repo",
           "start this repo",
+          "init this repo",
+          "init this workspace",
+          "initialize this repo",
+          "initialize this workspace",
+          "initialise this repo",
+          "initialise this workspace",
           "new repo",
           "empty repo",
           "resume from handoff",
           "previous handoff",
           "continuation notes"
+        ],
+        "anyPromptMatches": [
+          "\\b(init|initialize|initialise)\\b.{0,50}\\b(repo|repository|workspace|project)\\b",
+          "\\b(repo|repository|workspace|project)\\b.{0,50}\\b(init|initialize|initialise)\\b"
         ],
         "intentHints": [
           "setup"
@@ -451,6 +461,10 @@
       "match": {
         "anyPromptIncludes": [
           "agent scaffold",
+          "agent conventions",
+          "agent convention",
+          "agent policy",
+          "repo-local agent policy",
           "scaffold instructions",
           "set up instructions",
           "set this up",

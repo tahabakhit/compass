@@ -48,11 +48,25 @@ function formatRouteHint(routeHint) {
   if (!routeHint) return "";
   const skills = routeHint.skills.length > 0 ? routeHint.skills.join(", ") : "none";
   const roles = routeHint.agents.roles.length > 0 ? routeHint.agents.roles.join(", ") : "none";
+  const next = routeActionHint(routeHint);
   return `Sinan route: taskSize=${routeHint.taskSize}; intent=${routeHint.intent}; workflow=${
     routeHint.workflow || "none"
   }; nativeMode=${routeHint.nativeMode}; skills=${skills}; agents=${routeHint.agents.count} (${roles}); budget=${
     routeHint.budget
-  }. Reason: ${routeHint.reason}`;
+  }. Reason: ${routeHint.reason}${next}`;
+}
+
+function routeActionHint(routeHint) {
+  switch (routeHint.workflow) {
+    case "bootstrap":
+      return " Next: run the packaged Sinan CLI bootstrap for this target before asking stack questions or writing files.";
+    case "scaffold":
+      return " Next: run the packaged Sinan CLI audit/scaffold for this target before writing agent surfaces.";
+    case "starter":
+      return " Next: confirm bootstrap/scaffold gates first, then generate starter files only after product and architecture choices are clear.";
+    default:
+      return "";
+  }
 }
 
 function promptRouter(input = {}) {
@@ -70,6 +84,7 @@ if (require.main === module) {
 module.exports = {
   defaultPlatform,
   formatRouteHint,
+  routeActionHint,
   promptRouter,
   routeHintForInput,
   routeHintForPrompt,

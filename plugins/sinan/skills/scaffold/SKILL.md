@@ -21,9 +21,9 @@ Do not run `python3 -m scripts.sinan.cli` from the target repo or workspace; tha
 ## Workflow
 
 1. Inspect existing `.agents/`, `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `GLOSSARY.md`, `docs/adr/`, `docs/reference/`, `.planning/`, `.workflow-state/`, `.wiki/`, `.github/labels.yml`, `.github/workflows/`, and issue label/template conventions.
-2. If files exist, preserve manual text and only update marked Sinan blocks.
-3. Make `.agents/` the canonical shared repo-local policy bundle.
-4. Keep `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` as short entrypoints/mirrors pointing to `.agents/`.
+2. Make `.agents/` the canonical shared repo-local policy bundle. Managed `.agents/*` scaffold files are Sinan-owned and may be overwritten by explicit scaffold/update commands.
+3. Keep `AGENTS.md` as the shared agent entrypoint pointing to `.agents/`.
+4. Keep `CLAUDE.md` as a short Claude entrypoint that imports `AGENTS.md` first, then adds only Claude-specific tool, command, and permission notes.
 5. Create durable memory convention surfaces for `GLOSSARY.md`, `docs/adr/README.md`, and `docs/reference/README.md`; put actual terms and ADRs through `$decision-capture`.
 6. Create `.planning/` and `.workflow-state/` scaffold only for workspace targets; child repo transient planning and handoffs should live in the parent workspace.
 7. Propose the scaffold before writing unless the user explicitly asked to generate it.
@@ -34,7 +34,7 @@ Do not run `python3 -m scripts.sinan.cli` from the target repo or workspace; tha
 
 - `.agents/`: shared layout, workflow, routing, review, safety, and surface-specific rules.
 - `AGENTS.md`: short Codex entrypoint to `.agents/`.
-- `CLAUDE.md`: imports `.agents/README.md` and `.agents/surfaces/claude.md`.
+- `CLAUDE.md`: imports `AGENTS.md` and adds Claude-specific tool, command, and permission notes.
 - `.github/copilot-instructions.md`: short GitHub Copilot entrypoint to `.agents/`.
 - `GLOSSARY.md`: domain vocabulary conventions only until `$decision-capture` adds confirmed terms.
 - `docs/adr/README.md`: ADR conventions only until `$decision-capture` writes durable decisions.

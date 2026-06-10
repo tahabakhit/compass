@@ -1,6 +1,7 @@
-@.agents/README.md
-@.agents/surfaces/claude.md
+@AGENTS.md
 
 # Claude Entrypoint
 
-Keep shared repo policy in `.agents/`; keep only Claude-specific local notes here.
+- Use Claude plan mode for broad scaffold, architecture, and implementation work.
+- Use the installed Sinan plugin skills for routing. When deterministic checks are needed, run the packaged Sinan CLI from the installed plugin context instead of importing repo-local Python modules.
+- Keep only Claude-specific tool, command, and permission notes here; shared project policy belongs in `AGENTS.md` and `.agents/`.

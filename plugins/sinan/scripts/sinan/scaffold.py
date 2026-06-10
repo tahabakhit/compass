@@ -74,6 +74,11 @@ def reconcile(target: Path, desired: DesiredFile, mode: str) -> tuple[str | None
         return None, None
     if existing == desired.content:
         return None, None
+    if desired.path.startswith(".agents/"):
+        if mode in {"scaffold", "update"}:
+            write_text(path, desired.content)
+            return desired.path, None
+        return desired.path, None
     if has_marker(existing):
         if mode in {"scaffold", "update"}:
             next_content = replace_marked(existing, desired.content)
