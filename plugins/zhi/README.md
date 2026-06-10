@@ -7,9 +7,9 @@
 ╚══════╝╚══════╝╚═╝     ╚═╝     ╚══╝╚══╝ ╚═╝╚═╝  ╚═╝╚═╝
 ```
 
-[github.com/tahabakhit/llm-wiki](https://github.com/tahabakhit/llm-wiki)
+[github.com/tahabakhit/zhi](https://github.com/tahabakhit/zhi)
 
-Maintained fork of [github.com/nvk/llm-wiki](https://github.com/nvk/llm-wiki).
+Zhi packages the LLM Wiki workflow as a multi-runtime agent plugin.
 
 LLM-compiled knowledge bases for any AI agent. Parallel multi-agent research, collector catalogs, thesis-driven investigation, source ingestion, wiki compilation, truth-seeking audits, querying, and artifact generation. Ships as a Claude Code plugin, an OpenAI Codex plugin, an OpenCode instruction file, or a portable AGENTS.md for any other LLM agent. Obsidian-compatible.
 
@@ -45,16 +45,17 @@ runtime support for those local extensions.
 ## Install
 
 **Claude Code** (native plugin):
-```bash
-claude plugin install wiki@llm-wiki
-```
+
+The Claude package lives in `claude-plugin/`. Install it from a local checkout
+or from the generated marketplace package once your Claude marketplace source is
+configured.
 
 **OpenAI Codex** (marketplace plugin):
 
-Install from GitHub:
+Install from the Ming marketplace:
 ```bash
-codex plugin marketplace add tahabakhit/llm-wiki
-# Then open /plugins in Codex, enable "LLM Wiki", and use @wiki
+codex plugin marketplace add tahabakhit/ming --ref main
+codex plugin add zhi@ming
 ```
 
 Install from a local checkout with the managed bootstrap helper:
@@ -64,7 +65,7 @@ Install from a local checkout with the managed bootstrap helper:
 
 Or register the local checkout manually:
 ```bash
-codex plugin marketplace add /absolute/path/to/llm-wiki
+codex plugin marketplace add /absolute/path/to/zhi
 ```
 
 Canonical explicit invocation:
@@ -78,12 +79,13 @@ Canonical explicit invocation:
 
 Upgrade:
 ```bash
-codex plugin marketplace upgrade llm-wiki
+codex plugin marketplace add tahabakhit/ming --ref main
+codex plugin add zhi@ming
 ```
 
 Remove:
 ```bash
-codex plugin marketplace remove llm-wiki
+codex plugin remove zhi@ming
 ```
 
 Troubleshooting:
@@ -96,7 +98,7 @@ Troubleshooting:
 Add to your `opencode.json` (project-level or `~/.config/opencode/.opencode.json` for global):
 ```json
 {
-  "instructions": ["https://raw.githubusercontent.com/tahabakhit/llm-wiki/master/plugins/zhi-opencode/skills/wiki-manager/SKILL.md"],
+  "instructions": ["path/to/zhi/plugins/zhi-opencode/skills/wiki-manager/SKILL.md"],
   "permission": {
     "external_directory": {
       "~/.config/llm-wiki/**": "allow",
@@ -106,9 +108,9 @@ Add to your `opencode.json` (project-level or `~/.config/opencode/.opencode.json
 }
 ```
 
-OpenCode fetches the URL fresh on every session start — no manual updates needed. If you prefer a local copy instead:
+If you prefer to copy the instruction file instead:
 ```bash
-curl -sL https://raw.githubusercontent.com/tahabakhit/llm-wiki/master/plugins/zhi-opencode/skills/wiki-manager/SKILL.md > ~/.config/opencode/AGENTS.md
+cp path/to/zhi/plugins/zhi-opencode/skills/wiki-manager/SKILL.md ~/.config/opencode/AGENTS.md
 ```
 
 The `external_directory` permission is required because the wiki hub lives outside the project directory. Set the paths to match your hub location. Alternatively, use `--local` mode (`.wiki/` in the project) to skip permissions entirely.
@@ -120,13 +122,13 @@ Web search requires `export OPENCODE_ENABLE_EXA=1`.
 Pi's minimal system prompt (~1K tokens) leaves room for the full wiki skill on 32K context local models.
 
 ```bash
-pi --instructions path/to/llm-wiki/plugins/zhi-opencode/skills/wiki-manager/SKILL.md
+pi --instructions path/to/zhi/plugins/zhi-opencode/skills/wiki-manager/SKILL.md
 ```
 
 With a local llama-server backend (no cloud API needed):
 ```bash
 OPENAI_BASE_URL=http://127.0.0.1:8080/v1 OPENAI_API_KEY=local \
-  pi --instructions path/to/llm-wiki/plugins/zhi-opencode/skills/wiki-manager/SKILL.md
+  pi --instructions path/to/zhi/plugins/zhi-opencode/skills/wiki-manager/SKILL.md
 ```
 
 Pi uses the same OpenCode skill file — no separate packaging needed.
@@ -154,8 +156,8 @@ Claude Code is the principal user. Keep one shared behavior layer and thin packa
 
 | Client | Install method | System prompt size | Best for |
 |--------|---------------|-------------------|----------|
-| Claude Code | `claude plugin install wiki@llm-wiki` | ~22K tokens | Full agentic research, 200K context |
-| Codex | `codex plugin marketplace add tahabakhit/llm-wiki` | ~3K tokens | OpenAI ecosystem |
+| Claude Code | local `claude-plugin/` package | ~22K tokens | Full agentic research, 200K context |
+| Codex | `codex plugin add zhi@ming` | ~3K tokens | OpenAI ecosystem |
 | OpenCode | `opencode.json` instructions | ~3K tokens | Multi-provider, Go binary |
 | Pi | `--instructions SKILL.md` | ~1K tokens | Local models, minimal overhead |
 | Any agent | Copy `AGENTS.md` to project | Varies | Universal fallback |
@@ -179,20 +181,14 @@ Practical rule: design workflows first for Claude commands and behavior, but kee
 
 ## Upgrade
 
-**Claude Code** — if `claude plugin update` pulls the latest correctly:
-```bash
-claude plugin update wiki@llm-wiki
-# Restart Claude Code to apply
-```
-
-If the update command doesn't pick up the new version (stale marketplace cache), sync manually from the repo:
+**Claude Code** — sync manually from the repo when iterating locally:
 ```bash
 # Clone or pull the latest
-git clone https://github.com/tahabakhit/llm-wiki.git  # or: git -C ~/llm-wiki pull
+git clone https://github.com/tahabakhit/zhi.git  # or: git -C ~/zhi pull
 
 # Sync plugin files to Claude Code's plugin cache
-REPO=~/llm-wiki/claude-plugin
-DEST=~/.claude/plugins/cache/llm-wiki/wiki
+REPO=~/zhi/claude-plugin
+DEST=~/.claude/plugins/cache/zhi/zhi
 VERSION=$(grep '"version"' "$REPO/.claude-plugin/plugin.json" | grep -o '[0-9.]*')
 rm -rf "$DEST"/*
 mkdir -p "$DEST/$VERSION"
@@ -203,17 +199,18 @@ cp -R "$REPO/.claude-plugin" "$REPO/commands" "$REPO/skills" "$DEST/$VERSION/"
 
 **Codex** — upgrade from the marketplace:
 ```bash
-codex plugin marketplace upgrade llm-wiki
+codex plugin marketplace add tahabakhit/ming --ref main
+codex plugin add zhi@ming
 ```
 
-**OpenCode** — if using the GitHub URL in `instructions`, updates are automatic (fetched every session). If using a local copy:
+**OpenCode** — if using a local copy:
 ```bash
-curl -sL https://raw.githubusercontent.com/tahabakhit/llm-wiki/master/plugins/zhi-opencode/skills/wiki-manager/SKILL.md > ~/.config/opencode/AGENTS.md
+cp path/to/zhi/plugins/zhi-opencode/skills/wiki-manager/SKILL.md ~/.config/opencode/AGENTS.md
 ```
 
 **AGENTS.md** — just pull the latest and replace:
 ```bash
-curl -sL https://raw.githubusercontent.com/tahabakhit/llm-wiki/master/AGENTS.md > ~/your-project/AGENTS.md
+cp path/to/zhi/AGENTS.md ~/your-project/AGENTS.md
 ```
 
 Check your installed version:

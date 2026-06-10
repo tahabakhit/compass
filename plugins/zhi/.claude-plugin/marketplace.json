@@ -4,8 +4,7 @@
   "version": "0.10.3",
   "description": "Zhi paper-inspired knowledge-base plugin marketplace.",
   "owner": {
-    "name": "tahabakhit",
-    "email": "taha.bakhit@m10s.io"
+    "name": "tahabakhit"
   },
   "plugins": [
     {
@@ -17,8 +16,8 @@
         "name": "nvk + tahabakhit",
         "url": "https://github.com/tahabakhit"
       },
-      "homepage": "https://github.com/tahabakhit/llm-wiki",
-      "repository": "https://github.com/tahabakhit/llm-wiki",
+      "homepage": "https://github.com/tahabakhit/zhi",
+      "repository": "https://github.com/tahabakhit/zhi",
       "license": "MIT",
       "keywords": [
         "zhi",

@@ -6,8 +6,8 @@
     "name": "nvk + tahabakhit",
     "url": "https://github.com/tahabakhit"
   },
-  "homepage": "https://github.com/tahabakhit/llm-wiki",
-  "repository": "https://github.com/tahabakhit/llm-wiki",
+  "homepage": "https://github.com/tahabakhit/zhi",
+  "repository": "https://github.com/tahabakhit/zhi",
   "license": "MIT",
   "keywords": [
     "zhi",
@@ -40,7 +40,7 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/tahabakhit/llm-wiki",
+    "websiteURL": "https://github.com/tahabakhit/zhi",
     "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
     "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
     "defaultPrompt": [

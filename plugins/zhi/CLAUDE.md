@@ -1,4 +1,4 @@
-# llm-wiki Development Guide
+# Zhi Development Guide
 
 ## Testing
 
@@ -88,8 +88,8 @@ tests/                          — test suite (see above)
 
 ## Release Process
 
-Canonical development now happens in `/Users/taha.bakhit@m10s.io/projects/personal/repos/agent-plugins/zhi`.
-The Ming marketplace copy at `/Users/taha.bakhit@m10s.io/projects/personal/repos/agent-marketplaces/ming/plugins/zhi`
+Canonical development happens in this repository.
+The Ming marketplace copy at `plugins/zhi`
 is generated release output, not the place to do source edits.
 
 Use the package scripts for the normal loop:
