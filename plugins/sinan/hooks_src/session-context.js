@@ -1,22 +1,20 @@
 #!/usr/bin/env node
 "use strict";
 
-const { repoSnapshot, runHook } = require("./hook-runtime");
+const { additionalContextOutput, repoSnapshot, runHook } = require("./hook-runtime");
 
 function sessionContext(input = {}) {
   const snapshot = repoSnapshot(input);
-  return {
-    action: "continue",
-    hook: "session-context",
-    context: {
-      ...snapshot,
-      guidance: [
-        "Keep startup context lightweight.",
-        "Use workflows only when route size justifies them.",
-        "Treat old Sinan source as read-only evidence unless explicitly asked.",
-      ],
-    },
-  };
+  const lines = [
+    "Sinan startup context:",
+    `- cwd: ${snapshot.cwd}`,
+    `- repoRoot: ${snapshot.repoRoot || "unknown"}`,
+    `- branch: ${snapshot.git.branch || "unknown"}`,
+    `- dirty: ${snapshot.git.dirty ? "yes" : "no"}`,
+    "- guidance: keep startup context light; use workflows only when route size justifies them.",
+  ];
+  if (snapshot.git.summary.length > 0) lines.push(`- changed files: ${snapshot.git.summary.join("; ")}`);
+  return additionalContextOutput("SessionStart", lines.join("\n"));
 }
 
 if (require.main === module) {

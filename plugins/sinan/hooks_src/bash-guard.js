@@ -87,7 +87,16 @@ function evaluateCommand(command) {
 }
 
 function bashGuard(input = {}) {
-  return evaluateCommand(extractCommand(input));
+  const result = evaluateCommand(extractCommand(input));
+  if (result.decision !== "block") return null;
+
+  return {
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "deny",
+      permissionDecisionReason: `${result.reason} Rule: ${result.rule}.`,
+    },
+  };
 }
 
 if (require.main === module) {

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 
-const { extractPrompt, runHook } = require("./hook-runtime");
+const { additionalContextOutput, extractPrompt, runHook } = require("./hook-runtime");
 
 function normalizePrompt(prompt) {
   return String(prompt || "")
@@ -203,22 +203,23 @@ function routeHintForPrompt(prompt, platform = "codex") {
   return baseRoute({});
 }
 
+function formatRouteHint(routeHint) {
+  if (!routeHint) return "";
+  const skills = routeHint.skills.length > 0 ? routeHint.skills.join(", ") : "none";
+  const roles = routeHint.agents.roles.length > 0 ? routeHint.agents.roles.join(", ") : "none";
+  return `Sinan route: taskSize=${routeHint.taskSize}; intent=${routeHint.intent}; workflow=${
+    routeHint.workflow || "none"
+  }; nativeMode=${routeHint.nativeMode}; skills=${skills}; agents=${routeHint.agents.count} (${roles}); budget=${
+    routeHint.budget
+  }. Reason: ${routeHint.reason}`;
+}
+
 function promptRouter(input = {}) {
   const prompt = extractPrompt(input);
-  if (!prompt) {
-    return {
-      action: "continue",
-      hook: "prompt-router",
-      routeHint: null,
-      reason: "No prompt found.",
-    };
-  }
+  if (!prompt) return null;
 
-  return {
-    action: "continue",
-    hook: "prompt-router",
-    routeHint: routeHintForPrompt(prompt, input.platform || "codex"),
-  };
+  const routeHint = routeHintForPrompt(prompt, input.platform || "codex");
+  return additionalContextOutput("UserPromptSubmit", formatRouteHint(routeHint));
 }
 
 if (require.main === module) {
@@ -226,6 +227,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  formatRouteHint,
   promptRouter,
   routeHintForPrompt,
 };

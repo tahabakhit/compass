@@ -24,6 +24,7 @@ function parseInput(source) {
 }
 
 function printResult(result) {
+  if (result === null || result === undefined || result === "") return;
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
 }
 
@@ -32,14 +33,20 @@ function runHook(handler) {
     const result = handler(parseInput(readStdin()));
     printResult(result);
   } catch (error) {
-    printResult({
-      action: "continue",
-      hook: "unknown",
-      severity: "error",
-      reason: error.message,
-    });
+    process.stderr.write(`Sinan hook error: ${error.message}\n`);
     process.exitCode = 1;
   }
+}
+
+function additionalContextOutput(hookEventName, additionalContext, extra = {}) {
+  if (!additionalContext) return null;
+  return {
+    hookSpecificOutput: {
+      hookEventName,
+      additionalContext,
+      ...extra,
+    },
+  };
 }
 
 function safeCwd(value) {
@@ -111,6 +118,7 @@ function isMeaningfulWork(input = {}) {
 
 module.exports = {
   ROOT,
+  additionalContextOutput,
   extractCommand,
   extractPrompt,
   isMeaningfulWork,
