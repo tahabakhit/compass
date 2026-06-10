@@ -13,10 +13,12 @@ const PACKAGE_FILES = ["package.json", "pnpm-lock.yaml", "yarn.lock", "package-l
 const APP_HINTS = ["src", "app", "pages", "public", "index.html", "vite.config.js", "next.config.js"];
 
 function parseArgs(argv) {
-  const args = { target: process.cwd(), json: false };
+  const args = { target: process.cwd(), json: false, persist: false, output: null };
   for (let index = 2; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--target") args.target = argv[++index];
+    else if (arg === "--persist") args.persist = true;
+    else if (arg === "--output") args.output = argv[++index];
     else if (arg === "--json") args.json = true;
     else if (arg === "--help") {
       printHelp();
@@ -29,7 +31,7 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  console.log(`Usage: node scripts/bootstrap-report.js [--target <repo>] [--json]
+  console.log(`Usage: node scripts/bootstrap-report.js [--target <repo>] [--persist|--output <file>] [--json]
 
 Inspects repo startup state, prior handoffs, and recommended Sinan next steps.
 `);
@@ -239,6 +241,15 @@ function buildReport(target) {
   };
 }
 
+function writePlanOutput(report, options = {}) {
+  const outputPath = options.output
+    ? path.resolve(options.output)
+    : path.join(report.target, ".sinan", "plans", "bootstrap-report.json");
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
+  return outputPath;
+}
+
 function printText(report) {
   console.log("bootstrap report");
   console.log(`target: ${report.target}`);
@@ -260,6 +271,9 @@ function printText(report) {
 function main() {
   const args = parseArgs(process.argv);
   const report = buildReport(args.target);
+  if (args.persist || args.output) {
+    report.planPath = writePlanOutput(report, args);
+  }
   if (args.json) process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
   else printText(report);
 }
@@ -278,4 +292,5 @@ module.exports = {
   buildPlan,
   classifyState,
   recommendSteps,
+  writePlanOutput,
 };

@@ -5,11 +5,13 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 function parseArgs(argv) {
-  const args = { target: process.cwd(), json: false, framework: null };
+  const args = { target: process.cwd(), json: false, framework: null, persist: false, output: null };
   for (let index = 2; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--target") args.target = argv[++index];
     else if (arg === "--framework") args.framework = argv[++index];
+    else if (arg === "--persist") args.persist = true;
+    else if (arg === "--output") args.output = argv[++index];
     else if (arg === "--json") args.json = true;
     else if (arg === "--help") {
       printHelp();
@@ -22,7 +24,7 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  console.log(`Usage: node scripts/starter-plan.js [--target <repo>] [--framework <name>] [--json]
+  console.log(`Usage: node scripts/starter-plan.js [--target <repo>] [--framework <name>] [--persist|--output <file>] [--json]
 
 Produces a dry-run starter file plan. This command writes no files.
 `);
@@ -139,6 +141,15 @@ function buildPlan(options = {}) {
   };
 }
 
+function writePlanOutput(plan, options = {}) {
+  const outputPath = options.output
+    ? path.resolve(options.output)
+    : path.join(plan.target, ".sinan", "plans", "starter-plan.json");
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, `${JSON.stringify(plan, null, 2)}\n`);
+  return outputPath;
+}
+
 function printText(plan) {
   console.log("starter plan");
   console.log(`target: ${plan.target}`);
@@ -157,6 +168,9 @@ function printText(plan) {
 function main() {
   const args = parseArgs(process.argv);
   const plan = buildPlan(args);
+  if (args.persist || args.output) {
+    plan.planPath = writePlanOutput(plan, args);
+  }
   if (args.json) process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`);
   else printText(plan);
 }
@@ -174,4 +188,5 @@ module.exports = {
   buildPlan,
   detectFramework,
   filePlanFor,
+  writePlanOutput,
 };
