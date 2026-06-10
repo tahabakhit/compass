@@ -1,6 +1,6 @@
 {
   "name": "sinan",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Codex-first orchestration plugin with small skills, deterministic routing, declarative workflows, and a four-hook core.",
   "author": {
     "name": "Sinan"
