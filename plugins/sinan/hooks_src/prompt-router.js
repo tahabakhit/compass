@@ -179,6 +179,12 @@ function routeHintForPrompt(prompt, platform = "codex") {
     });
   }
 
+  if (/\b(add this to wiki|capture this knowledge|save this to wiki|save to personal wiki|remember this)\b/.test(normalized)) {
+    return baseRoute({
+      reason: "Knowledge capture should draft or route to Zhi when available.",
+    });
+  }
+
   if (/\b(audit|research|compare|design)\b/.test(normalized)) {
     return baseRoute({
       taskSize: "workflow",

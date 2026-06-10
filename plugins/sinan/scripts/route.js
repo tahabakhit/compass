@@ -66,7 +66,7 @@ function defaultInput(prompt) {
       dirty: false,
       summary: "",
     },
-    sinanState: {},
+    workflowState: {},
     platform: "codex",
     nativeCapabilities: {
       planMode: true,
@@ -161,6 +161,20 @@ function fallbackRoute(input) {
       hooks: ["bash-guard"],
       budget: "medium",
       reason: "Bootstrap should inspect repo state and handoffs before choosing startup steps.",
+    };
+  }
+
+  if (/\b(add this to wiki|capture this knowledge|save this to wiki|save to personal wiki|remember this)\b/.test(prompt)) {
+    return {
+      taskSize: "light",
+      intent: "research",
+      workflow: null,
+      nativeMode: "none",
+      skills: [],
+      agents: { count: 0, roles: [] },
+      hooks: [],
+      budget: "small",
+      reason: "Knowledge capture should draft or route to Zhi when available.",
     };
   }
 

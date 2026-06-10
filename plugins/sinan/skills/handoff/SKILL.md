@@ -7,6 +7,9 @@ description: Use when work must be compacted into current state, decisions, vali
 
 Use this skill when work needs to be resumed later or transferred to another agent.
 
+Canonical handoffs live under `.planning/handoffs/` and use
+`YYYY-MM-DD-HHMM-short-title.md`.
+
 ## Include
 
 - Current objective and repo path.

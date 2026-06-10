@@ -12,21 +12,24 @@ This is not an app generator. Use `$bootstrap` for startup sequencing and `$star
 
 ## Workflow
 
-1. Inspect existing `AGENTS.md`, `CLAUDE.md`, `GLOSSARY.md`, `docs/adr/`, `.github/labels.yml`, `.github/workflows/`, and issue label conventions.
+1. Inspect existing `AGENTS.md`, `CLAUDE.md`, `GLOSSARY.md`, `docs/adr/`, `.planning/`, `.workflow-state/`, `.wiki/`, `.github/labels.yml`, `.github/workflows/`, and issue label conventions.
 2. If files exist, preserve manual text and only update marked Sinan blocks.
 3. Make `AGENTS.md` the canonical shared project guidance.
 4. Make `CLAUDE.md` import `AGENTS.md`, then add only Claude Code-specific notes.
-5. Create empty memory convention surfaces for `GLOSSARY.md` and `docs/adr/README.md`; put actual terms and ADRs through `$decision-capture`.
+5. Create empty memory convention surfaces for `GLOSSARY.md`, `docs/adr/README.md`, `.planning/`, and `.workflow-state/`; put actual terms and ADRs through `$decision-capture`.
 6. Propose the scaffold before writing unless the user explicitly asked to generate it.
 7. Run `node scripts/scaffold-instructions.js --target <repo>` to write, or `--check` to verify.
 8. If `.github/labels.yml` or `.github/workflows/agent-checks.yml` already exist without Sinan markers, preserve them and report that manual files were skipped.
 
 ## Defaults
 
-- `AGENTS.md`: shared context, Sinan workflows, Codex-facing operating rules.
+- `AGENTS.md`: shared context, Sinan workflows, and cross-agent operating rules.
 - `CLAUDE.md`: `@AGENTS.md` plus Claude Code-specific tool and planning notes.
 - `GLOSSARY.md`: domain vocabulary conventions only until `$decision-capture` adds confirmed terms.
 - `docs/adr/README.md`: ADR conventions only until `$decision-capture` writes durable decisions.
+- `.planning/`: human-readable working memory, templates, campaigns, plans, reviews, and handoffs.
+- `.workflow-state/`: generated machine-readable workflow state.
+- `.wiki/` and `~/.wiki/`: repo-local and personal/global durable knowledge, with writes routed through Zhi when available.
 - `.github/labels.yml`: small triage label manifest for humans or label-sync tooling.
 - `.github/workflows/agent-checks.yml`: lightweight workflow that checks expected agent guidance files exist.
 - GitHub labels: prefer a small triage vocabulary such as `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `bug`, `enhancement`, `docs`, and `architecture`.

@@ -370,7 +370,7 @@
           "bash-guard"
         ],
         "budget": "medium",
-        "reason": "Deletion needs inventory, replacement coverage, and review."
+        "reason": "Deletion needs inspection, replacement coverage, and review."
       }
     },
     {
@@ -433,6 +433,36 @@
         "hooks": [],
         "budget": "small",
         "reason": "Focused continuation summary; no workflow needed."
+      }
+    },
+    {
+      "id": "knowledge-capture",
+      "priority": 64,
+      "match": {
+        "anyPromptIncludes": [
+          "add this to wiki",
+          "capture this knowledge",
+          "save this to wiki",
+          "save to personal wiki",
+          "remember this"
+        ],
+        "intentHints": [
+          "research"
+        ]
+      },
+      "route": {
+        "taskSize": "light",
+        "intent": "research",
+        "workflow": null,
+        "nativeMode": "none",
+        "skills": [],
+        "agents": {
+          "count": 0,
+          "roles": []
+        },
+        "hooks": [],
+        "budget": "small",
+        "reason": "Knowledge capture should draft or route to Zhi when available."
       }
     },
     {

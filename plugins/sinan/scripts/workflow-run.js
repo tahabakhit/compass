@@ -147,7 +147,7 @@ function createRunId(workflowId, target, options = {}) {
 }
 
 function statePathFor(workflow, target, runId) {
-  const stateDir = workflow.resume ? workflow.resume.state_dir : ".sinan/runs";
+  const stateDir = workflow.resume ? workflow.resume.state_dir : ".workflow-state/runs";
   return path.join(path.resolve(target), stateDir, `${runId}.json`);
 }
 

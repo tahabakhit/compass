@@ -127,7 +127,7 @@
     },
     {
       "id": "broad-research-audit",
-      "prompt": "Audit old Sinan and design v2.",
+      "prompt": "Audit this orchestration plugin and design v2.",
       "expected": {
         "route": {
           "taskSize": "workflow",

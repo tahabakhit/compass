@@ -5,8 +5,8 @@ const childProcess = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const HANDOFF_PATHS = ["HANDOFF.md", "handoff.md", "docs/HANDOFF.md", "docs/handoff.md"];
-const RUN_DIRS = [".sinan/runs", ".planning/sinan"];
+const PLANNING_HANDOFF_DIR = ".planning/handoffs";
+const RUN_DIRS = [".workflow-state/runs"];
 const AGENT_FILES = ["AGENTS.md", "CLAUDE.md"];
 const MEMORY_FILES = ["GLOSSARY.md", "docs/adr"];
 const PACKAGE_FILES = ["package.json", "pnpm-lock.yaml", "yarn.lock", "package-lock.json", "bun.lockb", "bun.lock"];
@@ -100,21 +100,23 @@ function detectFrameworks(target, packageJson) {
 }
 
 function detectHandoffs(target) {
-  const seenFiles = new Set();
   const files = [];
-  for (const relativePath of HANDOFF_PATHS) {
-    const filePath = path.join(target, relativePath);
-    if (!fs.existsSync(filePath)) continue;
-    const realPath = fs.realpathSync(filePath).toLowerCase();
-    if (seenFiles.has(realPath)) continue;
-    seenFiles.add(realPath);
-    files.push(relativePath);
+  const planningHandoffs = [];
+  const planningDir = path.join(target, PLANNING_HANDOFF_DIR);
+  if (fs.existsSync(planningDir) && fs.statSync(planningDir).isDirectory()) {
+    for (const name of fs.readdirSync(planningDir).sort()) {
+      if (name.startsWith(".") || !name.endsWith(".md")) continue;
+      const relativePath = path.join(PLANNING_HANDOFF_DIR, name);
+      planningHandoffs.push(relativePath);
+      files.push(relativePath);
+    }
   }
   const runDirs = RUN_DIRS.filter((relativePath) => isDirectory(target, relativePath));
   const continuationFiles = listTopLevel(target).filter((name) => /continuation|resume/i.test(name));
   return {
     found: files.length > 0 || runDirs.length > 0 || continuationFiles.length > 0,
     files,
+    planningHandoffs,
     runDirs,
     continuationFiles,
   };
@@ -160,7 +162,7 @@ function recommendSteps(state, signals) {
 function commandForStep(step, target) {
   const quotedTarget = JSON.stringify(target);
   const commands = {
-    handoff: "Read the existing handoff before changing files.",
+    handoff: "Read .planning/handoffs/ before changing files.",
     brainstorm: "Use $brainstorm to clarify users, constraints, non-goals, and first vertical slice.",
     "decision-capture": "Use $decision-capture after terms or decisions stabilize.",
     architecture: "Use $architecture to choose boundaries, modules, data shape, integrations, and first slice.",
@@ -172,7 +174,7 @@ function commandForStep(step, target) {
 }
 
 function reasonForStep(step, state, signals) {
-  if (step === "handoff") return "Prior handoff or continuation state exists; read it before proposing startup work.";
+  if (step === "handoff") return "Prior handoff or continuation state exists; read canonical planning handoffs before proposing startup work.";
   if (step === "brainstorm") return "No durable project memory was detected; clarify direction before writing decisions.";
   if (step === "decision-capture") return "No GLOSSARY.md or ADR directory was detected; stable terms and decisions need a home.";
   if (step === "architecture") return "No ADR directory was detected; choose boundaries before starter or implementation work.";
@@ -244,7 +246,7 @@ function buildReport(target) {
 function writePlanOutput(report, options = {}) {
   const outputPath = options.output
     ? path.resolve(options.output)
-    : path.join(report.target, ".sinan", "plans", "bootstrap-report.json");
+    : path.join(report.target, ".workflow-state", "plans", "bootstrap-report.json");
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
   return outputPath;

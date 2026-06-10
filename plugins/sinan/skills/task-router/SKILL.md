@@ -18,7 +18,6 @@ Use this skill when the user wants Sinan to choose the right work shape for a re
 
 ## Guardrails
 
-- Do not copy old Sinan skill bodies into the active context.
-- Do not mutate old Sinan evidence directories.
+- Do not copy retired skill bodies into the active context.
 - Do not allocate agents for micro tasks.
 - Keep generated or persisted state under the paths declared by the workflow runner.

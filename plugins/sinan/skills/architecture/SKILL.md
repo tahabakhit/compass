@@ -1,12 +1,12 @@
 ---
 name: architecture
-description: Use when a design needs architecture review for simpler boundaries, lower coupling, migration sequencing, or better testability.
+description: Use when a design needs architecture review for simpler boundaries, lower coupling, change sequencing, or better testability.
 disable-model-invocation: true
 ---
 
 # Architecture
 
-Use this skill for structural design, simplification, and migration planning.
+Use this skill for structural design, simplification, and change planning.
 
 ## Workflow
 

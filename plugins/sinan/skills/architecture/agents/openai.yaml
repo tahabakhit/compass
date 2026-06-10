@@ -1,6 +1,6 @@
 interface:
   display_name: "Architecture"
-  short_description: "Simplify boundaries and migration plans"
+  short_description: "Simplify boundaries and change plans"
   default_prompt: "Use $architecture to review this design for simpler boundaries."
 policy:
   allow_implicit_invocation: false

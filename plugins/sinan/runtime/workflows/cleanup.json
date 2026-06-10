@@ -1,11 +1,11 @@
 {
   "id": "cleanup",
-  "description": "Delete, migrate, or reorganize only after evidence and checks.",
+  "description": "Delete, move, or reorganize only after evidence and checks.",
   "triggers": [
     "cleanup",
     "delete",
     "prune",
-    "migrate",
+    "move",
     "reorganize"
   ],
   "mode": {
@@ -17,7 +17,7 @@
   },
   "phases": [
     {
-      "id": "inventory"
+      "id": "inspect"
     },
     {
       "id": "classify"
@@ -36,7 +36,7 @@
     }
   ],
   "gates": [
-    "inventory-recorded",
+    "evidence-recorded",
     "replacement-coverage-exists",
     "tests-pass",
     "diff-reviewed"
@@ -47,7 +47,7 @@
     "max_minutes": 75
   },
   "resume": {
-    "state_dir": ".sinan/runs",
+    "state_dir": ".workflow-state/runs",
     "persist": "summaries_only"
   }
 }

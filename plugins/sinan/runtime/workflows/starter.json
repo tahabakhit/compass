@@ -49,7 +49,7 @@
     "max_minutes": 45
   },
   "resume": {
-    "state_dir": ".sinan/runs",
+    "state_dir": ".workflow-state/runs",
     "persist": "summaries_only"
   }
 }

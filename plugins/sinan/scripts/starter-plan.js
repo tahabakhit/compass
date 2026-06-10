@@ -144,7 +144,7 @@ function buildPlan(options = {}) {
 function writePlanOutput(plan, options = {}) {
   const outputPath = options.output
     ? path.resolve(options.output)
-    : path.join(plan.target, ".sinan", "plans", "starter-plan.json");
+    : path.join(plan.target, ".workflow-state", "plans", "starter-plan.json");
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, `${JSON.stringify(plan, null, 2)}\n`);
   return outputPath;

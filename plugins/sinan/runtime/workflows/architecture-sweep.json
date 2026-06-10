@@ -34,7 +34,7 @@
   "gates": [
     "boundaries-named",
     "tradeoffs-recorded",
-    "migration-sequence-clear"
+    "change-sequence-clear"
   ],
   "budget": {
     "default_agents": 1,
@@ -42,7 +42,7 @@
     "max_minutes": 75
   },
   "resume": {
-    "state_dir": ".sinan/runs",
+    "state_dir": ".workflow-state/runs",
     "persist": "summaries_only"
   }
 }
