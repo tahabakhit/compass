@@ -1,6 +1,6 @@
 {
   "name": "sinan",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Cross-agent orchestration plugin with small skills, deterministic routing, declarative workflows, and a four-hook core.",
   "author": {
     "name": "Sinan"

@@ -49,6 +49,17 @@ function additionalContextOutput(hookEventName, additionalContext, extra = {}) {
   };
 }
 
+function shellQuote(value) {
+  const text = String(value);
+  if (/^[A-Za-z0-9_./:@%+=,-]+$/.test(text)) return text;
+  return `'${text.replace(/'/g, "'\\''")}'`;
+}
+
+function sinanCliCommand() {
+  const python = process.env.PYTHON || "python3";
+  return `${shellQuote(python)} ${shellQuote(path.join(ROOT, "scripts", "sinan", "run.py"))}`;
+}
+
 function safeCwd(value) {
   const cwd = value || process.cwd();
   return path.resolve(cwd);
@@ -127,4 +138,6 @@ module.exports = {
   repoSnapshot,
   runHook,
   safeCwd,
+  shellQuote,
+  sinanCliCommand,
 };

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import shlex
 from pathlib import Path
 from typing import Any
 
+from . import ROOT
 from .detect import (
     APP_HINTS,
     PACKAGE_FILES,
@@ -103,13 +105,14 @@ def recommend_steps(state: str, signals: dict[str, Any]) -> dict[str, Any]:
 
 
 def command_for_step(step: str, target: Path) -> str:
-    quoted = str(target)
+    quoted = shlex.quote(str(target))
+    sinan = f"python3 {shlex.quote(str(ROOT / 'scripts' / 'sinan' / 'run.py'))}"
     return {
         "handoff": "Read the latest handoff before changing files.",
         "brainstorm": "Use $brainstorm to clarify users, constraints, non-goals, and first vertical slice.",
         "decision-capture": "Use $decision-capture after terms or decisions stabilize.",
         "architecture": "Use $architecture to choose boundaries, modules, data shape, integrations, and first slice.",
-        "scaffold": f"python3 -m scripts.sinan.cli scaffold --target {quoted}",
+        "scaffold": f"{sinan} scaffold --target {quoted}",
         "starter": "Use $starter after decisions are confirmed.",
         "tdd": "Use $tdd for the next verified implementation slice.",
     }[step]

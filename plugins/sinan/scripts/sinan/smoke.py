@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 import tempfile
@@ -24,20 +23,17 @@ def smoke_hook_runtime(plugin_root: Path) -> None:
 
 
 def smoke_python_cli(plugin_root: Path) -> None:
-    env = dict(os.environ)
-    env["PYTHONPATH"] = str(plugin_root)
+    runner = plugin_root / "scripts" / "sinan" / "run.py"
     bootstrap = subprocess.check_output(
-        [sys.executable, "-m", "scripts.sinan.cli", "bootstrap", "--target", str(plugin_root), "--json"],
-        cwd=plugin_root,
-        env=env,
+        [sys.executable, str(runner), "bootstrap", "--target", str(plugin_root), "--json"],
+        cwd=Path(tempfile.gettempdir()),
         text=True,
     )
     if json.loads(bootstrap)["state"] not in {"established", "app-started", "foundation-only"}:
         raise AssertionError("packaged bootstrap did not inspect the plugin root")
     route = subprocess.check_output(
-        [sys.executable, "-m", "scripts.sinan.cli", "route", "--prompt", "Add OAuth login.", "--json"],
-        cwd=plugin_root,
-        env=env,
+        [sys.executable, str(runner), "route", "--prompt", "Add OAuth login.", "--json"],
+        cwd=Path(tempfile.gettempdir()),
         text=True,
     )
     if json.loads(route)["workflow"] != "implement":
@@ -45,9 +41,8 @@ def smoke_python_cli(plugin_root: Path) -> None:
     target = Path(tempfile.mkdtemp(prefix="sinan-packaged-target-"))
     try:
         subprocess.check_call(
-            [sys.executable, "-m", "scripts.sinan.cli", "scaffold", "--target", str(target), "--repo-type", "library", "--json"],
-            cwd=plugin_root,
-            env=env,
+            [sys.executable, str(runner), "scaffold", "--target", str(target), "--repo-type", "library", "--json"],
+            cwd=Path(tempfile.gettempdir()),
             stdout=subprocess.DEVNULL,
         )
         for command in [
@@ -59,13 +54,13 @@ def smoke_python_cli(plugin_root: Path) -> None:
             ["explain-surfaces", "--target", str(target), "--repo-type", "library", "--json"],
             ["update-research", "--target", str(target), "--json"],
         ]:
-            subprocess.check_call([sys.executable, "-m", "scripts.sinan.cli", *command], cwd=plugin_root, env=env, stdout=subprocess.DEVNULL)
+            subprocess.check_call([sys.executable, str(runner), *command], cwd=Path(tempfile.gettempdir()), stdout=subprocess.DEVNULL)
     finally:
         import shutil
 
         shutil.rmtree(target, ignore_errors=True)
-    subprocess.check_call([sys.executable, "-m", "scripts.sinan.cli", "test"], cwd=plugin_root, env=env, stdout=subprocess.DEVNULL)
-    subprocess.check_call([sys.executable, "-m", "scripts.sinan.cli", "package-check", "--check"], cwd=plugin_root, env=env)
+    subprocess.check_call([sys.executable, str(runner), "test"], cwd=Path(tempfile.gettempdir()), stdout=subprocess.DEVNULL)
+    subprocess.check_call([sys.executable, str(runner), "package-check", "--check"], cwd=Path(tempfile.gettempdir()))
 
 
 def run_smoke() -> dict[str, Any]:

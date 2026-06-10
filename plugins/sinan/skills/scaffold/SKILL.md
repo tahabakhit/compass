@@ -10,6 +10,14 @@ Use this skill when a repo needs agent-facing policy, memory conventions, GitHub
 
 This is not an app generator. Use `$bootstrap` for startup sequencing and `$starter` for generating the initial framework/app files.
 
+## Packaged CLI
+
+Use the `sinanCli` command from Sinan startup context for deterministic CLI work. It points at this installed plugin's `scripts/sinan/run.py` wrapper and works from any current directory.
+
+If startup context is unavailable, derive the plugin root from this skill's installed path and run `python3 "<plugin-root>/scripts/sinan/run.py" <command> ...`.
+
+Do not run `python3 -m scripts.sinan.cli` from the target repo or workspace; that import only works when Python is already anchored to the Sinan plugin root.
+
 ## Workflow
 
 1. Inspect existing `.agents/`, `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `GLOSSARY.md`, `docs/adr/`, `docs/reference/`, `.planning/`, `.workflow-state/`, `.wiki/`, `.github/labels.yml`, `.github/workflows/`, and issue label/template conventions.
@@ -19,7 +27,7 @@ This is not an app generator. Use `$bootstrap` for startup sequencing and `$star
 5. Create durable memory convention surfaces for `GLOSSARY.md`, `docs/adr/README.md`, and `docs/reference/README.md`; put actual terms and ADRs through `$decision-capture`.
 6. Create `.planning/` and `.workflow-state/` scaffold only for workspace targets; child repo transient planning and handoffs should live in the parent workspace.
 7. Propose the scaffold before writing unless the user explicitly asked to generate it.
-8. Run `python3 -m scripts.sinan.cli audit --target <repo>` for advisory audit, `python3 -m scripts.sinan.cli scaffold --target <repo>` to write, or `python3 -m scripts.sinan.cli enforce --target <repo>` for opt-in failing verification.
+8. Run `<sinanCli> audit --target <repo>` for advisory audit, `<sinanCli> scaffold --target <repo>` to write, or `<sinanCli> enforce --target <repo>` for opt-in failing verification.
 9. If `.github/labels.yml`, `.github/workflows/agent-checks.yml`, or GitHub templates already exist without Sinan markers, preserve them and report that manual files were skipped.
 
 ## Defaults

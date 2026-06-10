@@ -3,9 +3,9 @@
 
 const childProcess = require("node:child_process");
 const path = require("node:path");
-const { additionalContextOutput, extractPrompt, runHook } = require("./hook-runtime");
+const { ROOT, additionalContextOutput, extractPrompt, runHook } = require("./hook-runtime");
 
-const ROOT = path.resolve(__dirname, "..");
+const RUNNER = path.join(ROOT, "scripts", "sinan", "run.py");
 
 function pythonCommand() {
   return process.env.PYTHON || "python3";
@@ -29,7 +29,7 @@ function routeHintForInput(input = {}) {
   };
   const output = childProcess.execFileSync(
     pythonCommand(),
-    ["-m", "scripts.sinan.cli", "route", "--input-json", JSON.stringify(routeInput), "--json"],
+    [RUNNER, "route", "--input-json", JSON.stringify(routeInput), "--json"],
     {
       cwd: ROOT,
       encoding: "utf8",

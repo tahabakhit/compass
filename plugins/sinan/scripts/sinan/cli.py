@@ -152,7 +152,7 @@ def command_update_research(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="python3 -m scripts.sinan.cli")
+    parser = argparse.ArgumentParser(prog="sinan")
     sub = parser.add_subparsers(dest="command", required=True)
 
     bootstrap = sub.add_parser("bootstrap")

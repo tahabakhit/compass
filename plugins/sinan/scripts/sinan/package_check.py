@@ -95,6 +95,7 @@ def assert_package_footprint(result: dict[str, Any]) -> None:
             raise AssertionError(f"package footprint includes dev-only path: {path}")
     required = [
         "scripts/sinan/cli.py",
+        "scripts/sinan/run.py",
         "policies/repo-types.yml",
         "templates/agents/README.md.j2",
         "templates/agents/config.yml.j2",

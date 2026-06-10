@@ -47,6 +47,7 @@ const ALLOW_PATTERNS = [
   /\bnpm\s+test\b/,
   /\bnpm\s+run\s+[a-z0-9:-]+\b/,
   /\bpython3?\s+-m\s+scripts\.sinan\.cli\b/,
+  /\bpython3?\b[^\n]*scripts\/sinan\/run\.py\b/,
 ];
 
 function normalizeCommand(command) {
