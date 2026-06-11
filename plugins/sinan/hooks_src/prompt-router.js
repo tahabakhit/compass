@@ -57,16 +57,23 @@ function formatRouteHint(routeHint) {
 }
 
 function routeActionHint(routeHint) {
+  const parts = [];
   switch (routeHint.workflow) {
     case "bootstrap":
-      return " Next: run the packaged Sinan CLI bootstrap for this target before asking stack questions or writing files.";
+      parts.push("run the packaged Sinan CLI bootstrap for this target before asking stack questions or writing files");
+      break;
     case "scaffold":
-      return " Next: run the packaged Sinan CLI audit/scaffold for this target before writing agent surfaces.";
+      parts.push("run the packaged Sinan CLI audit/scaffold for this target before writing agent surfaces");
+      break;
     case "starter":
-      return " Next: confirm bootstrap/scaffold gates first, then generate starter files only after product and architecture choices are clear.";
+      parts.push("confirm bootstrap/scaffold gates first, then generate starter files only after product and architecture choices are clear");
+      break;
     default:
-      return "";
+      break;
   }
+  if (routeHint.nextCommand) parts.push(`required first command: \`${routeHint.nextCommand}\` (substitute the packaged sinanCli)`);
+  if (parts.length === 0) return "";
+  return ` Next: ${parts.join("; ")}.`;
 }
 
 function promptRouter(input = {}) {

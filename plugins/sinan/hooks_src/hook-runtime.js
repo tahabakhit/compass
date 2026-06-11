@@ -118,6 +118,27 @@ function extractCommand(input = {}) {
   );
 }
 
+function extractWrite(input = {}) {
+  const toolName =
+    input.tool_name || input.toolName || input.tool || input.payload?.tool_name || input.payload?.toolName || "";
+  const toolInput =
+    input.toolInput || input.tool_input || input.payload?.toolInput || input.payload?.tool_input || input;
+  const paths = [];
+  const direct =
+    toolInput.file_path || toolInput.filePath || toolInput.path || input.file_path || input.filePath || input.path;
+  if (direct) paths.push(String(direct));
+  // Best-effort for Codex apply_patch style bodies (no structured file_path field).
+  const patch = toolInput.input || toolInput.patch || input.patch;
+  if (patch && typeof patch === "string") {
+    const re = /^\*\*\*\s+(?:Add|Update|Delete) File:\s+(.+)$/gm;
+    let match;
+    while ((match = re.exec(patch))) {
+      paths.push(match[1].trim());
+    }
+  }
+  return { toolName, paths };
+}
+
 function isMeaningfulWork(input = {}) {
   if (input.meaningfulWork === true) return true;
   if (input.meaningfulWork === false) return false;
@@ -132,6 +153,7 @@ module.exports = {
   additionalContextOutput,
   extractCommand,
   extractPrompt,
+  extractWrite,
   isMeaningfulWork,
   parseInput,
   printResult,

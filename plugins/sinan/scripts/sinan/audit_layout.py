@@ -13,24 +13,27 @@ def audit_layout(
     stale_paths: list[str] | None = None,
     skipped: list[dict[str, str]] | None = None,
     parent_workspace: bool = False,
+    nested: bool = False,
 ) -> list[dict[str, str]]:
     warnings: list[dict[str, str]] = []
     for pattern in bad_patterns():
         if exists(target, pattern["path"]):
             warnings.append({"path": pattern["path"], "message": pattern["message"]})
-    if repo_type != "workspace" or parent_workspace:
+    # State dirs are expected for standalone repos and workspace roots (D-C). Warn only for
+    # repos nested under a workspace parent, or when auditing from the parent's perspective.
+    if parent_workspace or (nested and repo_type != "workspace"):
         if exists(target, ".planning"):
             warnings.append(
                 {
                     "path": ".planning",
-                    "message": "Repo-local .planning/ is usually workspace-level; child repo planning and handoffs should live in the parent workspace.",
+                    "message": "Child repo .planning/ should live in the parent workspace; keep cross-repo plans and handoffs there.",
                 }
             )
         if exists(target, ".workflow-state"):
             warnings.append(
                 {
                     "path": ".workflow-state",
-                    "message": "Repo-local .workflow-state/ should contain only generated runtime JSON from runs launched in this repo.",
+                    "message": "Child repo .workflow-state/ should live in the parent workspace; generated run state belongs there.",
                 }
             )
     for path in stale_paths or []:

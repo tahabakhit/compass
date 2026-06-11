@@ -19,10 +19,10 @@ Do not run `python3 -m scripts.sinan.cli` from the target repo or workspace; tha
 ## Workflow
 
 1. Inspect the repo or workspace state before recommending work: git status, nested repos, file tree, package manager, README, tests, CI, app files, agent files, glossary, ADRs, and GitHub surfaces.
-2. Run `<sinanCli> bootstrap --target <repo-or-workspace> --json` when available; add `--persist` when the startup plan should be saved under `.workflow-state/plans/bootstrap-report.json`.
+2. Run `<sinanCli> bootstrap --target <repo-or-workspace> --json` when available; add `--persist` to save the startup plan. Standalone repos and workspace roots persist locally (`.workflow-state/plans/bootstrap-report.json` plus a `.planning/` dir); repos nested under a workspace parent are not written to — their bootstrap state belongs in the parent workspace.
 3. Look for prior context first: pasted handoff, `.planning/handoffs/`, `.workflow-state/runs/`, recent commits, and continuation notes.
 4. Classify the target as empty, foundation-only, app-started, established, workspace, or resumed-from-handoff.
-5. Recommend only the needed next steps: `$brainstorm`, `$decision-capture`, `$architecture`, `$scaffold`, `$starter`, or `$tdd`.
+5. Recommend only the needed next steps: `$brainstorm`, `$decision-capture`, `$architecture`, `$scaffold`, `$starter`, or `$tdd`. Bootstrap inspects and recommends; it does not write agent surfaces — that is `$scaffold` (which the write-guard enforces).
 6. Ask before writing. Do not generate app files unless the repo is empty/near-empty or the user explicitly requests starter files.
 7. Preserve existing decisions and handoff instructions unless evidence says they are stale.
 8. In a multi-repo workspace, use the parent `.planning/` and `.workflow-state/` for cross-repo work, but keep repo-specific ADRs and canonical docs in each child repo.

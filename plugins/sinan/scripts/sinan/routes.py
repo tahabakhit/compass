@@ -148,6 +148,103 @@ def fallback_route(input_data: dict[str, Any]) -> dict[str, Any]:
     return base_route(taskSize="micro", reason="Simple read or language task; no Sinan overhead.")
 
 
+# Broadened setup grammar: verb+object, either order, plus the standalone verbs.
+SETUP_VERB = r"(?:init|initiali[sz]e|initiali[sz]ing|bootstrap|set ?up|setting up|scaffold|start|started|starting|create|creating|spin up|stand up|kick off|onboard|get started|getting started)"
+SETUP_OBJECT = r"(?:repo|repository|workspace|project|codebase|monorepo)"
+SETUP_INTENT_PATTERN = (
+    r"\b(?:bootstrap|onboard)\b"
+    rf"|\b{SETUP_VERB}\b.{{0,40}}\b{SETUP_OBJECT}\b"
+    rf"|\b{SETUP_OBJECT}\b.{{0,40}}\b{SETUP_VERB}\b"
+)
+BOOTSTRAP_LANGUAGE_PATTERN = r"\b(bootstrap|initiali[sz]e|initiali[sz]ing|init|new repo|empty repo|start(?:ed|ing)?|get(?:ting)? started|spin up|stand up|kick off|onboard|creat(?:e|ing)|resume from handoff|previous handoff|continuation notes)\b"
+SCAFFOLD_LANGUAGE_PATTERN = r"\b(agent conventions?|agent policy|repo-local agent policy|agents\.md|claude\.md|agent scaffold|scaffold instructions|set up instructions|instruction surfaces?|agent surfaces?)\b"
+STARTER_LANGUAGE_PATTERN = r"\b(app starter|application shell|framework shell|initial app files?|starter files?|generate (?:the )?starter|scaffold the app|create the app|app skeleton)\b"
+
+SETUP_WORKFLOWS = {"bootstrap", "scaffold", "starter"}
+NEXT_COMMAND = {
+    "bootstrap": ("sinan bootstrap --target .", "inspect"),
+    "scaffold": ("sinan scaffold --target .", "scaffold-surfaces"),
+    "starter": ("sinan starter --plan --target .", "plan-starter"),
+}
+
+
+def setup_route(workflow: str, platform: str) -> dict[str, Any] | None:
+    plan = "claude-plan" if platform == "claude" else "codex-plan"
+    if workflow == "bootstrap":
+        return base_route(taskSize="full", intent="setup", workflow="bootstrap", nativeMode=plan, skills=["bootstrap"], hooks=["bash-guard"], budget="medium", reason="Bootstrap should inspect repo state and handoffs before choosing startup steps.")
+    if workflow == "scaffold":
+        return base_route(taskSize="full", intent="setup", workflow="scaffold", nativeMode=plan, skills=["scaffold"], hooks=["bash-guard"], budget="small", reason="Scaffold owns repo-local agent policy surfaces; audit then write.")
+    if workflow == "starter":
+        return base_route(taskSize="full", intent="setup", workflow="starter", nativeMode=plan, skills=["starter"], hooks=["bash-guard"], budget="medium", reason="Starter generation follows confirmed decisions and an existing scaffold.")
+    return None
+
+
+def detect_setup_workflow(prompt: str, repo_state: dict[str, Any] | None) -> str:
+    # Explicit language wins over repo-state inference.
+    if re.search(STARTER_LANGUAGE_PATTERN, prompt):
+        return "starter"
+    if re.search(SCAFFOLD_LANGUAGE_PATTERN, prompt):
+        return "scaffold"
+    if re.search(BOOTSTRAP_LANGUAGE_PATTERN, prompt):
+        return "bootstrap"
+    # Generic setup wording: let repo state disambiguate, defaulting to inspect-first.
+    state = repo_state or {}
+    if state.get("empty") or state.get("foundationOnly"):
+        return "bootstrap"
+    if state.get("hasApp") and not state.get("hasAgentsDir"):
+        return "scaffold"
+    return "bootstrap"
+
+
+def compute_repo_state(input_data: dict[str, Any]) -> dict[str, Any]:
+    provided = input_data.get("repoState")
+    if isinstance(provided, dict) and provided:
+        return provided
+    cwd = input_data.get("cwd")
+    if not cwd:
+        return {}
+    try:
+        from .detect import quick_state
+
+        return quick_state(Path(cwd))
+    except Exception:
+        return {}
+
+
+def refine_setup_route(route_result: dict[str, Any], input_data: dict[str, Any], repo_state: dict[str, Any], rule_matched: bool) -> dict[str, Any]:
+    prompt = normalize_prompt(input_data.get("prompt", ""))
+    platform = input_data.get("platform", "codex")
+    workflow = route_result.get("workflow")
+    if workflow in SETUP_WORKFLOWS:
+        # An explicit setup route was chosen; correct the sub-workflow by repo state and language.
+        target = detect_setup_workflow(prompt, repo_state)
+        if target != workflow:
+            return setup_route(target, platform) or route_result
+        return route_result
+    # Not a setup route. Only adopt setup when no explicit rule matched, the fallback produced
+    # no workflow (a micro/no-op result), and the broadened grammar fires. This catches reworded
+    # setup requests without hijacking any review/implement/debug classification.
+    if not rule_matched and route_result.get("workflow") is None and re.search(SETUP_INTENT_PATTERN, prompt):
+        target = detect_setup_workflow(prompt, repo_state)
+        return setup_route(target, platform) or route_result
+    return route_result
+
+
+def attach_next_command(result: dict[str, Any]) -> dict[str, Any]:
+    workflow = result.get("workflow")
+    if workflow in NEXT_COMMAND:
+        command, action = NEXT_COMMAND[workflow]
+        result["nextCommand"] = command
+        result["nextAction"] = action
+    elif workflow:
+        result["nextCommand"] = None
+        result["nextAction"] = "run-workflow"
+    else:
+        result["nextCommand"] = None
+        result["nextAction"] = None
+    return result
+
+
 def route(input_value: str | dict[str, Any], validate: bool = True) -> dict[str, Any]:
     input_data = default_input(input_value) if isinstance(input_value, str) else input_value
     prompt = input_data.get("prompt", "")
@@ -156,8 +253,12 @@ def route(input_value: str | dict[str, Any], validate: bool = True) -> dict[str,
         if prompt_matches(rule, prompt):
             selected = dict(rule["route"])
             break
-    route_result = fallback_route(input_data) if selected is None else selected
+    rule_matched = selected is not None
+    route_result = selected if rule_matched else fallback_route(input_data)
+    repo_state = compute_repo_state(input_data)
+    route_result = refine_setup_route(route_result, input_data, repo_state, rule_matched)
     result = apply_native_capabilities(route_result, input_data)
+    result = attach_next_command(result)
     if validate:
         validate_route_output(result)
     return result

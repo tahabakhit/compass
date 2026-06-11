@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -150,6 +151,87 @@ def top_level_names(target: Path) -> set[str]:
     return {entry.name for entry in target.iterdir()}
 
 
+EXTRA_APP_MARKERS = ["pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Cargo.toml", "go.mod", "pom.xml", "build.gradle", "Gemfile", "composer.json"]
+FOUNDATION_NAMES = {"README.md", "LICENSE", "LICENSE.md", "AGENTS.md", "CLAUDE.md", ".agents", ".github", "docs", "GLOSSARY.md", ".gitignore", ".gitattributes"}
+WORKSPACE_MARKERS = {".planning", ".workflow-state"}
+
+
+def _walk_boundaries() -> set[Path]:
+    """Directories the workspace-parent walk must not cross or inspect.
+
+    Stops the walk from wandering into shared roots (home, system temp, /) and
+    false-positiving on stray .planning/.workflow-state dirs left there.
+    """
+    bounds: set[Path] = {Path("/")}
+    for getter in (Path.home, lambda: Path(tempfile.gettempdir())):
+        try:
+            bounds.add(getter().resolve())
+        except Exception:
+            continue
+    return bounds
+
+
+def nested_under_workspace(target: Path, max_levels: int = 3) -> bool:
+    """Heuristic: is target a child repo inside a workspace parent?
+
+    A workspace parent is a nearby ancestor carrying workspace state markers
+    (.planning/ or .workflow-state/). Bounded walk that stops at home/temp/root
+    so it stays cheap and does not cross into shared directories.
+    """
+    try:
+        resolved = target.resolve()
+    except Exception:
+        return False
+    bounds = _walk_boundaries()
+    checked = 0
+    for parent in resolved.parents:
+        if checked >= max_levels or parent in bounds:
+            break
+        try:
+            names = {entry.name for entry in parent.iterdir()}
+        except Exception:
+            break
+        if WORKSPACE_MARKERS & names:
+            return True
+        checked += 1
+    return False
+
+
+def quick_state(target: Path) -> dict[str, Any]:
+    """Cheap repo-state signals for routing and setup decisions.
+
+    Avoids nested-repo git scans; classifies into the same vocabulary as
+    bootstrap_report.classify_state for the common single-repo cases.
+    """
+    if not target.exists() or not target.is_dir():
+        return {}
+    try:
+        names = {entry.name for entry in target.iterdir()}
+    except Exception:
+        return {}
+    top_level = [name for name in names if name not in {".git", ".DS_Store"}]
+    app_hints = [hint for hint in APP_HINTS if hint in names]
+    has_package = any(name in names for name in PACKAGE_FILES) or any(name in names for name in EXTRA_APP_MARKERS)
+    has_app = bool(app_hints) or has_package
+    if not top_level:
+        state = "empty"
+    elif set(top_level).issubset(FOUNDATION_NAMES):
+        state = "foundation-only"
+    elif has_app:
+        state = "app-started"
+    else:
+        state = "established"
+    return {
+        "state": state,
+        "empty": state == "empty",
+        "foundationOnly": state == "foundation-only",
+        "hasApp": has_app,
+        "hasAgentsDir": ".agents" in names,
+        "hasAgentFiles": bool({"AGENTS.md", "CLAUDE.md"} & names),
+        "nestedUnderWorkspace": nested_under_workspace(target),
+    }
+
+
 def detect_repo_type(target: Path, explicit: str | None = None) -> str:
     if explicit and explicit != "auto":
         if explicit not in repo_type_names():
@@ -164,8 +246,9 @@ def detect_repo_type(target: Path, explicit: str | None = None) -> str:
     configured_type = (read_agents_config(target) or {}).get("repo_type")
     if configured_type in repo_type_names():
         return str(configured_type)
-    if {".planning", ".workflow-state"} & names and "package.json" not in names and not any(name in names for name in APP_HINTS):
-        return "workspace"
+    # Note: presence of .planning/.workflow-state is NOT a workspace signal. Standalone repos
+    # receive those dirs from bootstrap persistence (D-C/D-G); workspaces are identified by
+    # nested repos (above) or an explicit/persisted repo_type.
     if {"skills", "hooks", "hooks_src", ".codex-plugin"} & names or "plugin" in package_name:
         return "plugin"
     if "schemas" in names and "src" not in names:

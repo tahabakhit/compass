@@ -11,8 +11,8 @@
     {
       "name": "sinan",
       "displayName": "Sinan",
-      "description": "Cross-agent orchestration plugin with small skills, deterministic routing, declarative workflows, and a four-hook core.",
-      "version": "0.2.5",
+      "description": "Cross-agent orchestration plugin with small skills, deterministic routing, declarative workflows, and a five-hook core.",
+      "version": "0.3.0",
       "author": {
         "name": "Sinan",
         "url": "https://github.com/tahabakhit/ming"

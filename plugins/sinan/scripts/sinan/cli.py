@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from . import ROOT
-from . import bootstrap_report, package_check, routes, scaffold, schemas, skills_check, smoke, workflows
+from . import bootstrap_report, package_check, routes, scaffold, schemas, skills_check, smoke, starter, workflows
 
 
 def print_json(value: Any) -> None:
@@ -31,14 +31,41 @@ def command_bootstrap(args: argparse.Namespace) -> int:
     return 0
 
 
+def resolve_github_arg(args: argparse.Namespace) -> str | None:
+    if getattr(args, "no_github", False):
+        return "none"
+    if getattr(args, "with_github", False):
+        return "guided"
+    return None
+
+
 def command_scaffold_like(args: argparse.Namespace, mode: str) -> int:
-    include_github = False if getattr(args, "no_github", False) else None
-    result = scaffold.run(args.target, mode=mode, repo_type=getattr(args, "repo_type", None), include_github=include_github)
+    replace_entrypoints = getattr(args, "replace_entrypoints", False) or getattr(args, "force", False)
+    result = scaffold.run(
+        args.target,
+        mode=mode,
+        repo_type=getattr(args, "repo_type", None),
+        github=resolve_github_arg(args),
+        replace_entrypoints=replace_entrypoints,
+    )
     if getattr(args, "json", False):
         print_json(result)
     else:
         print(scaffold.render_text(result))
     return 0 if result["ok"] else 1
+
+
+def command_starter(args: argparse.Namespace) -> int:
+    plan = starter.build_plan(
+        args.target,
+        repo_type=getattr(args, "repo_type", None),
+        decisions_confirmed=getattr(args, "decisions_confirmed", False),
+    )
+    if getattr(args, "json", False):
+        print_json(plan)
+    else:
+        print(starter.render_text(plan))
+    return 0 if plan["ok"] else 1
 
 
 def source_suite_available() -> bool:
@@ -119,11 +146,12 @@ def command_route(args: argparse.Namespace) -> int:
     else:
         skills = ", ".join(result["skills"]) if result["skills"] else "none"
         roles = ", ".join(result["agents"]["roles"]) if result["agents"]["roles"] else "none"
+        next_command = result.get("nextCommand") or "none"
         print(
             "Sinan route: "
             f"taskSize={result['taskSize']}; intent={result['intent']}; workflow={result['workflow'] or 'none'}; "
             f"nativeMode={result['nativeMode']}; skills={skills}; agents={result['agents']['count']} ({roles}); "
-            f"budget={result['budget']}. Reason: {result['reason']}"
+            f"budget={result['budget']}; nextCommand={next_command}. Reason: {result['reason']}"
         )
     return 0
 
@@ -162,20 +190,32 @@ def build_parser() -> argparse.ArgumentParser:
     bootstrap.add_argument("--output")
     bootstrap.set_defaults(func=command_bootstrap)
 
+    def add_scaffold_flags(parser: argparse.ArgumentParser) -> None:
+        parser.add_argument("--repo-type", default="auto")
+        parser.add_argument("--no-github", action="store_true", help="Do not manage any .github surfaces.")
+        parser.add_argument("--with-github", action="store_true", help="Write the guided .github bundle (labels, templates, copilot-instructions); default is a minimal agent-checks workflow only.")
+        parser.add_argument("--replace-entrypoints", action="store_true", help="Replace unmarked or wrong-direction AGENTS.md/CLAUDE.md with the managed layout.")
+        parser.add_argument("--force", action="store_true", help="Apply proposed entrypoint repairs without prompting.")
+        parser.add_argument("--json", action="store_true")
+
     scaffold_parser = sub.add_parser("scaffold")
     add_target(scaffold_parser)
-    scaffold_parser.add_argument("--repo-type", default="auto")
-    scaffold_parser.add_argument("--no-github", action="store_true")
-    scaffold_parser.add_argument("--json", action="store_true")
+    add_scaffold_flags(scaffold_parser)
     scaffold_parser.set_defaults(func=lambda args: command_scaffold_like(args, "scaffold"))
 
     for name in ["audit", "update", "enforce"]:
         command = sub.add_parser(name)
         add_target(command)
-        command.add_argument("--repo-type", default="auto")
-        command.add_argument("--no-github", action="store_true")
-        command.add_argument("--json", action="store_true")
+        add_scaffold_flags(command)
         command.set_defaults(func=lambda args, mode=name: command_scaffold_like(args, mode))
+
+    starter_parser = sub.add_parser("starter")
+    add_target(starter_parser)
+    starter_parser.add_argument("--plan", action="store_true", help="Emit the gated starter plan (default; starter never writes files).")
+    starter_parser.add_argument("--repo-type", default="auto")
+    starter_parser.add_argument("--decisions-confirmed", action="store_true", help="Assert product/stack decisions were confirmed with the user.")
+    starter_parser.add_argument("--json", action="store_true")
+    starter_parser.set_defaults(func=command_starter)
 
     test = sub.add_parser("test")
     test.set_defaults(func=command_test)

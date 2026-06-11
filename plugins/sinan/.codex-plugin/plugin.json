@@ -1,7 +1,7 @@
 {
   "name": "sinan",
-  "version": "0.2.5",
-  "description": "Cross-agent orchestration plugin with small skills, deterministic routing, declarative workflows, and a four-hook core.",
+  "version": "0.3.0",
+  "description": "Cross-agent orchestration plugin with small skills, deterministic routing, declarative workflows, and a five-hook core.",
   "author": {
     "name": "Sinan"
   },
@@ -18,7 +18,7 @@
   "interface": {
     "displayName": "Sinan",
     "shortDescription": "Route work into skills, workflows, and native modes",
-    "longDescription": "Sinan is a cross-agent orchestration plugin that keeps small tasks light, routes broad work into declarative workflows, and bundles a compact hook core for context, prompt routing, Bash safety, and handoff.",
+    "longDescription": "Sinan is a cross-agent orchestration plugin that keeps small tasks light, routes broad work into declarative workflows, and bundles a compact hook core for context, prompt routing, Bash safety, agent-surface write guarding, and handoff.",
     "developerName": "Sinan",
     "category": "Productivity",
     "websiteURL": "https://github.com/tahabakhit/ming",

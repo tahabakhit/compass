@@ -16,6 +16,7 @@ from .detect import (
     detect_workspace,
     exists,
     is_dir,
+    nested_under_workspace,
     read_package_json,
 )
 from .workspace_map import write_workspace_map, write_workspace_summary
@@ -217,7 +218,22 @@ def write_plan_output(report: dict[str, Any], output: str | None = None) -> Path
 
 
 def persist_report(report: dict[str, Any], output: str | None = None) -> dict[str, str]:
+    # D-C: standalone repos and workspace roots persist bootstrap state locally; repos nested
+    # under a workspace parent stay clean (their state belongs in the parent). An explicit
+    # --output path overrides this and is always honored.
+    target = Path(report["target"])
+    if output is None and nested_under_workspace(target):
+        return {
+            "skipped": "child repo under a workspace; persist bootstrap state in the parent workspace .planning/ and .workflow-state/",
+        }
     written = {"bootstrapReport": str(write_plan_output(report, output))}
+    if output is None:
+        planning = target / ".planning"
+        planning.mkdir(parents=True, exist_ok=True)
+        gitkeep = planning / ".gitkeep"
+        if not gitkeep.exists():
+            gitkeep.write_text("", encoding="utf8")
+        written["planning"] = str(planning)
     if report["signals"]["repoType"] == "workspace" or report["signals"]["workspace"]["repoCount"] > 0:
         written["workspaceMap"] = str(write_workspace_map(report))
         written["workspaceSummary"] = str(write_workspace_summary(report))

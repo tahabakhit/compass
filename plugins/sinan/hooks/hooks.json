@@ -36,6 +36,17 @@
             "statusMessage": "Checking Bash command"
           }
         ]
+      },
+      {
+        "matcher": "^(Write|Edit|MultiEdit|apply_patch)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT:-$PLUGIN_ROOT}/hooks_src/write-guard.js\"",
+            "timeout": 3,
+            "statusMessage": "Checking agent-surface write"
+          }
+        ]
       }
     ],
     "Stop": [
